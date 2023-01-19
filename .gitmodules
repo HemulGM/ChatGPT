@@ -1,0 +1,3 @@
+[submodule "DelphiOpenAI"]
+	path = DelphiOpenAI
+	url = https://github.com/HemulGM/DelphiOpenAI
