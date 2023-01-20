@@ -7,10 +7,20 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Layouts, FMX.Memo.Types, FMX.Controls.Presentation,
   FMX.ScrollBox, FMX.Memo, OpenAI, OpenAI.Completions, System.Threading,
-  FMX.Edit;
+  FMX.Edit, FMX.ImgList;
 
 type
   TWindowMode = (wmCompact, wmFull);
+
+  TButton = class(FMX.StdCtrls.TButton)
+  public
+    procedure SetBounds(X, Y, AWidth, AHeight: Single); override;
+  end;
+
+  TLabel = class(FMX.StdCtrls.TLabel)
+  public
+    procedure SetBounds(X, Y, AWidth, AHeight: Single); override;
+  end;
 
   TFrameChat = class(TFrame)
     VertScrollBoxChat: TVertScrollBox;
@@ -32,7 +42,6 @@ type
     RectangleIndicate: TRectangle;
     LabelTyping: TLabel;
     LineBorder: TLine;
-    LayoutWelcome: TLayout;
     Layout2: TLayout;
     ButtonTranslate: TButton;
     Path2: TPath;
@@ -42,6 +51,28 @@ type
     Path4: TPath;
     Label1: TLabel;
     Rectangle3: TRectangle;
+    LayoutWelcome: TLayout;
+    RectangleBG: TRectangle;
+    Label11: TLabel;
+    FlowLayoutWelcome: TFlowLayout;
+    LayoutExampleTitle: TLayout;
+    Label2: TLabel;
+    Path6: TPath;
+    ButtonExample3: TButton;
+    ButtonExample2: TButton;
+    ButtonExample1: TButton;
+    LayoutCapabilitiesTitle: TLayout;
+    Label3: TLabel;
+    Path5: TPath;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label9: TLabel;
+    LayoutLimitationsTitle: TLayout;
+    Label4: TLabel;
+    Path7: TPath;
+    Label8: TLabel;
+    Label7: TLabel;
+    Label10: TLabel;
     procedure LayoutSendResize(Sender: TObject);
     procedure MemoQueryChange(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
@@ -50,6 +81,11 @@ type
     procedure MemoQueryKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure ButtonTranslateClick(Sender: TObject);
     procedure EditLangSrcChangeTracking(Sender: TObject);
+    procedure LayoutWelcomeResize(Sender: TObject);
+    procedure FlowLayoutWelcomeResize(Sender: TObject);
+    procedure ButtonExample1Click(Sender: TObject);
+    procedure ButtonExample2Click(Sender: TObject);
+    procedure ButtonExample3Click(Sender: TObject);
   private
     FAPI: TOpenAI;
     FChatId: string;
@@ -83,7 +119,8 @@ type
 implementation
 
 uses
-  FMX.Ani, System.Math, ChatGPT.FrameMessage, OpenAI.API, ChatGPT.Translate;
+  FMX.Ani, System.Math, ChatGPT.FrameMessage, OpenAI.API, ChatGPT.Translate,
+  ChatGPT.Main;
 
 {$R *.fmx}
 
@@ -109,6 +146,21 @@ end;
 procedure TFrameChat.ScrollDown;
 begin
   VertScrollBoxChat.ViewportPosition := TPointF.Create(0, VertScrollBoxChat.ContentBounds.Height);
+end;
+
+procedure TFrameChat.ButtonExample1Click(Sender: TObject);
+begin
+  MemoQuery.Text := 'Explain quantum computing in simple terms';
+end;
+
+procedure TFrameChat.ButtonExample2Click(Sender: TObject);
+begin
+  MemoQuery.Text := 'Got any creative ideas for a 10 year old’s birthday?';
+end;
+
+procedure TFrameChat.ButtonExample3Click(Sender: TObject);
+begin
+  MemoQuery.Text := 'How do I make an HTTP request in Javascript?';
 end;
 
 procedure TFrameChat.ButtonSendClick(Sender: TObject);
@@ -174,9 +226,11 @@ end;
 procedure TFrameChat.ClearChat;
 begin
   LayoutTyping.Parent := nil;
+  LayoutWelcome.Parent := nil;
   while VertScrollBoxChat.Content.ControlsCount > 0 do
     VertScrollBoxChat.Content.Controls[0].Free;
   LayoutTyping.Parent := VertScrollBoxChat;
+  LayoutWelcome.Parent := VertScrollBoxChat;
 end;
 
 constructor TFrameChat.Create(AOwner: TComponent);
@@ -206,6 +260,49 @@ begin
   LangSrc := EditLangSrc.Text;
 end;
 
+procedure TFrameChat.FlowLayoutWelcomeResize(Sender: TObject);
+begin
+  var W: Single := 0;
+  case Mode of
+    wmCompact:
+      begin
+        W := FlowLayoutWelcome.Width;
+      end;
+    wmFull:
+      begin
+        W := Trunc(FlowLayoutWelcome.Width / FlowLayoutWelcome.ControlsCount);
+      end;
+  end;
+  for var Control in FlowLayoutWelcome.Controls do
+    Control.Width := W;
+
+  var B: Single := 0;
+  for var Control in LayoutExampleTitle.Controls do
+    B := Max(B, Control.Position.Y + Control.Height + Control.Margins.Bottom);
+  if LayoutExampleTitle.Height <> B then
+    LayoutExampleTitle.Height := B;
+
+  B := 0;
+  for var Control in LayoutCapabilitiesTitle.Controls do
+    B := Max(B, Control.Position.Y + Control.Height + Control.Margins.Bottom);
+  if LayoutCapabilitiesTitle.Height <> B then
+    LayoutCapabilitiesTitle.Height := B;
+
+  B := 0;
+  for var Control in LayoutLimitationsTitle.Controls do
+    B := Max(B, Control.Position.Y + Control.Height + Control.Margins.Bottom);
+  if LayoutLimitationsTitle.Height <> B then
+    LayoutLimitationsTitle.Height := B;
+
+  B := 0;
+  for var Control in FlowLayoutWelcome.Controls do
+    B := Max(B, Control.Position.Y + Control.Height);
+
+  B := B + FlowLayoutWelcome.Position.Y;
+  if LayoutWelcome.Height <> B then
+    LayoutWelcome.Height := B;
+end;
+
 procedure TFrameChat.LayoutSendResize(Sender: TObject);
 begin
   LayoutQuery.Width := Min(768, LayoutSend.Width - 48);
@@ -214,6 +311,11 @@ end;
 procedure TFrameChat.LayoutTypingResize(Sender: TObject);
 begin
   LayoutTypingContent.Width := Min(LayoutTyping.Width - (LayoutTyping.Padding.Left + LayoutTyping.Padding.Right), 650);
+end;
+
+procedure TFrameChat.LayoutWelcomeResize(Sender: TObject);
+begin
+  FlowLayoutWelcome.Width := Min(720, LayoutWelcome.Width);
 end;
 
 procedure TFrameChat.MemoQueryChange(Sender: TObject);
@@ -237,6 +339,7 @@ end;
 
 procedure TFrameChat.NewMessage(const Text: string; IsUser: Boolean);
 begin
+  LayoutWelcome.Visible := False;
   var Frame := TFrameMessage.Create(VertScrollBoxChat);
   Frame.Position.Y := VertScrollBoxChat.ContentBounds.Height;
   Frame.Parent := VertScrollBoxChat;
@@ -299,6 +402,7 @@ begin
         RectangleSendBG.Fill.Kind := TBrushKind.Gradient;
       end;
   end;
+  FlowLayoutWelcomeResize(nil);
 end;
 
 procedure TFrameChat.SetTitle(const Value: string);
@@ -322,6 +426,36 @@ begin
     LabelTyping.Text := '.'
   else
     LabelTyping.Text := LabelTyping.Text + '.';
+end;
+
+{ TButton }
+
+procedure TButton.SetBounds(X, Y, AWidth, AHeight: Single);
+begin
+  inherited;
+  if Assigned(Canvas) and (Tag = 1) then
+  begin
+    var H := TRectF.Create(0, 0, Width - 20, 10000);
+    Canvas.Font.Size := Font.Size;
+    Canvas.MeasureText(H, Text, WordWrap, [], TextAlign, VertTextAlign);
+    if AHeight <> H.Height + 24 then
+      Height := H.Height + 24;
+  end;
+end;
+
+{ TLabel }
+
+procedure TLabel.SetBounds(X, Y, AWidth, AHeight: Single);
+begin
+  inherited;
+  if Assigned(Canvas) and (Tag = 1) then
+  begin
+    var H := TRectF.Create(0, 0, Width - 20, 10000);
+    Canvas.Font.Size := Font.Size;
+    Canvas.MeasureText(H, Text, WordWrap, [], TextAlign, VertTextAlign);
+    if AHeight <> H.Height + 24 then
+      Height := H.Height + 24;
+  end;
 end;
 
 end.

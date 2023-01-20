@@ -1,23 +1,33 @@
 object FrameChat: TFrameChat
-  Size.Width = 899.000000000000000000
-  Size.Height = 666.000000000000000000
+  Align = Contents
+  Size.Width = 890.000000000000000000
+  Size.Height = 846.000000000000000000
   Size.PlatformDefault = False
+  object RectangleBG: TRectangle
+    Align = Contents
+    Fill.Color = xFF343541
+    Locked = True
+    Size.Width = 890.000000000000000000
+    Size.Height = 846.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Kind = None
+  end
   object VertScrollBoxChat: TVertScrollBox
     Align = Contents
     Padding.Bottom = 160.000000000000000000
-    Size.Width = 899.000000000000000000
-    Size.Height = 666.000000000000000000
+    Size.Width = 890.000000000000000000
+    Size.Height = 846.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
-    Viewport.Width = 899.000000000000000000
-    Viewport.Height = 666.000000000000000000
+    Viewport.Width = 890.000000000000000000
+    Viewport.Height = 846.000000000000000000
     object LayoutTyping: TLayout
       Align = Top
       Padding.Left = 16.000000000000000000
       Padding.Top = 16.000000000000000000
       Padding.Right = 16.000000000000000000
       Padding.Bottom = 16.000000000000000000
-      Size.Width = 899.000000000000000000
+      Size.Width = 890.000000000000000000
       Size.Height = 62.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
@@ -25,7 +35,7 @@ object FrameChat: TFrameChat
       OnResized = LayoutTypingResize
       object LayoutTypingContent: TLayout
         Align = HorzCenter
-        Position.X = 49.000000000000000000
+        Position.X = 44.000000000000000000
         Position.Y = 16.000000000000000000
         Size.Width = 801.000000000000000000
         Size.Height = 30.000000000000000000
@@ -181,20 +191,443 @@ object FrameChat: TFrameChat
         end
       end
     end
-  end
-  object LayoutWelcome: TLayout
-    Align = Client
-    Size.Width = 899.000000000000000000
-    Size.Height = 566.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 3
+    object LayoutWelcome: TLayout
+      Align = Top
+      Position.Y = 62.000000000000000000
+      Size.Width = 890.000000000000000000
+      Size.Height = 619.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 3
+      OnResize = LayoutWelcomeResize
+      OnResized = LayoutWelcomeResize
+      object Label11: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Family]
+        Margins.Top = 188.000000000000000000
+        Margins.Bottom = 64.000000000000000000
+        Position.Y = 188.000000000000000000
+        Size.Width = 890.000000000000000000
+        Size.Height = 48.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Size = 36.000000000000000000
+        TextSettings.Font.StyleExt = {00060000000000000004000000}
+        TextSettings.FontColor = xFFFBFBFB
+        TextSettings.HorzAlign = Center
+        TextSettings.WordWrap = False
+        Text = 'ChatGPT'
+        TabOrder = 0
+      end
+      object FlowLayoutWelcome: TFlowLayout
+        Align = HorzCenter
+        Position.X = 109.000000000000000000
+        Position.Y = 300.000000000000000000
+        Size.Width = 671.000000000000000000
+        Size.Height = 319.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        Justify = Left
+        JustifyLastLine = Left
+        FlowDirection = LeftToRight
+        OnResize = FlowLayoutWelcomeResize
+        OnResized = FlowLayoutWelcomeResize
+        object LayoutExampleTitle: TLayout
+          Align = Client
+          Size.Width = 208.000000000000000000
+          Size.Height = 319.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 2
+          object Label2: TLabel
+            Align = Top
+            StyledSettings = [Family, Style]
+            Margins.Bottom = 7.000000000000000000
+            Position.Y = 34.000000000000000000
+            Size.Width = 208.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 18.000000000000000000
+            TextSettings.FontColor = claWhite
+            TextSettings.HorzAlign = Center
+            TextSettings.WordWrap = False
+            Text = 'Examples'
+            TabOrder = 3
+          end
+          object Path6: TPath
+            Align = Top
+            Data.Path = {
+              9C00000000000000000080430000104302000000004042430000104302000000
+              0000104300404243020000000000104300008043020000000000104300E09E43
+              02000000004042430000B84302000000000080430000B8430200000000E09E43
+              0000B843020000000000B84300E09E43020000000000B8430000804302000000
+              0000B843004042430200000000E09E4300001043020000000000804300001043
+              03000000000080430000104300000000000080430000A84302000000DFCF5343
+              0000A84302000000000030431018964302000000000030430000804302000000
+              00003043DFCF534302000000DFCF534300003043020000000000804300003043
+              020000001018964300003043020000000000A843DFCF5343020000000000A843
+              00008043020000000000A8431018964302000000101896430000A84302000000
+              000080430000A84303000000000080430000A84300000000000080430000E042
+              02000000A06A84430000E04202000000000088437FAAD1420200000000008843
+              0000C042010000000000884300008042020000000000884302AB5C4202000000
+              A06A84430000404202000000000080430000404202000000C02A774300004042
+              020000000000704302AB5C420200000000007043000080420100000000007043
+              0000C04202000000000070437FAAD14202000000C12A77430000E04202000000
+              000080430000E04203000000000080430000E04200000000000080430000C843
+              02000000C02A77430000C84302000000000070436095CB430200000000007043
+              0000D04301000000000070430000E0430200000000007043A06AE44302000000
+              C02A77430000E84302000000000080430000E84302000000A06A84430000E843
+              0200000000008843A06AE44302000000000088430000E0430100000000008843
+              0000D04302000000000088436095CB4302000000A06A84430000C84302000000
+              000080430000C84303000000000080430000C843000000001038BE43C12A1A43
+              010000001088C943C18A03430200000010A8CC438295FA420200000010A8CC43
+              8255E642020000001088C94382D5D942020000001068C6438255CD4202000000
+              1058C1438255CD42020000001038BE4382D5D9420100000010E8B243C18A0343
+              0200000010C8AF43C1CA09430200000010C8AF43C1EA13430200000010E8B243
+              C12A1A43020000001008B643C16A2043020000001018BB43C16A204302000000
+              1038BE43C12A1A43030000001038BE43C12A1A4300000000DF8F0343C1EAB243
+              01000000BEDFD942C13ABE4302000000BE5FCD42A05AC14302000000BE5FCD42
+              A06AC64302000000BEDFD942A08AC94302000000BE5FE642A0AACC4302000000
+              BE9FFA42A0AACC4302000000DF8F0343A08AC94301000000DF2F1A43C13ABE43
+              02000000DF6F20431118BB4302000000DF6F2043A00AB64302000000DF2F1A43
+              C1EAB2430200000021F01343A0CAAF4302000000DFCF0943F0C7AF4302000000
+              DF8F0343C1EAB24303000000DF8F0343C1EAB243000000000000E04200008043
+              020000000000E042C02A7743020000007FAAD14200007043020000000000C042
+              000070430100000000008042000070430200000002AB5C420000704302000000
+              00004042C02A77430200000000004042000080430200000000004042A06A8443
+              0200000002AB5C4200008843020000000000804200008843010000000000C042
+              00008843020000007FAAD14200008843020000000000E042A06A844302000000
+              0000E04200008043030000000000E04200008043000000000000E04300007043
+              010000000000D04300007043020000006095CB4300007043020000000000C843
+              C02A7743020000000000C84300008043020000000000C843A06A844302000000
+              6095CB4300008843020000000000D04300008843010000000000E04300008843
+              02000000A06AE44300008843020000000000E843A06A8443020000000000E843
+              00008043020000000000E843C02A774302000000A06AE4430000704302000000
+              0000E04300007043030000000000E04300007043000000007F8A0343C12A1A43
+              02000000C1CA0943C16A204302000000C0EA1343C16A2043020000007F2A1A43
+              C12A1A4302000000C16A2043C1EA134302000000C16A2043C1CA094302000000
+              7F2A1A43C18A0343010000007F8A034382D5D94202000000FE94FA428255CD42
+              020000008155E6428255CD4202000000FED4D94282D5D94202000000FE54CD42
+              8255E64202000000FE54CD428295FA4202000000FED4D942C18A034301000000
+              7F8A0343C12A1A43030000007F8A0343C12A1A4300000000C13ABE43F0E7B243
+              020000001118BB43F0C7AF4302000000A00AB643F0C7AF4302000000C1EAB243
+              F0E7B24302000000A0CAAF43F007B6430200000011C8AF43F017BB4302000000
+              C1EAB243F037BE4301000000C13ABE43F087C94302000000A05AC143F0A7CC43
+              02000000A06AC643F0A7CC4302000000A08AC943F087C94302000000A0AACC43
+              F067C64302000000A0AACC43F057C14302000000A08AC943F037BE4301000000
+              C13ABE43F0E7B24303000000C13ABE43F0E7B243}
+            Fill.Color = claWhite
+            Margins.Top = 2.000000000000000000
+            Margins.Bottom = 8.000000000000000000
+            Position.Y = 2.000000000000000000
+            Size.Width = 208.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+            WrapMode = Fit
+          end
+          object ButtonExample3: TButton
+            Tag = 1
+            Align = Top
+            StyledSettings = [Family, Style, FontColor]
+            Margins.Left = 7.000000000000000000
+            Margins.Top = 7.000000000000000000
+            Margins.Right = 7.000000000000000000
+            Margins.Bottom = 7.000000000000000000
+            Position.X = 7.000000000000000000
+            Position.Y = 230.000000000000000000
+            Size.Width = 194.000000000000000000
+            Size.Height = 65.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'buttonstyle_welcome'
+            TabOrder = 0
+            Text = '"How do I make an HTTP request in Javascript?" '#8594
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.WordWrap = True
+            OnClick = ButtonExample3Click
+          end
+          object ButtonExample2: TButton
+            Tag = 1
+            Align = Top
+            StyledSettings = [Family, Style, FontColor]
+            Margins.Left = 7.000000000000000000
+            Margins.Top = 7.000000000000000000
+            Margins.Right = 7.000000000000000000
+            Margins.Bottom = 7.000000000000000000
+            Position.X = 7.000000000000000000
+            Position.Y = 151.000000000000000000
+            Size.Width = 194.000000000000000000
+            Size.Height = 65.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'buttonstyle_welcome'
+            TabOrder = 1
+            Text = '"Got any creative ideas for a 10 year old'#8217's birthday?" '#8594
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.WordWrap = True
+            OnClick = ButtonExample2Click
+          end
+          object ButtonExample1: TButton
+            Tag = 1
+            Align = Top
+            StyledSettings = [Family, Style, FontColor]
+            Margins.Left = 7.000000000000000000
+            Margins.Top = 7.000000000000000000
+            Margins.Right = 7.000000000000000000
+            Margins.Bottom = 7.000000000000000000
+            Position.X = 7.000000000000000000
+            Position.Y = 72.000000000000000000
+            Size.Width = 194.000000000000000000
+            Size.Height = 65.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'buttonstyle_welcome'
+            TabOrder = 2
+            Text = '"Explain quantum computing in simple terms" '#8594
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.WordWrap = True
+            OnClick = ButtonExample1Click
+          end
+        end
+        object LayoutCapabilitiesTitle: TLayout
+          Align = Client
+          Size.Width = 208.000000000000000000
+          Size.Height = 319.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 1
+          object Label3: TLabel
+            Align = Top
+            StyledSettings = [Family, Style]
+            Margins.Bottom = 7.000000000000000000
+            Position.Y = 34.000000000000000000
+            Size.Width = 208.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 18.000000000000000000
+            TextSettings.FontColor = claWhite
+            TextSettings.HorzAlign = Center
+            TextSettings.WordWrap = False
+            Text = 'Capabilities'
+            TabOrder = 1
+          end
+          object Path5: TPath
+            Align = Top
+            Data.Path = {
+              340000000000000085250B413C4A253D0200000096890E41D32E063E02000000
+              2E7F1041B0AFB53E02000000F1E30F415A0D153F010000006B7101411500C040
+              0100000097FF47411500C040020000005F074B411500C04002000000CDCC4D41
+              A06CC34002000000BB274F4145D8C8400200000041825041E943CE4002000000
+              B537504183C0D44002000000FE654E419A99D940010000008ECCDC40CDCC6C41
+              02000000855FD8401AC06F4102000000857CD04007CE70410200000063B4C940
+              865A6F410200000042ECC2406DE76D41020000001101BF4054526A4102000000
+              8B37C0404FAF664101000000971CDD40F6FF0F4101000000D6FF1F40F6FF0F41
+              0200000009E11340F6FF0F41020000004FCC0840B0490E4102000000BF600340
+              DE930B41020000000CEAFB3F0BDE0841020000000B41FE3FBE9F054102000000
+              3C66064033330341010000007099014180D64C3E02000000F4CF03410C01803C
+              0200000074C10741EF264EBD0200000085250B413C4A253D0300000085250B41
+              3C4A253D00000000D6FF5F400000004101000000ACFFEF400000004102000000
+              BCB3F4400000004102000000C32AF940D9080141020000000135FC4037D40241
+              020000003E3FFF408A9F044102000000F1460041DAFE064102000000F7C7FF40
+              A6500941010000007D91EA401FF448410100000097FF37410000E04001000000
+              ACFFEF400000E04002000000B24BEB400000E04002000000AAD4E6404EEEDD40
+              020000006DCAE3409357DA40020000002FC0E040ECC0D640020000008B71DF40
+              4B02D240020000007637E040B35ECD4001000000F06DF540D72F1C4001000000
+              D6FF5F400000004103000000D6FF5F4000000041}
+            Fill.Color = claWhite
+            Margins.Top = 2.000000000000000000
+            Margins.Bottom = 8.000000000000000000
+            Position.Y = 2.000000000000000000
+            Size.Width = 208.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+            WrapMode = Fit
+          end
+          object Label5: TLabel
+            Tag = 1
+            Align = Top
+            StyledSettings = [Family, Style, FontColor]
+            Margins.Left = 7.000000000000000000
+            Margins.Top = 7.000000000000000000
+            Margins.Right = 7.000000000000000000
+            Margins.Bottom = 7.000000000000000000
+            Position.X = 7.000000000000000000
+            Position.Y = 72.000000000000000000
+            Size.Width = 194.000000000000000000
+            Size.Height = 65.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'buttonstyle_welcome'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Remembers what user said earlier in the conversation'
+            TabOrder = 4
+          end
+          object Label6: TLabel
+            Tag = 1
+            Align = Top
+            StyledSettings = [Family, Style, FontColor]
+            Margins.Left = 7.000000000000000000
+            Margins.Top = 7.000000000000000000
+            Margins.Right = 7.000000000000000000
+            Margins.Bottom = 7.000000000000000000
+            Position.X = 7.000000000000000000
+            Position.Y = 151.000000000000000000
+            Size.Width = 194.000000000000000000
+            Size.Height = 66.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'buttonstyle_welcome'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Allows user to provide follow-up corrections'
+            TabOrder = 2
+          end
+          object Label9: TLabel
+            Tag = 1
+            Align = Top
+            StyledSettings = [Family, Style, FontColor]
+            Margins.Left = 7.000000000000000000
+            Margins.Top = 7.000000000000000000
+            Margins.Right = 7.000000000000000000
+            Margins.Bottom = 7.000000000000000000
+            Position.X = 7.000000000000000000
+            Position.Y = 231.000000000000000000
+            Size.Width = 194.000000000000000000
+            Size.Height = 64.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'buttonstyle_welcome'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Trained to decline inappropriate requests'
+            TabOrder = 0
+          end
+        end
+        object LayoutLimitationsTitle: TLayout
+          Align = Client
+          Size.Width = 208.000000000000000000
+          Size.Height = 319.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          object Label4: TLabel
+            Align = Top
+            StyledSettings = [Family, Style]
+            Margins.Bottom = 7.000000000000000000
+            Position.Y = 34.000000000000000000
+            Size.Width = 208.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 18.000000000000000000
+            TextSettings.FontColor = claWhite
+            TextSettings.HorzAlign = Center
+            TextSettings.WordWrap = False
+            Text = 'Limitations'
+            TabOrder = 1
+          end
+          object Path7: TPath
+            Align = Top
+            Data.Path = {
+              4E00000000000000000080410000D04102000000AF536E410000D04102000000
+              0000604129D6C84102000000000060410000C0410200000000006041D729B741
+              02000000AF536E410000B04102000000000080410000B0410200000028D68841
+              0000B0410200000000009041D729B74102000000000090410000C04102000000
+              0000904129D6C8410200000029D688410000D04102000000000080410000D041
+              03000000000080410000D04100000000000080410000C0410300000000008041
+              0000C04100000000000080410000A04102000000D72977410000A04102000000
+              00007041146B9C41020000000000704100009841010000000000704100003041
+              0200000000007041D729274102000000D8297741000020410200000000008041
+              0000204102000000146B8441000020410200000000008841D729274102000000
+              00008841000030410100000000008841000098410200000000008841146B9C41
+              02000000146B84410000A04102000000000080410000A0410300000000008041
+              0000A04100000000713DDE410000F041010000003D0A87400000F04102000000
+              0D4D45400110F0410200000054C20140FC46EB41020000009E99B93FA570E341
+              0200000060485F3F54C7DB41020000005C6D593FA13BD241020000008AEBB13F
+              6766CA410100000052B8524148E16A4002000000527A6041A4D9064002000000
+              3DE77F4148BEC43F0200000093748C41256719400200000035BF9041724A2C40
+              020000006D479441348C484002000000D7A3964148E16A400100000048E1F441
+              6666CA41020000009734F941A03BD24102000000BF05F94153C7DB4102000000
+              6866F441A470E34102000000B7C7EF41FC46EB41020000005F56E7410210F041
+              02000000703DDE410000F04103000000713DDE410000F0410000000000008041
+              00008040020000000DD87841545F7F4002000000EB367241287E874002000000
+              48E16E41F7289440010000009A9949400000D241020000005AC93B4035DAD441
+              020000005AC93B40796DD841020000009A994940AE47DB4102000000D2ED5640
+              C222DE410200000038286F402FECDF4102000000CECC84400000E04101000000
+              713DDE410000E041020000009E8BE1412FECDF4102000000EB92E441C222DE41
+              02000000713DE641AE47DB410200000079F7E741796DD8410200000079F7E741
+              35DAD44102000000703DE6410000D241010000005C8F8841F628944002000000
+              8AE48641287E874002000000F9938341545F7F40020000000000804100008040
+              030000000000804100008040}
+            Fill.Color = claWhite
+            Margins.Top = 2.000000000000000000
+            Margins.Bottom = 8.000000000000000000
+            Position.Y = 2.000000000000000000
+            Size.Width = 208.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+            WrapMode = Fit
+          end
+          object Label8: TLabel
+            Tag = 1
+            Align = Top
+            StyledSettings = [Family, Style, FontColor]
+            Margins.Left = 7.000000000000000000
+            Margins.Top = 7.000000000000000000
+            Margins.Right = 7.000000000000000000
+            Margins.Bottom = 7.000000000000000000
+            Position.X = 7.000000000000000000
+            Position.Y = 72.000000000000000000
+            Size.Width = 194.000000000000000000
+            Size.Height = 65.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'buttonstyle_welcome'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'May occasionally generate incorrect information'
+            TabOrder = 4
+          end
+          object Label7: TLabel
+            Tag = 1
+            Align = Top
+            StyledSettings = [Family, Style, FontColor]
+            Margins.Left = 7.000000000000000000
+            Margins.Top = 7.000000000000000000
+            Margins.Right = 7.000000000000000000
+            Margins.Bottom = 7.000000000000000000
+            Position.X = 7.000000000000000000
+            Position.Y = 151.000000000000000000
+            Size.Width = 194.000000000000000000
+            Size.Height = 65.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'buttonstyle_welcome'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'May occasionally produce harmful instructions or biased content'
+            TabOrder = 2
+          end
+          object Label10: TLabel
+            Tag = 1
+            Align = Top
+            StyledSettings = [Family, Style, FontColor]
+            Margins.Left = 7.000000000000000000
+            Margins.Top = 7.000000000000000000
+            Margins.Right = 7.000000000000000000
+            Margins.Bottom = 7.000000000000000000
+            Position.X = 7.000000000000000000
+            Position.Y = 230.000000000000000000
+            Size.Width = 194.000000000000000000
+            Size.Height = 65.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'buttonstyle_welcome'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Limited knowledge of world and events after 2021'
+            TabOrder = 0
+          end
+        end
+      end
+    end
   end
   object LayoutSend: TLayout
     Align = Bottom
     Padding.Top = 10.000000000000000000
     Padding.Bottom = 40.000000000000000000
-    Position.Y = 566.000000000000000000
-    Size.Width = 899.000000000000000000
+    Position.Y = 746.000000000000000000
+    Size.Width = 890.000000000000000000
     Size.Height = 100.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 1
@@ -205,7 +638,7 @@ object FrameChat: TFrameChat
       Locked = True
       HitTest = False
       LineType = Top
-      Size.Width = 899.000000000000000000
+      Size.Width = 890.000000000000000000
       Size.Height = 100.000000000000000000
       Size.PlatformDefault = False
       Stroke.Color = x33FFFFFF
@@ -228,7 +661,7 @@ object FrameChat: TFrameChat
       Fill.Gradient.StopPosition.Y = 0.000000000000000000
       Locked = True
       HitTest = False
-      Size.Width = 899.000000000000000000
+      Size.Width = 890.000000000000000000
       Size.Height = 100.000000000000000000
       Size.PlatformDefault = False
       Stroke.Kind = None
@@ -239,7 +672,7 @@ object FrameChat: TFrameChat
       Padding.Top = 12.000000000000000000
       Padding.Right = 16.000000000000000000
       Padding.Bottom = 12.000000000000000000
-      Position.X = 65.000000000000000000
+      Position.X = 61.000000000000000000
       Position.Y = 10.000000000000000000
       Size.Width = 768.000000000000000000
       Size.Height = 50.000000000000000000
@@ -254,6 +687,7 @@ object FrameChat: TFrameChat
         Size.Width = 153.000000000000000000
         Size.Height = 79.000000000000000000
         Size.PlatformDefault = False
+        Visible = False
         TabOrder = 5
         object Rectangle3: TRectangle
           Align = Contents
