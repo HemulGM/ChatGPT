@@ -1,14 +1,14 @@
 object FrameChat: TFrameChat
   Align = Contents
   Size.Width = 890.000000000000000000
-  Size.Height = 846.000000000000000000
+  Size.Height = 800.000000000000000000
   Size.PlatformDefault = False
   object RectangleBG: TRectangle
     Align = Contents
     Fill.Color = xFF343541
     Locked = True
     Size.Width = 890.000000000000000000
-    Size.Height = 846.000000000000000000
+    Size.Height = 800.000000000000000000
     Size.PlatformDefault = False
     Stroke.Kind = None
   end
@@ -16,18 +16,18 @@ object FrameChat: TFrameChat
     Align = Contents
     Padding.Bottom = 160.000000000000000000
     Size.Width = 890.000000000000000000
-    Size.Height = 846.000000000000000000
+    Size.Height = 800.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
-    Viewport.Width = 890.000000000000000000
-    Viewport.Height = 846.000000000000000000
+    Viewport.Width = 874.000000000000000000
+    Viewport.Height = 800.000000000000000000
     object LayoutTyping: TLayout
       Align = Top
       Padding.Left = 16.000000000000000000
       Padding.Top = 16.000000000000000000
       Padding.Right = 16.000000000000000000
       Padding.Bottom = 16.000000000000000000
-      Size.Width = 890.000000000000000000
+      Size.Width = 874.000000000000000000
       Size.Height = 62.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
@@ -35,7 +35,7 @@ object FrameChat: TFrameChat
       OnResized = LayoutTypingResize
       object LayoutTypingContent: TLayout
         Align = HorzCenter
-        Position.X = 44.000000000000000000
+        Position.X = 36.000000000000000000
         Position.Y = 16.000000000000000000
         Size.Width = 801.000000000000000000
         Size.Height = 30.000000000000000000
@@ -194,7 +194,7 @@ object FrameChat: TFrameChat
     object LayoutWelcome: TLayout
       Align = Top
       Position.Y = 62.000000000000000000
-      Size.Width = 890.000000000000000000
+      Size.Width = 874.000000000000000000
       Size.Height = 619.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 3
@@ -207,7 +207,7 @@ object FrameChat: TFrameChat
         Margins.Top = 188.000000000000000000
         Margins.Bottom = 64.000000000000000000
         Position.Y = 188.000000000000000000
-        Size.Width = 890.000000000000000000
+        Size.Width = 874.000000000000000000
         Size.Height = 48.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Size = 36.000000000000000000
@@ -220,7 +220,7 @@ object FrameChat: TFrameChat
       end
       object FlowLayoutWelcome: TFlowLayout
         Align = HorzCenter
-        Position.X = 109.000000000000000000
+        Position.X = 101.000000000000000000
         Position.Y = 300.000000000000000000
         Size.Width = 671.000000000000000000
         Size.Height = 319.000000000000000000
@@ -456,7 +456,7 @@ object FrameChat: TFrameChat
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Remembers what user said earlier in the conversation'
-            TabOrder = 4
+            TabOrder = 3
           end
           object Label6: TLabel
             Tag = 1
@@ -578,7 +578,7 @@ object FrameChat: TFrameChat
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'May occasionally generate incorrect information'
-            TabOrder = 4
+            TabOrder = 3
           end
           object Label7: TLabel
             Tag = 1
@@ -626,7 +626,7 @@ object FrameChat: TFrameChat
     Align = Bottom
     Padding.Top = 10.000000000000000000
     Padding.Bottom = 40.000000000000000000
-    Position.Y = 746.000000000000000000
+    Position.Y = 700.000000000000000000
     Size.Width = 890.000000000000000000
     Size.Height = 100.000000000000000000
     Size.PlatformDefault = False
@@ -688,7 +688,7 @@ object FrameChat: TFrameChat
         Size.Height = 79.000000000000000000
         Size.PlatformDefault = False
         Visible = False
-        TabOrder = 5
+        TabOrder = 3
         object Rectangle3: TRectangle
           Align = Contents
           Corners = [TopLeft, TopRight]
@@ -782,6 +782,8 @@ object FrameChat: TFrameChat
         Size.PlatformDefault = False
         StyleLookup = 'memostyle_clear'
         TabOrder = 0
+        OnResize = MemoQueryResize
+        OnResized = MemoQueryResize
         OnKeyDown = MemoQueryKeyDown
         Viewport.Width = 658.000000000000000000
         Viewport.Height = 26.000000000000000000
@@ -794,7 +796,7 @@ object FrameChat: TFrameChat
         Size.Width = 24.000000000000000000
         Size.Height = 26.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 2
+        TabOrder = 1
         object ButtonSend: TButton
           Align = Bottom
           Position.Y = 2.000000000000000000
@@ -849,7 +851,7 @@ object FrameChat: TFrameChat
         TextSettings.FontColor = xFFACACBE
         TextSettings.WordWrap = False
         Text = '...'
-        TabOrder = 3
+        TabOrder = 2
       end
       object LayoutTranslate: TLayout
         Align = Left
@@ -861,7 +863,7 @@ object FrameChat: TFrameChat
         Size.PlatformDefault = False
         TabOrder = 4
         object ButtonTranslate: TButton
-          Align = Client
+          Align = Bottom
           Size.Width = 26.000000000000000000
           Size.Height = 26.000000000000000000
           Size.PlatformDefault = False

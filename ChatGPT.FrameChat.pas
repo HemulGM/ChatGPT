@@ -86,6 +86,7 @@ type
     procedure ButtonExample1Click(Sender: TObject);
     procedure ButtonExample2Click(Sender: TObject);
     procedure ButtonExample3Click(Sender: TObject);
+    procedure MemoQueryResize(Sender: TObject);
   private
     FAPI: TOpenAI;
     FChatId: string;
@@ -306,6 +307,7 @@ end;
 procedure TFrameChat.LayoutSendResize(Sender: TObject);
 begin
   LayoutQuery.Width := Min(768, LayoutSend.Width - 48);
+  VertScrollBoxChat.Padding.Bottom := LayoutSend.Height;
 end;
 
 procedure TFrameChat.LayoutTypingResize(Sender: TObject);
@@ -335,6 +337,11 @@ begin
     KeyChar := #0;
     ButtonSendClick(nil);
   end;
+end;
+
+procedure TFrameChat.MemoQueryResize(Sender: TObject);
+begin
+  MemoQueryChange(Sender);
 end;
 
 procedure TFrameChat.NewMessage(const Text: string; IsUser: Boolean);
