@@ -42,7 +42,7 @@ type
     RectangleIndicate: TRectangle;
     LabelTyping: TLabel;
     LineBorder: TLine;
-    Layout2: TLayout;
+    LayoutTranslate: TLayout;
     ButtonTranslate: TButton;
     Path2: TPath;
     LayoutTranslateSet: TLayout;
@@ -245,7 +245,7 @@ begin
   SetTyping(False);
   ClearChat;
   {$IFDEF ANDROID}
-  ButtonTranslate.Visible := False;
+  LayoutTranslate.Visible := False;
   {$ENDIF}
 end;
 

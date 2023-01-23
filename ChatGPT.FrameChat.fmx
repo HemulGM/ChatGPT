@@ -851,7 +851,7 @@ object FrameChat: TFrameChat
         Text = '...'
         TabOrder = 3
       end
-      object Layout2: TLayout
+      object LayoutTranslate: TLayout
         Align = Left
         Margins.Right = 4.000000000000000000
         Position.X = 16.000000000000000000
