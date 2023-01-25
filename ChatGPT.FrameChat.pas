@@ -73,6 +73,7 @@ type
     Label8: TLabel;
     Label7: TLabel;
     Label10: TLabel;
+    Label12: TLabel;
     procedure LayoutSendResize(Sender: TObject);
     procedure MemoQueryChange(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
@@ -245,9 +246,6 @@ begin
   VertScrollBoxChat.AniCalculations.Animation := True;
   SetTyping(False);
   ClearChat;
-  {$IFDEF ANDROID}
-  LayoutTranslate.Visible := False;
-  {$ENDIF}
 end;
 
 destructor TFrameChat.Destroy;
@@ -266,13 +264,9 @@ begin
   var W: Single := 0;
   case Mode of
     wmCompact:
-      begin
-        W := FlowLayoutWelcome.Width;
-      end;
+      W := FlowLayoutWelcome.Width;
     wmFull:
-      begin
-        W := Trunc(FlowLayoutWelcome.Width / FlowLayoutWelcome.ControlsCount);
-      end;
+      W := Trunc(FlowLayoutWelcome.Width / FlowLayoutWelcome.ControlsCount);
   end;
   for var Control in FlowLayoutWelcome.Controls do
     Control.Width := W;
@@ -398,6 +392,7 @@ begin
         LayoutSend.Padding.Rect := TRectF.Create(0, 10, 0, 40);
         RectangleSendBG.Fill.Kind := TBrushKind.Solid;
         RectangleSendBG.Fill.Color := $FF343541;
+        LayoutTranslateSet.Width := LayoutQuery.Width;
       end;
     wmFull:
       begin
@@ -407,6 +402,7 @@ begin
         LineBorder.Visible := False;
         LayoutSend.Padding.Rect := TRectF.Create(0, 80, 0, 40);
         RectangleSendBG.Fill.Kind := TBrushKind.Gradient;
+        LayoutTranslateSet.Width := 153;
       end;
   end;
   FlowLayoutWelcomeResize(nil);

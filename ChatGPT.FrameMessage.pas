@@ -77,7 +77,6 @@ begin
   begin
     RectangleBG.Fill.Color := $00FFFFFF;
     MemoText.FontColor := $FFECECF1;
-
   end
   else
   begin
@@ -88,13 +87,13 @@ end;
 
 procedure TFrameMessage.SetText(const Value: string);
 begin
-  FText := Value;
+  if not Value.IsEmpty then
+    FText := Value
+  else
+    FText := 'пусто';
   MemoText.Text := FText.Trim([' ', #13, #10]);
-  if not FText.IsEmpty then
-  begin
-    (MemoText.Presentation as TStyledMemo).InvalidateContentSize;
-    (MemoText.Presentation as TStyledMemo).PrepareForPaint;
-  end;
+  (MemoText.Presentation as TStyledMemo).InvalidateContentSize;
+  (MemoText.Presentation as TStyledMemo).PrepareForPaint;
 end;
 
 end.

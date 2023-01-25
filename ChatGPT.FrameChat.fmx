@@ -212,7 +212,7 @@ object FrameChat: TFrameChat
         Size.PlatformDefault = False
         TextSettings.Font.Size = 36.000000000000000000
         TextSettings.Font.StyleExt = {00060000000000000004000000}
-        TextSettings.FontColor = xFFFBFBFB
+        TextSettings.FontColor = xFFECECF1
         TextSettings.HorzAlign = Center
         TextSettings.WordWrap = False
         Text = 'ChatGPT'
@@ -246,7 +246,7 @@ object FrameChat: TFrameChat
             Size.Height = 24.000000000000000000
             Size.PlatformDefault = False
             TextSettings.Font.Size = 18.000000000000000000
-            TextSettings.FontColor = claWhite
+            TextSettings.FontColor = xFFECECF1
             TextSettings.HorzAlign = Center
             TextSettings.WordWrap = False
             Text = 'Examples'
@@ -314,7 +314,7 @@ object FrameChat: TFrameChat
               02000000A06AC643F0A7CC4302000000A08AC943F087C94302000000A0AACC43
               F067C64302000000A0AACC43F057C14302000000A08AC943F037BE4301000000
               C13ABE43F0E7B24303000000C13ABE43F0E7B243}
-            Fill.Color = claWhite
+            Fill.Color = xFFECECF1
             Margins.Top = 2.000000000000000000
             Margins.Bottom = 8.000000000000000000
             Position.Y = 2.000000000000000000
@@ -327,7 +327,7 @@ object FrameChat: TFrameChat
           object ButtonExample3: TButton
             Tag = 1
             Align = Top
-            StyledSettings = [Family, Style, FontColor]
+            StyledSettings = [Family, Style]
             Margins.Left = 7.000000000000000000
             Margins.Top = 7.000000000000000000
             Margins.Right = 7.000000000000000000
@@ -341,13 +341,14 @@ object FrameChat: TFrameChat
             TabOrder = 0
             Text = '"How do I make an HTTP request in Javascript?" '#8594
             TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFFECECF1
             TextSettings.WordWrap = True
             OnClick = ButtonExample3Click
           end
           object ButtonExample2: TButton
             Tag = 1
             Align = Top
-            StyledSettings = [Family, Style, FontColor]
+            StyledSettings = [Family, Style]
             Margins.Left = 7.000000000000000000
             Margins.Top = 7.000000000000000000
             Margins.Right = 7.000000000000000000
@@ -361,13 +362,14 @@ object FrameChat: TFrameChat
             TabOrder = 1
             Text = '"Got any creative ideas for a 10 year old'#8217's birthday?" '#8594
             TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFFECECF1
             TextSettings.WordWrap = True
             OnClick = ButtonExample2Click
           end
           object ButtonExample1: TButton
             Tag = 1
             Align = Top
-            StyledSettings = [Family, Style, FontColor]
+            StyledSettings = [Family, Style]
             Margins.Left = 7.000000000000000000
             Margins.Top = 7.000000000000000000
             Margins.Right = 7.000000000000000000
@@ -381,6 +383,7 @@ object FrameChat: TFrameChat
             TabOrder = 2
             Text = '"Explain quantum computing in simple terms" '#8594
             TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFFECECF1
             TextSettings.WordWrap = True
             OnClick = ButtonExample1Click
           end
@@ -400,7 +403,7 @@ object FrameChat: TFrameChat
             Size.Height = 24.000000000000000000
             Size.PlatformDefault = False
             TextSettings.Font.Size = 18.000000000000000000
-            TextSettings.FontColor = claWhite
+            TextSettings.FontColor = xFFECECF1
             TextSettings.HorzAlign = Center
             TextSettings.WordWrap = False
             Text = 'Capabilities'
@@ -429,7 +432,7 @@ object FrameChat: TFrameChat
               020000006DCAE3409357DA40020000002FC0E040ECC0D640020000008B71DF40
               4B02D240020000007637E040B35ECD4001000000F06DF540D72F1C4001000000
               D6FF5F400000004103000000D6FF5F4000000041}
-            Fill.Color = claWhite
+            Fill.Color = xFFECECF1
             Margins.Top = 2.000000000000000000
             Margins.Bottom = 8.000000000000000000
             Position.Y = 2.000000000000000000
@@ -442,7 +445,7 @@ object FrameChat: TFrameChat
           object Label5: TLabel
             Tag = 1
             Align = Top
-            StyledSettings = [Family, Style, FontColor]
+            StyledSettings = [Family, Style]
             Margins.Left = 7.000000000000000000
             Margins.Top = 7.000000000000000000
             Margins.Right = 7.000000000000000000
@@ -454,6 +457,7 @@ object FrameChat: TFrameChat
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_welcome'
             TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFFECECF1
             TextSettings.HorzAlign = Center
             Text = 'Remembers what user said earlier in the conversation'
             TabOrder = 3
@@ -461,7 +465,7 @@ object FrameChat: TFrameChat
           object Label6: TLabel
             Tag = 1
             Align = Top
-            StyledSettings = [Family, Style, FontColor]
+            StyledSettings = [Family, Style]
             Margins.Left = 7.000000000000000000
             Margins.Top = 7.000000000000000000
             Margins.Right = 7.000000000000000000
@@ -473,6 +477,7 @@ object FrameChat: TFrameChat
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_welcome'
             TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFFECECF1
             TextSettings.HorzAlign = Center
             Text = 'Allows user to provide follow-up corrections'
             TabOrder = 2
@@ -480,7 +485,7 @@ object FrameChat: TFrameChat
           object Label9: TLabel
             Tag = 1
             Align = Top
-            StyledSettings = [Family, Style, FontColor]
+            StyledSettings = [Family, Style]
             Margins.Left = 7.000000000000000000
             Margins.Top = 7.000000000000000000
             Margins.Right = 7.000000000000000000
@@ -492,6 +497,7 @@ object FrameChat: TFrameChat
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_welcome'
             TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFFECECF1
             TextSettings.HorzAlign = Center
             Text = 'Trained to decline inappropriate requests'
             TabOrder = 0
@@ -512,7 +518,7 @@ object FrameChat: TFrameChat
             Size.Height = 24.000000000000000000
             Size.PlatformDefault = False
             TextSettings.Font.Size = 18.000000000000000000
-            TextSettings.FontColor = claWhite
+            TextSettings.FontColor = xFFECECF1
             TextSettings.HorzAlign = Center
             TextSettings.WordWrap = False
             Text = 'Limitations'
@@ -551,7 +557,7 @@ object FrameChat: TFrameChat
               35DAD44102000000703DE6410000D241010000005C8F8841F628944002000000
               8AE48641287E874002000000F9938341545F7F40020000000000804100008040
               030000000000804100008040}
-            Fill.Color = claWhite
+            Fill.Color = xFFECECF1
             Margins.Top = 2.000000000000000000
             Margins.Bottom = 8.000000000000000000
             Position.Y = 2.000000000000000000
@@ -564,7 +570,7 @@ object FrameChat: TFrameChat
           object Label8: TLabel
             Tag = 1
             Align = Top
-            StyledSettings = [Family, Style, FontColor]
+            StyledSettings = [Family, Style]
             Margins.Left = 7.000000000000000000
             Margins.Top = 7.000000000000000000
             Margins.Right = 7.000000000000000000
@@ -576,6 +582,7 @@ object FrameChat: TFrameChat
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_welcome'
             TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFFECECF1
             TextSettings.HorzAlign = Center
             Text = 'May occasionally generate incorrect information'
             TabOrder = 3
@@ -583,7 +590,7 @@ object FrameChat: TFrameChat
           object Label7: TLabel
             Tag = 1
             Align = Top
-            StyledSettings = [Family, Style, FontColor]
+            StyledSettings = [Family, Style]
             Margins.Left = 7.000000000000000000
             Margins.Top = 7.000000000000000000
             Margins.Right = 7.000000000000000000
@@ -595,6 +602,7 @@ object FrameChat: TFrameChat
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_welcome'
             TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFFECECF1
             TextSettings.HorzAlign = Center
             Text = 'May occasionally produce harmful instructions or biased content'
             TabOrder = 2
@@ -602,7 +610,7 @@ object FrameChat: TFrameChat
           object Label10: TLabel
             Tag = 1
             Align = Top
-            StyledSettings = [Family, Style, FontColor]
+            StyledSettings = [Family, Style]
             Margins.Left = 7.000000000000000000
             Margins.Top = 7.000000000000000000
             Margins.Right = 7.000000000000000000
@@ -614,6 +622,7 @@ object FrameChat: TFrameChat
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_welcome'
             TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xFFECECF1
             TextSettings.HorzAlign = Center
             Text = 'Limited knowledge of world and events after 2021'
             TabOrder = 0
@@ -665,6 +674,21 @@ object FrameChat: TFrameChat
       Size.Height = 100.000000000000000000
       Size.PlatformDefault = False
       Stroke.Kind = None
+      object Label12: TLabel
+        Align = Bottom
+        StyledSettings = [Size, Style]
+        Margins.Bottom = 4.000000000000000000
+        Position.Y = 81.000000000000000000
+        Size.Width = 890.000000000000000000
+        Size.Height = 15.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.FontColor = xAFFFFFFF
+        TextSettings.HorzAlign = Center
+        TextSettings.WordWrap = False
+        Text = 'by HemulGM (https://github.com/HemulGM)'
+        TabOrder = 0
+      end
     end
     object LayoutQuery: TLayout
       Align = HorzCenter
@@ -687,7 +711,6 @@ object FrameChat: TFrameChat
         Size.Width = 153.000000000000000000
         Size.Height = 79.000000000000000000
         Size.PlatformDefault = False
-        Visible = False
         TabOrder = 3
         object Rectangle3: TRectangle
           Align = Contents
@@ -750,7 +773,7 @@ object FrameChat: TFrameChat
           Size.Width = 143.000000000000000000
           Size.Height = 33.000000000000000000
           Size.PlatformDefault = False
-          TextSettings.FontColor = xFFF0F0F0
+          TextSettings.FontColor = xFFECECF1
           Text = 'Translate to En from this language'
           TabOrder = 1
         end

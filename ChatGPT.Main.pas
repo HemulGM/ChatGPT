@@ -31,6 +31,14 @@ type
     ButtonCloseMenu: TButton;
     LayoutMenuContainer: TLayout;
     Layout1: TLayout;
+    ButtonDiscord: TButton;
+    Line1: TLine;
+    ButtonClear: TButton;
+    ButtonFAQ: TButton;
+    LayoutChatsBox: TLayout;
+    Layout2: TLayout;
+    ButtonClearConfirm: TButton;
+    ButtonClearCancel: TButton;
     procedure ButtonNewChatClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure ButtonMenuClick(Sender: TObject);
@@ -39,6 +47,11 @@ type
     procedure FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight, MaxWidth, MaxHeight: Single);
     procedure FormVirtualKeyboardShown(Sender: TObject; KeyboardVisible: Boolean; const Bounds: TRect);
     procedure FormVirtualKeyboardHidden(Sender: TObject; KeyboardVisible: Boolean; const Bounds: TRect);
+    procedure ButtonClearClick(Sender: TObject);
+    procedure ButtonClearConfirmClick(Sender: TObject);
+    procedure ButtonClearCancelClick(Sender: TObject);
+    procedure ButtonDiscordClick(Sender: TObject);
+    procedure ButtonFAQClick(Sender: TObject);
   private
     FOpenAI: TOpenAI;
     FMode: TWindowMode;
@@ -47,12 +60,15 @@ type
     procedure UpdateMode;
     function NextChatId: Integer;
     procedure SelectChat(const ChatId: string);
-    procedure FOnChatItemClick(Sender: TObject);     
+    procedure FOnChatItemClick(Sender: TObject);
     {$HINTS OFF}
     procedure FOnChatItemTap(Sender: TObject; const Point: TPointF);
     {$HINTS ON}
     function CreateChat: string;
     procedure CloseMenu;
+    procedure Clear;
+    procedure ShowClearConfirm;
+    procedure HideClearConfirm;
   public
     property OpenAI: TOpenAI read FOpenAI;
     constructor Create(AOwner: TComponent); override;
@@ -61,6 +77,8 @@ type
 
 const
   API_TOKEN = {$include MY_TOKEN.txt};
+  URL_DISCORD = 'https://discord.com/invite/openai';
+  URL_FAQ = 'https://help.openai.com/en/collections/3742473-chatgpt';
 
 var
   FormMain: TFormMain;
@@ -71,15 +89,76 @@ const
 implementation
 
 uses
+  {$IFDEF ANDROID}
+  Androidapi.Helpers, Androidapi.JNI.GraphicsContentViewText,
+  {$ENDIF}
+  {$IFDEF MSWINDOWS}
+  ShellAPI,
+  {$ENDIF}
   FMX.Ani, System.Math;
 
 {$R *.fmx}
 
+{$IFDEF ANDROID}
+procedure OpenUrl(const URL: string);
+begin
+  TAndroidHelper.Context.startActivity(
+    TJIntent.JavaClass.init(TJIntent.JavaClass.ACTION_VIEW, StrToJURI(URL)));
+end;
+{$ENDIF}
+
+{$IFDEF MSWINDOWS}
+
+procedure OpenUrl(const URL: string);
+begin
+  ShellExecute(0, 'open', PChar(URL), nil, nil, 0);
+end;
+{$ENDIF}
+
 { TFormMain }
+
+procedure TFormMain.ShowClearConfirm;
+begin
+  ButtonClear.Text := 'Confirm clear';
+  ButtonClearConfirm.Visible := True;
+  ButtonClearCancel.Visible := True;
+end;
+
+procedure TFormMain.HideClearConfirm;
+begin
+  ButtonClear.Text := 'Clear conversations';
+  ButtonClearConfirm.Visible := False;
+  ButtonClearCancel.Visible := False;
+end;
+
+procedure TFormMain.ButtonClearCancelClick(Sender: TObject);
+begin
+  HideClearConfirm;
+end;
+
+procedure TFormMain.ButtonClearClick(Sender: TObject);
+begin
+  ShowClearConfirm;
+end;
+
+procedure TFormMain.ButtonClearConfirmClick(Sender: TObject);
+begin
+  Clear;
+end;
 
 procedure TFormMain.ButtonCloseMenuClick(Sender: TObject);
 begin
   CloseMenu;
+end;
+
+procedure TFormMain.ButtonDiscordClick(Sender: TObject);
+begin
+  OpenUrl(URL_DISCORD);
+end;
+
+procedure TFormMain.ButtonFAQClick(Sender: TObject);
+begin
+  OpenUrl(URL_FAQ);
 end;
 
 procedure TFormMain.ButtonMenuClick(Sender: TObject);
@@ -115,9 +194,9 @@ begin
   Result := TGUID.NewGuid.ToString;
   var ChatTitle := 'New chat ' + NextChatId.ToString;
 
-  var Frame := TFrameChat.Create(LayoutChats);
+  var Frame := TFrameChat.Create(LayoutChatsBox);
   Frame.Align := TAlignLayout.Client;
-  Frame.Parent := LayoutChats;
+  Frame.Parent := LayoutChatsBox;
   Frame.API := OpenAI;
   Frame.ChatId := Result;
   Frame.Title := ChatTitle;
@@ -167,21 +246,19 @@ end;
 
 procedure TFormMain.SelectChat(const ChatId: string);
 begin
-  for var Control in LayoutChats.Controls do
+  for var Control in LayoutChatsBox.Controls do
     if Control is TFrameChat then
     begin
       var Frame := Control as TFrameChat;
       Frame.Visible := Frame.ChatId = ChatId;
     end;
   for var i := 0 to Pred(ListBoxChatList.Count) do
-  begin
     if ListBoxChatList.ListItems[i].TagString = ChatId then
     begin
       ListBoxChatList.ListItems[i].IsSelected := True;
       LabelChatName.Text := ListBoxChatList.ListItems[i].Text;
       Exit;
     end;
-  end;
 end;
 
 constructor TFormMain.Create(AOwner: TComponent);
@@ -191,9 +268,19 @@ begin
   FOpenAI := TOpenAI.Create(Self);
   FOpenAI.Token := API_TOKEN;
   ListBoxChatList.AniCalculations.Animation := True;
-  ListBoxChatList.Clear;
+  Clear;
   FMode := wmFull;
   UpdateMode;
+end;
+
+procedure TFormMain.Clear;
+begin
+  FChatIdCount := 0;
+  HideClearConfirm;
+  ListBoxChatList.Clear;
+  while LayoutChatsBox.ControlsCount > 0 do
+    LayoutChatsBox.Controls[0].Free;
+  SelectChat(CreateChat);
 end;
 
 procedure TFormMain.FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight, MaxWidth, MaxHeight: Single);
@@ -222,7 +309,7 @@ end;
 
 procedure TFormMain.UpdateMode;
 begin
-  for var Control in LayoutChats.Controls do
+  for var Control in LayoutChatsBox.Controls do
     if Control is TFrameChat then
     begin
       var Frame := Control as TFrameChat;
@@ -239,7 +326,7 @@ begin
     wmFull:
       begin
         RectangleMenu.Align := TAlignLayout.Left;
-        RectangleMenu.Width := 244;
+        RectangleMenu.Width := 260;
         RectangleMenu.Parent := Self;
         LayoutHead.Visible := False;
         ButtonCloseMenu.Visible := False;
