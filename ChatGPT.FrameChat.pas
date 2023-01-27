@@ -6,8 +6,8 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Layouts, FMX.Memo.Types, FMX.Controls.Presentation,
-  FMX.ScrollBox, FMX.Memo, OpenAI, OpenAI.Completions, System.Threading,
-  FMX.Edit, FMX.ImgList;
+  FMX.ScrollBox, FMX.Memo, OpenAI, OpenAI.Completions, ChatGPT.FrameMessage,
+  System.Threading, FMX.Edit, FMX.ImgList;
 
 type
   TWindowMode = (wmCompact, wmFull);
@@ -89,17 +89,18 @@ type
     procedure ButtonExample3Click(Sender: TObject);
     procedure MemoQueryResize(Sender: TObject);
   private
-    FAPI: TOpenAI;
+    FAPI: IOpenAI;
     FChatId: string;
     FPool: TThreadPool;
     FTitle: string;
     FMode: TWindowMode;
     FLangSrc: string;
     FIsTyping: Boolean;
-    procedure NewMessage(const Text: string; IsUser: Boolean);
+    FBuffer: TStringList;
+    function NewMessage(const Text: string; IsUser: Boolean): TFrameMessage;
     procedure ClearChat;
     procedure SetTyping(const Value: Boolean);
-    procedure SetAPI(const Value: TOpenAI);
+    procedure SetAPI(const Value: IOpenAI);
     procedure SetChatId(const Value: string);
     procedure ShowError(const Text: string);
     procedure AppendMessages(Response: TCompletions);
@@ -111,18 +112,21 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property API: TOpenAI read FAPI write SetAPI;
+    property API: IOpenAI read FAPI write SetAPI;
     property ChatId: string read FChatId write SetChatId;
     property Title: string read FTitle write SetTitle;
     property Mode: TWindowMode read FMode write SetMode;
     property LangSrc: string read FLangSrc write SetLangSrc;
   end;
 
+const
+  MAX_TOKENS = 1024;
+  MODEL_TOKENS_LIMIT = 4096;
+
 implementation
 
 uses
-  FMX.Ani, System.Math, ChatGPT.FrameMessage, OpenAI.API, ChatGPT.Translate,
-  ChatGPT.Main;
+  FMX.Ani, System.Math, OpenAI.API, ChatGPT.Translate;
 
 {$R *.fmx}
 
@@ -131,7 +135,8 @@ begin
   TThread.Queue(nil,
     procedure
     begin
-      ShowMessage(Text);
+      var Frame := NewMessage(Text, False);
+      Frame.IsError := True;
     end);
 end;
 
@@ -183,8 +188,9 @@ begin
         var Completions := API.Completion.Create(
           procedure(Params: TCompletionParams)
           begin
-            Params.Prompt(ProcText(Prompt, True));
-            Params.MaxTokens(1024);
+            Params.Prompt(ProcText(FBuffer.Text, True));
+            Params.MaxTokens(MAX_TOKENS);
+            Params.Temperature(0.5);
             Params.User(FChatId);
           end);
         if not LangSrc.IsEmpty then
@@ -238,6 +244,7 @@ end;
 constructor TFrameChat.Create(AOwner: TComponent);
 begin
   inherited;
+  FBuffer := TStringList.Create;
   FPool := TThreadPool.Create;
   LangSrc := '';
   Name := '';
@@ -251,6 +258,7 @@ end;
 destructor TFrameChat.Destroy;
 begin
   FPool.Free;
+  FBuffer.Free;
   inherited;
 end;
 
@@ -338,15 +346,18 @@ begin
   MemoQueryChange(Sender);
 end;
 
-procedure TFrameChat.NewMessage(const Text: string; IsUser: Boolean);
+function TFrameChat.NewMessage(const Text: string; IsUser: Boolean): TFrameMessage;
 begin
+  FBuffer.Add(Text);
+  if FBuffer.Text.Length + MAX_TOKENS > MODEL_TOKENS_LIMIT then
+    FBuffer.Text := FBuffer.Text.Remove(0, FBuffer.Text.Length - (MODEL_TOKENS_LIMIT - MAX_TOKENS));
   LayoutWelcome.Visible := False;
-  var Frame := TFrameMessage.Create(VertScrollBoxChat);
-  Frame.Position.Y := VertScrollBoxChat.ContentBounds.Height;
-  Frame.Parent := VertScrollBoxChat;
-  Frame.Align := TAlignLayout.MostTop;
-  Frame.Text := Text;
-  Frame.IsUser := IsUser;
+  Result := TFrameMessage.Create(VertScrollBoxChat);
+  Result.Position.Y := VertScrollBoxChat.ContentBounds.Height;
+  Result.Parent := VertScrollBoxChat;
+  Result.Align := TAlignLayout.MostTop;
+  Result.Text := Text;
+  Result.IsUser := IsUser;
 end;
 
 function TFrameChat.ProcText(const Text: string; FromUser: Boolean): string;
@@ -364,7 +375,7 @@ begin
     Result := Translate;
 end;
 
-procedure TFrameChat.SetAPI(const Value: TOpenAI);
+procedure TFrameChat.SetAPI(const Value: IOpenAI);
 begin
   FAPI := Value;
 end;

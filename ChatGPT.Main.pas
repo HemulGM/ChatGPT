@@ -53,7 +53,7 @@ type
     procedure ButtonDiscordClick(Sender: TObject);
     procedure ButtonFAQClick(Sender: TObject);
   private
-    FOpenAI: TOpenAI;
+    FOpenAI: TOpenAIComponent;
     FMode: TWindowMode;
     FChatIdCount: Integer;
     procedure SetMode(const Value: TWindowMode);
@@ -70,7 +70,7 @@ type
     procedure ShowClearConfirm;
     procedure HideClearConfirm;
   public
-    property OpenAI: TOpenAI read FOpenAI;
+    property OpenAI: TOpenAIComponent read FOpenAI;
     constructor Create(AOwner: TComponent); override;
     property Mode: TWindowMode read FMode write SetMode;
   end;
@@ -265,7 +265,7 @@ constructor TFormMain.Create(AOwner: TComponent);
 begin
   inherited;
   FChatIdCount := 0;
-  FOpenAI := TOpenAI.Create(Self);
+  FOpenAI := TOpenAIComponent.Create(Self);
   FOpenAI.Token := API_TOKEN;
   ListBoxChatList.AniCalculations.Animation := True;
   Clear;
@@ -342,6 +342,11 @@ begin
   FMode := Value;
   UpdateMode;
 end;
+
+initialization
+  {$IFDEF DEBUG}
+  ReportMemoryLeaksOnShutdown := True;
+  {$ENDIF}
 
 end.
 

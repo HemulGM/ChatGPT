@@ -23,12 +23,15 @@ type
   private
     FIsUser: Boolean;
     FText: string;
+    FIsError: Boolean;
     procedure UpdateContentSize;
     procedure SetIsUser(const Value: Boolean);
     procedure SetText(const Value: string);
+    procedure SetIsError(const Value: Boolean);
   public
     property Text: string read FText write SetText;
     property IsUser: Boolean read FIsUser write SetIsUser;
+    property IsError: Boolean read FIsError write SetIsError;
     constructor Create(AOwner: TComponent); override;
   end;
 
@@ -65,6 +68,12 @@ end;
 procedure TFrameMessage.MemoTextChange(Sender: TObject);
 begin
   UpdateContentSize;
+end;
+
+procedure TFrameMessage.SetIsError(const Value: Boolean);
+begin
+  FIsError := Value;
+  MemoText.FontColor := $FFEF4444;
 end;
 
 procedure TFrameMessage.SetIsUser(const Value: Boolean);

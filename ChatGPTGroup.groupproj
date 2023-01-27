@@ -1,0 +1,60 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{8E18A818-2E61-4C1A-A75F-35E2C9D052E4}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="ChatGPT.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="ChatGPT_Console.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\DALLL-E\DALLE.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="ChatGPT">
+        <MSBuild Projects="ChatGPT.dproj"/>
+    </Target>
+    <Target Name="ChatGPT:Clean">
+        <MSBuild Projects="ChatGPT.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ChatGPT:Make">
+        <MSBuild Projects="ChatGPT.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ChatGPT_Console">
+        <MSBuild Projects="ChatGPT_Console.dproj"/>
+    </Target>
+    <Target Name="ChatGPT_Console:Clean">
+        <MSBuild Projects="ChatGPT_Console.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ChatGPT_Console:Make">
+        <MSBuild Projects="ChatGPT_Console.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="DALLE">
+        <MSBuild Projects="..\DALLL-E\DALLE.dproj"/>
+    </Target>
+    <Target Name="DALLE:Clean">
+        <MSBuild Projects="..\DALLL-E\DALLE.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DALLE:Make">
+        <MSBuild Projects="..\DALLL-E\DALLE.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="ChatGPT;ChatGPT_Console;DALLE"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="ChatGPT:Clean;ChatGPT_Console:Clean;DALLE:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="ChatGPT:Make;ChatGPT_Console:Make;DALLE:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
