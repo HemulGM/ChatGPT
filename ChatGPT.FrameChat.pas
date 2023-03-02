@@ -7,7 +7,7 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Layouts, FMX.Memo.Types, FMX.Controls.Presentation,
   FMX.ScrollBox, FMX.Memo, OpenAI, OpenAI.Completions, ChatGPT.FrameMessage,
-  System.Threading, FMX.Edit, FMX.ImgList;
+  System.Threading, FMX.Edit, FMX.ImgList, OpenAI.Chat;
 
 type
   TWindowMode = (wmCompact, wmFull);
@@ -103,7 +103,7 @@ type
     procedure SetAPI(const Value: IOpenAI);
     procedure SetChatId(const Value: string);
     procedure ShowError(const Text: string);
-    procedure AppendMessages(Response: TCompletions);
+    procedure AppendMessages(Response: TChat);
     procedure ScrollDown;
     procedure SetTitle(const Value: string);
     procedure SetMode(const Value: TWindowMode);
@@ -140,11 +140,11 @@ begin
     end);
 end;
 
-procedure TFrameChat.AppendMessages(Response: TCompletions);
+procedure TFrameChat.AppendMessages(Response: TChat);
 begin
   try
     for var Item in Response.Choices do
-      NewMessage(Item.Text, False);
+      NewMessage(Item.Message.Content, False);
   finally
     Response.Free;
   end;
@@ -185,17 +185,17 @@ begin
     procedure
     begin
       try
-        var Completions := API.Completion.Create(
-          procedure(Params: TCompletionParams)
+        var Completions := API.Chat.Create(
+          procedure(Params: TChatParams)
           begin
-            Params.Prompt(ProcText(FBuffer.Text, True));
+            Params.Messages([TChatMessageBuild.Create(TMessageRole.User, ProcText(FBuffer.Text, True))]);
             Params.MaxTokens(MAX_TOKENS);
-            Params.Temperature(0.5);
+            //Params.Temperature(0.5);
             Params.User(FChatId);
           end);
         if not LangSrc.IsEmpty then
           for var Item in Completions.Choices do
-            Item.Text := ProcText(Item.Text, False);
+            Item.Message.Content := ProcText(Item.Message.Content, False);
         TThread.Queue(nil,
           procedure
           begin

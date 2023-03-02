@@ -1291,9 +1291,6 @@ object FormMain: TFormMain
             SourceRect.Right = 24.000000000000000000
             SourceRect.Bottom = 24.000000000000000000
           end>
-      end
-      item
-        Layers = <>
       end>
     Size = 24
     Left = 64

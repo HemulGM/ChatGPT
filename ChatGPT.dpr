@@ -19,7 +19,9 @@ uses
   OpenAI in 'DelphiOpenAI\OpenAI.pas',
   ChatGPT.FrameChat in 'ChatGPT.FrameChat.pas' {FrameChat: TFrame},
   ChatGPT.FrameMessage in 'ChatGPT.FrameMessage.pas' {FrameMessage: TFrame},
-  ChatGPT.Translate in 'ChatGPT.Translate.pas';
+  ChatGPT.Translate in 'ChatGPT.Translate.pas',
+  OpenAI.Chat in 'DelphiOpenAI\OpenAI.Chat.pas',
+  OpenAI.Audio in 'DelphiOpenAI\OpenAI.Audio.pas';
 
 {$R *.res}
 
