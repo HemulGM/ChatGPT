@@ -21,7 +21,8 @@ uses
   ChatGPT.FrameMessage in 'ChatGPT.FrameMessage.pas' {FrameMessage: TFrame},
   ChatGPT.Translate in 'ChatGPT.Translate.pas',
   OpenAI.Chat in 'DelphiOpenAI\OpenAI.Chat.pas',
-  OpenAI.Audio in 'DelphiOpenAI\OpenAI.Audio.pas';
+  OpenAI.Audio in 'DelphiOpenAI\OpenAI.Audio.pas',
+  OpenAI.Utils.ChatHistory in 'DelphiOpenAI\OpenAI.Utils.ChatHistory.pas';
 
 {$R *.res}
 

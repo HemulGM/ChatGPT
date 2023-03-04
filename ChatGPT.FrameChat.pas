@@ -7,7 +7,8 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Layouts, FMX.Memo.Types, FMX.Controls.Presentation,
   FMX.ScrollBox, FMX.Memo, OpenAI, OpenAI.Completions, ChatGPT.FrameMessage,
-  System.Threading, FMX.Edit, FMX.ImgList, OpenAI.Chat;
+  System.Threading, FMX.Edit, FMX.ImgList, OpenAI.Chat,
+  System.Generics.Collections, OpenAI.Audio, OpenAI.Utils.ChatHistory;
 
 type
   TWindowMode = (wmCompact, wmFull);
@@ -30,8 +31,6 @@ type
     LayoutQuery: TLayout;
     Rectangle2: TRectangle;
     Layout1: TLayout;
-    ButtonSend: TButton;
-    Path1: TPath;
     LayoutTyping: TLayout;
     TimerTyping: TTimer;
     LayoutTypingContent: TLayout;
@@ -74,6 +73,12 @@ type
     Label7: TLabel;
     Label10: TLabel;
     Label12: TLabel;
+    Layout2: TLayout;
+    ButtonAudio: TButton;
+    Path8: TPath;
+    ButtonSend: TButton;
+    Path1: TPath;
+    OpenDialogAudio: TOpenDialog;
     procedure LayoutSendResize(Sender: TObject);
     procedure MemoQueryChange(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
@@ -88,6 +93,7 @@ type
     procedure ButtonExample2Click(Sender: TObject);
     procedure ButtonExample3Click(Sender: TObject);
     procedure MemoQueryResize(Sender: TObject);
+    procedure ButtonAudioClick(Sender: TObject);
   private
     FAPI: IOpenAI;
     FChatId: string;
@@ -96,8 +102,8 @@ type
     FMode: TWindowMode;
     FLangSrc: string;
     FIsTyping: Boolean;
-    FBuffer: TStringList;
-    function NewMessage(const Text: string; IsUser: Boolean): TFrameMessage;
+    FBuffer: TChatHistory;
+    function NewMessage(const Text: string; IsUser: Boolean; UseBuffer: Boolean = True; IsAudio: Boolean = False): TFrameMessage;
     procedure ClearChat;
     procedure SetTyping(const Value: Boolean);
     procedure SetAPI(const Value: IOpenAI);
@@ -109,6 +115,7 @@ type
     procedure SetMode(const Value: TWindowMode);
     function ProcText(const Text: string; FromUser: Boolean): string;
     procedure SetLangSrc(const Value: string);
+    procedure AppendAudio(Response: TAudioText);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -126,7 +133,7 @@ const
 implementation
 
 uses
-  FMX.Ani, System.Math, OpenAI.API, ChatGPT.Translate;
+  FMX.Ani, System.Math, OpenAI.API, ChatGPT.Translate, System.IOUtils;
 
 {$R *.fmx}
 
@@ -150,9 +157,58 @@ begin
   end;
 end;
 
+procedure TFrameChat.AppendAudio(Response: TAudioText);
+begin
+  try
+    NewMessage(Response.Text, False, False, True);
+  finally
+    Response.Free;
+  end;
+end;
+
 procedure TFrameChat.ScrollDown;
 begin
   VertScrollBoxChat.ViewportPosition := TPointF.Create(0, VertScrollBoxChat.ContentBounds.Height);
+end;
+
+procedure TFrameChat.ButtonAudioClick(Sender: TObject);
+begin
+  if FIsTyping then
+    Exit;
+  if not OpenDialogAudio.Execute then
+    Exit;
+  var AudioFile := OpenDialogAudio.FileName;
+  MemoQuery.Text := '';
+  NewMessage(TPath.GetFileName(AudioFile), True, False, True);
+  SetTyping(True);
+  ScrollDown;
+  TTask.Run(
+    procedure
+    begin
+      try
+        var Audio := API.Audio.CreateTranscription(
+          procedure(Params: TAudioTranscription)
+          begin
+            Params.&File(AudioFile);
+            Params.Language('ru');
+          end);
+        TThread.Queue(nil,
+          procedure
+          begin
+            AppendAudio(Audio);
+          end);
+      except
+        on E: OpenAIException do
+          ShowError(E.Message);
+        on E: Exception do
+          ShowError('Error: ' + E.Message);
+      end;
+      TThread.Queue(nil,
+        procedure
+        begin
+          SetTyping(False);
+        end);
+    end, FPool);
 end;
 
 procedure TFrameChat.ButtonExample1Click(Sender: TObject);
@@ -188,14 +244,11 @@ begin
         var Completions := API.Chat.Create(
           procedure(Params: TChatParams)
           begin
-            Params.Messages([TChatMessageBuild.Create(TMessageRole.User, ProcText(FBuffer.Text, True))]);
+            Params.Messages(FBuffer.ToArray);
             Params.MaxTokens(MAX_TOKENS);
             //Params.Temperature(0.5);
             Params.User(FChatId);
           end);
-        if not LangSrc.IsEmpty then
-          for var Item in Completions.Choices do
-            Item.Message.Content := ProcText(Item.Message.Content, False);
         TThread.Queue(nil,
           procedure
           begin
@@ -244,7 +297,7 @@ end;
 constructor TFrameChat.Create(AOwner: TComponent);
 begin
   inherited;
-  FBuffer := TStringList.Create;
+  FBuffer := TChatHistory.Create;
   FPool := TThreadPool.Create;
   LangSrc := '';
   Name := '';
@@ -346,11 +399,15 @@ begin
   MemoQueryChange(Sender);
 end;
 
-function TFrameChat.NewMessage(const Text: string; IsUser: Boolean): TFrameMessage;
+function TFrameChat.NewMessage(const Text: string; IsUser: Boolean; UseBuffer: Boolean; IsAudio: Boolean): TFrameMessage;
 begin
-  FBuffer.Add(Text);
-  if FBuffer.Text.Length + MAX_TOKENS > MODEL_TOKENS_LIMIT then
-    FBuffer.Text := FBuffer.Text.Remove(0, FBuffer.Text.Length - (MODEL_TOKENS_LIMIT - MAX_TOKENS));
+  if UseBuffer then
+  begin
+    if IsUser then
+      FBuffer.New(TMessageRole.User, ProcText(Text, IsUser))
+    else
+      FBuffer.New(TMessageRole.Assistant, ProcText(Text, IsUser));
+  end;
   LayoutWelcome.Visible := False;
   Result := TFrameMessage.Create(VertScrollBoxChat);
   Result.Position.Y := VertScrollBoxChat.ContentBounds.Height;
@@ -358,6 +415,8 @@ begin
   Result.Align := TAlignLayout.MostTop;
   Result.Text := Text;
   Result.IsUser := IsUser;
+  Result.IsAudio := IsAudio;
+  Result.UpdateContentSize;
 end;
 
 function TFrameChat.ProcText(const Text: string; FromUser: Boolean): string;

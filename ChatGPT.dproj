@@ -297,6 +297,7 @@
         <DCCReference Include="ChatGPT.Translate.pas"/>
         <DCCReference Include="DelphiOpenAI\OpenAI.Chat.pas"/>
         <DCCReference Include="DelphiOpenAI\OpenAI.Audio.pas"/>
+        <DCCReference Include="DelphiOpenAI\OpenAI.Utils.ChatHistory.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
