@@ -331,6 +331,7 @@ begin
         LayoutHead.Visible := False;
         ButtonCloseMenu.Visible := False;
         LayoutMenuContent.Visible := False;
+        RectangleMenu.SendToBack;
       end;
   end;
 end;

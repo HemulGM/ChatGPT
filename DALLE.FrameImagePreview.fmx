@@ -1,0 +1,90 @@
+object FramePreview: TFramePreview
+  Padding.Left = 20.000000000000000000
+  Padding.Top = 20.000000000000000000
+  Padding.Right = 20.000000000000000000
+  Padding.Bottom = 20.000000000000000000
+  Size.Width = 706.000000000000000000
+  Size.Height = 635.000000000000000000
+  Size.PlatformDefault = False
+  OnClick = FrameClick
+  OnResized = FrameResized
+  object RectangleBG: TRectangle
+    Align = Contents
+    Fill.Color = xB4000000
+    HitTest = False
+    Size.Width = 706.000000000000000000
+    Size.Height = 635.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Kind = None
+  end
+  object SaveDialogJPG: TSaveDialog
+    Filter = 'JPG|*.jpg'
+    Left = 140
+    Top = 484
+  end
+  object Image: TImage
+    MultiResBitmap = <
+      item
+      end>
+    HitTest = False
+    Position.X = 96.000000000000000000
+    Position.Y = 80.000000000000000000
+    Size.Width = 345.000000000000000000
+    Size.Height = 249.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object LayoutControls: TLayout
+    Align = Contents
+    Size.Width = 706.000000000000000000
+    Size.Height = 635.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    object LayoutControlsContent: TLayout
+      Align = Bottom
+      Position.Y = 549.000000000000000000
+      Size.Width = 706.000000000000000000
+      Size.Height = 86.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      object Rectangle1: TRectangle
+        Align = Contents
+        Fill.Kind = Gradient
+        Fill.Gradient.Points = <
+          item
+            Color = claBlack
+            Offset = 0.000000000000000000
+          end
+          item
+            Color = claNull
+            Offset = 1.000000000000000000
+          end>
+        Fill.Gradient.StartPosition.X = 0.500000000000000000
+        Fill.Gradient.StartPosition.Y = 1.000000000000000000
+        Fill.Gradient.StopPosition.X = 0.499999970197677600
+        Fill.Gradient.StopPosition.Y = 0.000000000000000000
+        Size.Width = 706.000000000000000000
+        Size.Height = 86.000000000000000000
+        Size.PlatformDefault = False
+        Stroke.Kind = None
+      end
+      object Button1: TButton
+        Align = Right
+        Images = FormMain.SVGIconImageList
+        ImageIndex = 5
+        Margins.Left = 20.000000000000000000
+        Margins.Top = 20.000000000000000000
+        Margins.Right = 20.000000000000000000
+        Margins.Bottom = 20.000000000000000000
+        Position.X = 540.000000000000000000
+        Position.Y = 20.000000000000000000
+        Size.Width = 146.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_menu'
+        TabOrder = 0
+        Text = #1057#1086#1093#1088#1072#1085#1080#1090#1100
+        OnClick = Button1Click
+      end
+    end
+  end
+end

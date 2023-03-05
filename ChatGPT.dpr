@@ -1,5 +1,9 @@
 ﻿program ChatGPT;
 
+
+
+
+
 uses
   System.StartUpCopy,
   FMX.Forms,
@@ -22,7 +26,10 @@ uses
   ChatGPT.Translate in 'ChatGPT.Translate.pas',
   OpenAI.Chat in 'DelphiOpenAI\OpenAI.Chat.pas',
   OpenAI.Audio in 'DelphiOpenAI\OpenAI.Audio.pas',
-  OpenAI.Utils.ChatHistory in 'DelphiOpenAI\OpenAI.Utils.ChatHistory.pas';
+  OpenAI.Utils.ChatHistory in 'DelphiOpenAI\OpenAI.Utils.ChatHistory.pas',
+  DALLE.FrameImagePreview in 'DALLE.FrameImagePreview.pas',
+  DALLE.FrameImage in 'DALLE.FrameImage.pas',
+  DALLE.FrameMessage in 'DALLE.FrameMessage.pas' {FrameMessageImage};
 
 {$R *.res}
 

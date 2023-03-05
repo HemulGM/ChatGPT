@@ -8,7 +8,8 @@ uses
   FMX.Objects, FMX.Layouts, FMX.Memo.Types, FMX.Controls.Presentation,
   FMX.ScrollBox, FMX.Memo, OpenAI, OpenAI.Completions, ChatGPT.FrameMessage,
   System.Threading, FMX.Edit, FMX.ImgList, OpenAI.Chat,
-  System.Generics.Collections, OpenAI.Audio, OpenAI.Utils.ChatHistory;
+  System.Generics.Collections, OpenAI.Audio, OpenAI.Utils.ChatHistory,
+  OpenAI.Images, DALLE.FrameMessage;
 
 type
   TWindowMode = (wmCompact, wmFull);
@@ -79,6 +80,9 @@ type
     ButtonSend: TButton;
     Path1: TPath;
     OpenDialogAudio: TOpenDialog;
+    ButtonImage: TButton;
+    PathImage: TPath;
+    RectangleImageMode: TRectangle;
     procedure LayoutSendResize(Sender: TObject);
     procedure MemoQueryChange(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
@@ -94,6 +98,8 @@ type
     procedure ButtonExample3Click(Sender: TObject);
     procedure MemoQueryResize(Sender: TObject);
     procedure ButtonAudioClick(Sender: TObject);
+    procedure ButtonImageClick(Sender: TObject);
+    procedure FrameResize(Sender: TObject);
   private
     FAPI: IOpenAI;
     FChatId: string;
@@ -103,19 +109,25 @@ type
     FLangSrc: string;
     FIsTyping: Boolean;
     FBuffer: TChatHistory;
+    FIsImageMode: Boolean;
     function NewMessage(const Text: string; IsUser: Boolean; UseBuffer: Boolean = True; IsAudio: Boolean = False): TFrameMessage;
     procedure ClearChat;
     procedure SetTyping(const Value: Boolean);
     procedure SetAPI(const Value: IOpenAI);
     procedure SetChatId(const Value: string);
     procedure ShowError(const Text: string);
-    procedure AppendMessages(Response: TChat);
+    procedure AppendMessages(Response: TChat); overload;
+    procedure AppendMessages(Response: TImageGenerations); overload;
     procedure ScrollDown;
     procedure SetTitle(const Value: string);
     procedure SetMode(const Value: TWindowMode);
     function ProcText(const Text: string; FromUser: Boolean): string;
     procedure SetLangSrc(const Value: string);
     procedure AppendAudio(Response: TAudioText);
+    procedure SetIsImageMode(const Value: Boolean);
+    procedure SendRequestImage;
+    procedure SendRequestPrompt;
+    function NewMessageImage(const Text: string; IsUser: Boolean; Images: TArray<string>): TFrame;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -124,6 +136,7 @@ type
     property Title: string read FTitle write SetTitle;
     property Mode: TWindowMode read FMode write SetMode;
     property LangSrc: string read FLangSrc write SetLangSrc;
+    property IsImageMode: Boolean read FIsImageMode write SetIsImageMode;
   end;
 
 const
@@ -147,6 +160,31 @@ begin
     end);
 end;
 
+procedure TFrameChat.AppendMessages(Response: TImageGenerations);
+begin
+  try
+    var Images: TArray<string>;
+    SetLength(Images, Length(Response.Data));
+    for var i := 0 to High(Response.Data) do
+      Images[i] := Response.Data[i].Url;
+    NewMessageImage('', False, Images);
+  finally
+    Response.Free;
+  end;
+end;
+
+function TFrameChat.NewMessageImage(const Text: string; IsUser: Boolean; Images: TArray<string>): TFrame;
+begin
+  LayoutWelcome.Visible := False;
+  Result := TFrameMessageImage.Create(VertScrollBoxChat);
+  Result.Position.Y := VertScrollBoxChat.ContentBounds.Height;
+  Result.Parent := VertScrollBoxChat;
+  Result.Align := TAlignLayout.MostTop;
+  TFrameMessageImage(Result).Text := Text;
+  TFrameMessageImage(Result).IsUser := IsUser;
+  TFrameMessageImage(Result).Images := Images;
+end;
+
 procedure TFrameChat.AppendMessages(Response: TChat);
 begin
   try
@@ -160,7 +198,7 @@ end;
 procedure TFrameChat.AppendAudio(Response: TAudioText);
 begin
   try
-    NewMessage(Response.Text, False, False, True);
+    NewMessage(Response.Text, False, True, True);
   finally
     Response.Free;
   end;
@@ -226,7 +264,55 @@ begin
   MemoQuery.Text := 'How do I make an HTTP request in Javascript?';
 end;
 
-procedure TFrameChat.ButtonSendClick(Sender: TObject);
+procedure TFrameChat.ButtonImageClick(Sender: TObject);
+begin
+  IsImageMode := not IsImageMode;
+end;
+
+procedure TFrameChat.SendRequestImage;
+begin
+  if FIsTyping then
+    Exit;
+  var Prompt := MemoQuery.Text;
+  if Prompt.IsEmpty then
+    Exit;
+  MemoQuery.Text := '';
+  NewMessage(Prompt, True);
+  SetTyping(True);
+  ScrollDown;
+  TTask.Run(
+    procedure
+    begin
+      try
+        var Images := API.Image.Create(
+          procedure(Params: TImageCreateParams)
+          begin
+            Params.Prompt(ProcText(Prompt, True));
+            Params.ResponseFormat(TImageResponseFormat.Url);
+            Params.N(4);
+            Params.Size(TImageSize.x512);
+            Params.User(FChatId);
+          end);
+        TThread.Queue(nil,
+          procedure
+          begin
+            AppendMessages(Images);
+          end);
+      except
+        on E: OpenAIException do
+          ShowError(E.Message);
+        on E: Exception do
+          ShowError('Error: ' + E.Message);
+      end;
+      TThread.Queue(nil,
+        procedure
+        begin
+          SetTyping(False);
+        end);
+    end, FPool);
+end;
+
+procedure TFrameChat.SendRequestPrompt;
 begin
   if FIsTyping then
     Exit;
@@ -268,6 +354,14 @@ begin
     end, FPool);
 end;
 
+procedure TFrameChat.ButtonSendClick(Sender: TObject);
+begin
+  if IsImageMode then
+    SendRequestImage
+  else
+    SendRequestPrompt;
+end;
+
 procedure TFrameChat.ButtonTranslateClick(Sender: TObject);
 begin
   if LayoutTranslateSet.Position.Y >= 0 then
@@ -306,6 +400,7 @@ begin
   VertScrollBoxChat.AniCalculations.Animation := True;
   SetTyping(False);
   ClearChat;
+  IsImageMode := False;
 end;
 
 destructor TFrameChat.Destroy;
@@ -359,6 +454,16 @@ begin
     LayoutWelcome.Height := B;
 end;
 
+procedure TFrameChat.FrameResize(Sender: TObject);
+begin
+  {$IFDEF ANDROID}
+  LayoutTranslateSet.Width := LayoutQuery.Width;
+  {$ELSE}
+  if Mode = TWindowMode.wmCompact then
+    LayoutTranslateSet.Width := LayoutQuery.Width;
+  {$ENDIF}
+end;
+
 procedure TFrameChat.LayoutSendResize(Sender: TObject);
 begin
   LayoutQuery.Width := Min(768, LayoutSend.Width - 48);
@@ -401,10 +506,17 @@ end;
 
 function TFrameChat.NewMessage(const Text: string; IsUser: Boolean; UseBuffer: Boolean; IsAudio: Boolean): TFrameMessage;
 begin
-  if UseBuffer then
+  if UseBuffer and (not IsImageMode) then
   begin
     if IsUser then
-      FBuffer.New(TMessageRole.User, ProcText(Text, IsUser))
+    begin
+      if Text.StartsWith('/system ') then
+      begin
+        var AText := Text.Replace('/system ', '', []);
+        FBuffer.New(TMessageRole.System, ProcText(AText, IsUser));
+      end;
+      FBuffer.New(TMessageRole.User, ProcText(Text, IsUser));
+    end
     else
       FBuffer.New(TMessageRole.Assistant, ProcText(Text, IsUser));
   end;
@@ -442,6 +554,21 @@ end;
 procedure TFrameChat.SetChatId(const Value: string);
 begin
   FChatId := Value;
+end;
+
+procedure TFrameChat.SetIsImageMode(const Value: Boolean);
+begin
+  FIsImageMode := Value;
+  if FIsImageMode then
+  begin
+    PathImage.Fill.Color := $FFDDDDE4;
+    RectangleImageMode.Visible := True;
+  end
+  else
+  begin
+    PathImage.Fill.Color := $FFACACBE;
+    RectangleImageMode.Visible := False;
+  end;
 end;
 
 procedure TFrameChat.SetLangSrc(const Value: string);

@@ -3,6 +3,8 @@ object FrameChat: TFrameChat
   Size.Width = 890.000000000000000000
   Size.Height = 800.000000000000000000
   Size.PlatformDefault = False
+  OnResize = FrameResize
+  OnResized = FrameResize
   object RectangleBG: TRectangle
     Align = Contents
     Fill.Color = xFF343541
@@ -800,7 +802,7 @@ object FrameChat: TFrameChat
         OnChange = MemoQueryChange
         OnChangeTracking = MemoQueryChange
         Align = Client
-        Size.Width = 630.000000000000000000
+        Size.Width = 604.000000000000000000
         Size.Height = 26.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'memostyle_clear'
@@ -808,32 +810,36 @@ object FrameChat: TFrameChat
         OnResize = MemoQueryResize
         OnResized = MemoQueryResize
         OnKeyDown = MemoQueryKeyDown
-        Viewport.Width = 630.000000000000000000
+        Viewport.Width = 604.000000000000000000
         Viewport.Height = 26.000000000000000000
       end
       object Layout1: TLayout
         Align = MostRight
         Margins.Left = 4.000000000000000000
-        Position.X = 700.000000000000000000
+        Position.X = 674.000000000000000000
         Position.Y = 12.000000000000000000
-        Size.Width = 52.000000000000000000
+        Size.Width = 78.000000000000000000
         Size.Height = 26.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
         object Layout2: TLayout
           Align = Bottom
-          Size.Width = 52.000000000000000000
+          Size.Width = 78.000000000000000000
           Size.Height = 26.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 2
           object ButtonAudio: TButton
             Align = Right
-            Hint = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1072#1091#1076#1080#1086
+            Hint = 
+              'Submit an audio recording for recognition. Will be taken into ac' +
+              'count in the context of communication with GPT'
             Size.Width = 26.000000000000000000
             Size.Height = 26.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_clearmini'
             TabOrder = 2
+            ParentShowHint = False
+            ShowHint = True
             OnClick = ButtonAudioClick
             object Path8: TPath
               Align = Center
@@ -860,12 +866,13 @@ object FrameChat: TFrameChat
           end
           object ButtonSend: TButton
             Align = Right
-            Position.X = 26.000000000000000000
+            Hint = 'Send prompt'
+            Position.X = 52.000000000000000000
             Size.Width = 26.000000000000000000
             Size.Height = 26.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_clearmini'
-            TabOrder = 3
+            TabOrder = 4
             Text = 'ButtonSend'
             OnClick = ButtonSendClick
             object Path1: TPath
@@ -898,13 +905,78 @@ object FrameChat: TFrameChat
               WrapMode = Fit
             end
           end
+          object ButtonImage: TButton
+            Align = Right
+            Position.X = 26.000000000000000000
+            Size.Width = 26.000000000000000000
+            Size.Height = 26.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'buttonstyle_clearmini'
+            TabOrder = 3
+            Text = 'ButtonSend'
+            OnClick = ButtonImageClick
+            object RectangleImageMode: TRectangle
+              Align = Client
+              Fill.Kind = None
+              Hint = 'Image generation mode on demand. Used by DALL-E.'
+              HitTest = False
+              Size.Width = 26.000000000000000000
+              Size.Height = 26.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Color = xFF0FB4DF
+              Stroke.Thickness = 2.000000000000000000
+              XRadius = 4.000000000000000000
+              YRadius = 4.000000000000000000
+              ParentShowHint = False
+              ShowHint = True
+            end
+            object PathImage: TPath
+              Align = Center
+              Data.Path = {
+                44000000000000000000B84300006043020000000040C5430000604302000000
+                0000D04300804A43020000000000D04300003043020000000000D04300801543
+                020000000040C54300000043020000000000B843000000430200000000C0AA43
+                00000043020000000000A04300801543020000000000A0430000304302000000
+                0000A04300804A430200000000C0AA4300006043020000000000B84300006043
+                030000000000B84300006043000000000000E243000080420100000000007042
+                00008042020000009A9931420000804202000000000000426666994202000000
+                000000429A99B84201000000000000429AD9D143020000000000004267A6D943
+                020000009A9931420000E04302000000000070420000E043010000000000E243
+                0000E04302000000CDCCE9430000E043020000000000F04366A6D94302000000
+                0000F0439AD9D143010000000000F0439A99B842020000000000F04366669942
+                02000000CDCCE94300008042020000000000E24300008042030000000000E243
+                00008042000000003373AE439AD982430200000033F3AC439A19814302000000
+                66A6AA4301807F4302000000CD0CA84301807F43020000000080A54301807F43
+                0200000033B3A34334F380430200000067A6A1439A99824301000000CD4C9843
+                00808A43020000009A59964366E68B4302000000CDCC94439AD98C4302000000
+                CD8C92439AD98C4302000000676690439AD98C430200000033738E43CD0C8C43
+                02000000CD0C8D43CDCC8A4302000000CD8C8C439A598A430200000067A68B43
+                008089430200000067E68A4300C088430100000000006043CD4C574302000000
+                00005C4333B352430200000000005643CDCC4F4302000000CD4C4F43CDCC4F43
+                020000009A994843CDCC4F4302000000676642439A1953430200000000803E43
+                9A99574301000000000080429A19B84301000000000080426666D74202000000
+                00008242CCCCC942020000009A998C420000C0420200000033339A420000C042
+                010000006766D9430000C042020000009AD9DC430000C0420200000067A6DF43
+                3333CA42020000009AD9DF430000D842010000000000E0433333B84301000000
+                3373AE439AD98243030000003373AE439AD98243}
+              Fill.Color = xFFDDDDE4
+              Locked = True
+              HitTest = False
+              Margins.Left = 2.000000000000000000
+              Size.Width = 12.800000190734860000
+              Size.Height = 12.800000190734860000
+              Size.PlatformDefault = False
+              Stroke.Kind = None
+              WrapMode = Fit
+            end
+          end
         end
       end
       object LabelTyping: TLabel
         Align = Right
         StyledSettings = [Style]
         Margins.Left = 4.000000000000000000
-        Position.X = 680.000000000000000000
+        Position.X = 654.000000000000000000
         Position.Y = 12.000000000000000000
         Size.Width = 16.000000000000000000
         Size.Height = 26.000000000000000000
@@ -926,6 +998,7 @@ object FrameChat: TFrameChat
         TabOrder = 4
         object ButtonTranslate: TButton
           Align = Bottom
+          Hint = 'Use translate. Your lang - en - your lang'
           Size.Width = 26.000000000000000000
           Size.Height = 26.000000000000000000
           Size.PlatformDefault = False

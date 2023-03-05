@@ -1,10 +1,11 @@
-object FrameMessage: TFrameMessage
+object FrameMessageImage: TFrameMessageImage
+  Align = HorzCenter
   Padding.Left = 16.000000000000000000
   Padding.Top = 16.000000000000000000
   Padding.Right = 16.000000000000000000
   Padding.Bottom = 16.000000000000000000
-  Size.Width = 677.000000000000000000
-  Size.Height = 352.000000000000000000
+  Size.Width = 852.000000000000000000
+  Size.Height = 279.000000000000000000
   Size.PlatformDefault = False
   OnResize = FrameResize
   OnResized = FrameResize
@@ -12,24 +13,24 @@ object FrameMessage: TFrameMessage
     Align = Contents
     Fill.Color = xFF343541
     Locked = True
-    Size.Width = 677.000000000000000000
-    Size.Height = 352.000000000000000000
+    Size.Width = 852.000000000000000000
+    Size.Height = 279.000000000000000000
     Size.PlatformDefault = False
     Stroke.Kind = None
   end
   object LayoutContent: TLayout
     Align = HorzCenter
-    Position.X = 16.000000000000000000
+    Position.X = 38.000000000000000000
     Position.Y = 16.000000000000000000
-    Size.Width = 645.000000000000000000
-    Size.Height = 320.000000000000000000
+    Size.Width = 776.000000000000000000
+    Size.Height = 247.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 1
-    object LayoutInfo: TLayout
+    object Layout1: TLayout
       Align = MostLeft
       Margins.Right = 14.000000000000000000
       Size.Width = 30.000000000000000000
-      Size.Height = 320.000000000000000000
+      Size.Height = 247.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
       object RectangleUser: TRectangle
@@ -195,75 +196,49 @@ object FrameMessage: TFrameMessage
         end
       end
     end
-    object LayoutContentText: TLayout
+    object LayoutContentItems: TLayout
       Align = Client
-      Size.Width = 557.000000000000000000
-      Size.Height = 320.000000000000000000
+      Size.Width = 732.000000000000000000
+      Size.Height = 247.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
+      object FlowLayoutImages: TFlowLayout
+        Align = Top
+        Position.Y = 94.000000000000000000
+        Size.Width = 732.000000000000000000
+        Size.Height = 107.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        Justify = Left
+        JustifyLastLine = Left
+        FlowDirection = LeftToRight
+      end
       object MemoText: TMemo
         Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
         Caret.Color = x00FFFFFF
         DataDetectorTypes = []
         DisableMouseWheel = True
         ReadOnly = True
+        ShowScrollBars = False
         StyledSettings = [Style]
         TextSettings.Font.Size = 16.000000000000000000
         TextSettings.FontColor = xFFECECF1
         TextSettings.WordWrap = True
         OnChange = MemoTextChange
         OnChangeTracking = MemoTextChange
-        Align = Top
+        Align = MostTop
         CanParentFocus = True
         Cursor = crDefault
         DisableFocusEffect = True
         EnableDragHighlight = False
-        Size.Width = 557.000000000000000000
-        Size.Height = 129.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Size.Width = 732.000000000000000000
+        Size.Height = 89.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'memostyle_clear'
         TabOrder = 0
-        Viewport.Width = 557.000000000000000000
-        Viewport.Height = 129.000000000000000000
-      end
-    end
-    object LayoutAudio: TLayout
-      Align = Left
-      Margins.Right = 14.000000000000000000
-      Position.X = 44.000000000000000000
-      Size.Width = 30.000000000000000000
-      Size.Height = 320.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 2
-      object Rectangle1: TRectangle
-        Align = Top
-        Fill.Kind = None
-        Size.Width = 30.000000000000000000
-        Size.Height = 30.000000000000000000
-        Size.PlatformDefault = False
-        Stroke.Kind = None
-        XRadius = 2.000000000000000000
-        YRadius = 2.000000000000000000
-        object Path3: TPath
-          Align = Center
-          Data.Path = {
-            19000000000000000000A0400000A84101000000000040400000A84101000000
-            0000404000003041010000000000A04000003041030000000000A0400000A841
-            00000000000030410000E04001000000000010410000E0400100000000001041
-            0000C84101000000000030410000C84103000000000030410000E04000000000
-            000088410000004001000000000070410000004001000000000070410000F041
-            01000000000088410000F041030000000000884100000040000000000000B841
-            00003041010000000000A84100003041010000000000A8410000A84101000000
-            0000B8410000A841030000000000B84100003041000000000000E8410000E040
-            010000000000D8410000E040010000000000D8410000C841010000000000E841
-            0000C841030000000000E8410000E040}
-          Fill.Color = xFFACACBE
-          Size.Width = 20.000000000000000000
-          Size.Height = 20.000000000000000000
-          Size.PlatformDefault = False
-          Stroke.Kind = None
-          WrapMode = Fit
-        end
+        Viewport.Width = 732.000000000000000000
+        Viewport.Height = 89.000000000000000000
       end
     end
   end

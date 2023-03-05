@@ -9,6 +9,13 @@ uses
   FMX.ScrollBox, FMX.Memo, System.Generics.Collections, FMX.BehaviorManager;
 
 type
+  TPartType = (ptText, ptCode);
+
+  TPart = record
+    PartType: TPartType;
+    Content: string;
+  end;
+
   TFrameMessage = class(TFrame)
     RectangleBG: TRectangle;
     MemoText: TMemo;
@@ -34,6 +41,7 @@ type
     procedure SetIsError(const Value: Boolean);
     procedure ParseText(const Value: string);
     procedure SetIsAudio(const Value: Boolean);
+    procedure BuildContent(Parts: TList<TPart>);
   public
     procedure UpdateContentSize;
     property Text: string read FText write SetText;
@@ -118,13 +126,6 @@ begin
 end;
 
 procedure TFrameMessage.ParseText(const Value: string);
-type
-  TPartType = (ptText, ptCode);
-
-  TPart = record
-    PartType: TPartType;
-    Content: string;
-  end;
 
   function CreatePart(AType: TPartType; AContent: string): TPart;
   begin
@@ -185,59 +186,7 @@ begin
           Parts.Add(CreatePart(ptText, Buf));
       end;
 
-      var IsFirstText: Boolean := True;
-      for var Part in Parts do
-      begin
-        begin
-          var Memo: TMemo;
-          if IsFirstText then
-          begin
-            Memo := MemoText;
-            IsFirstText := False;
-          end
-          else
-          begin
-            Memo := TMemo.Create(LayoutContentText);
-            with Memo do
-            begin
-              Parent := LayoutContentText;
-              Caret.Color := $00FFFFFF;
-              DisableMouseWheel := True;
-              ReadOnly := True;
-              ShowScrollBars := False;
-              StyledSettings := [TStyledSetting.Style];
-              TextSettings.Font.Size := 16;
-              TextSettings.FontColor := $FFECECF1;
-              TextSettings.WordWrap := True;
-              CanParentFocus := True;
-              Cursor := crDefault;
-              DisableFocusEffect := True;
-              EnableDragHighlight := False;
-              StyleLookup := 'memostyle_clear';
-              OnChange := MemoTextChange;
-              OnChangeTracking := MemoTextChange;
-              TagFloat := 2;
-              if Part.PartType = ptCode then
-              begin
-                Margins.Rect := TRectF.Create(0, 5, 0, 5);
-                TagFloat := 5;
-                StyleLookup := 'memostyle_code';
-                TextSettings.Font.Family := 'Consolas';
-                TextSettings.FontColor := $FFC6C6C6;
-                ShowScrollBars := True;
-                AutoHide := TBehaviorBoolean.True;
-              end;
-              ApplyStyleLookup;
-            end;
-          end;
-          Memo.Text := Part.Content;
-          (Memo.Presentation as TStyledMemo).InvalidateContentSize;
-          (Memo.Presentation as TStyledMemo).PrepareForPaint;
-          Memo.Align := TAlignLayout.None;
-          Memo.Position.Y := 10000;
-          Memo.Align := TAlignLayout.Top;
-        end;
-      end;
+      BuildContent(Parts);
     finally
       Parts.Free;
     end;
@@ -251,12 +200,76 @@ begin
   UpdateContentSize;
 end;
 
+procedure TFrameMessage.BuildContent(Parts: TList<TPart>);
+begin
+  var IsFirstText: Boolean := True;
+  for var Part in Parts do
+  begin
+    begin
+      var Memo: TMemo;
+      if IsFirstText then
+      begin
+        Memo := MemoText;
+        IsFirstText := False;
+      end
+      else
+      begin
+        Memo := TMemo.Create(LayoutContentText);
+        with Memo do
+        begin
+          Parent := LayoutContentText;
+          Caret.Color := $00FFFFFF;
+          DisableMouseWheel := True;
+          ReadOnly := True;
+          StyledSettings := [TStyledSetting.Style];
+          CanParentFocus := True;
+          Cursor := crDefault;
+          DisableFocusEffect := True;
+          EnableDragHighlight := False;
+          OnChange := MemoTextChange;
+          {$IFDEF ANDROID}
+          Memo.HitTest := False;
+          {$ENDIF}
+          OnChangeTracking := MemoTextChange;
+          if Part.PartType = ptCode then
+          begin
+            StyleLookup := 'memostyle_code';
+            Margins.Rect := TRectF.Create(0, 5, 0, 5);
+            TagFloat := 5;
+            TextSettings.WordWrap := False;
+            TextSettings.Font.Family := 'Consolas';
+            TextSettings.FontColor := $FFC6C6C6;
+            ShowScrollBars := True;
+            AutoHide := TBehaviorBoolean.True;
+          end
+          else
+          begin
+            StyleLookup := 'memostyle_clear';
+            TextSettings.Font.Size := 16;
+            TextSettings.FontColor := $FFECECF1;
+            ShowScrollBars := False;
+            TextSettings.WordWrap := True;
+            TagFloat := 2;
+          end;
+          ApplyStyleLookup;
+        end;
+      end;
+      Memo.Text := Part.Content;
+      (Memo.Presentation as TStyledMemo).InvalidateContentSize;
+      (Memo.Presentation as TStyledMemo).PrepareForPaint;
+      Memo.Align := TAlignLayout.None;
+      Memo.Position.Y := 10000;
+      Memo.Align := TAlignLayout.Top;
+    end;
+  end;
+end;
+
 procedure TFrameMessage.SetText(const Value: string);
 begin
   if not Value.IsEmpty then
     FText := Value
   else
-    FText := 'пусто';
+    FText := 'empty';
   FText := FText.Trim([' ', #13, #10]);
   ParseText(FText);
 end;
