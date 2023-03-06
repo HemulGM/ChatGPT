@@ -1,4 +1,4 @@
-﻿unit DALLE.FrameImagePreview;
+﻿unit ChatGPT.FrameImagePreview;
 
 interface
 

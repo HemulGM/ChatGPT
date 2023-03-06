@@ -9,7 +9,7 @@ uses
   FMX.ScrollBox, FMX.Memo, OpenAI, OpenAI.Completions, ChatGPT.FrameMessage,
   System.Threading, FMX.Edit, FMX.ImgList, OpenAI.Chat,
   System.Generics.Collections, OpenAI.Audio, OpenAI.Utils.ChatHistory,
-  OpenAI.Images, DALLE.FrameMessage;
+  OpenAI.Images;
 
 type
   TWindowMode = (wmCompact, wmFull);
@@ -127,7 +127,7 @@ type
     procedure SetIsImageMode(const Value: Boolean);
     procedure SendRequestImage;
     procedure SendRequestPrompt;
-    function NewMessageImage(const Text: string; IsUser: Boolean; Images: TArray<string>): TFrame;
+    function NewMessageImage(IsUser: Boolean; Images: TArray<string>): TFrame;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -167,22 +167,21 @@ begin
     SetLength(Images, Length(Response.Data));
     for var i := 0 to High(Response.Data) do
       Images[i] := Response.Data[i].Url;
-    NewMessageImage('', False, Images);
+    NewMessageImage(False, Images);
   finally
     Response.Free;
   end;
 end;
 
-function TFrameChat.NewMessageImage(const Text: string; IsUser: Boolean; Images: TArray<string>): TFrame;
+function TFrameChat.NewMessageImage(IsUser: Boolean; Images: TArray<string>): TFrame;
 begin
   LayoutWelcome.Visible := False;
-  Result := TFrameMessageImage.Create(VertScrollBoxChat);
+  Result := TFrameMessage.Create(VertScrollBoxChat);
   Result.Position.Y := VertScrollBoxChat.ContentBounds.Height;
   Result.Parent := VertScrollBoxChat;
   Result.Align := TAlignLayout.MostTop;
-  TFrameMessageImage(Result).Text := Text;
-  TFrameMessageImage(Result).IsUser := IsUser;
-  TFrameMessageImage(Result).Images := Images;
+  TFrameMessage(Result).IsUser := IsUser;
+  TFrameMessage(Result).Images := Images;
 end;
 
 procedure TFrameChat.AppendMessages(Response: TChat);

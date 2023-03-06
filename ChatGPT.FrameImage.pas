@@ -1,4 +1,4 @@
-﻿unit DALLE.FrameImage;
+﻿unit ChatGPT.FrameImage;
 
 interface
 
@@ -31,7 +31,7 @@ type
 implementation
 
 uses
-  System.NetEncoding, DALLE.FrameImagePreview, System.Threading,
+  System.NetEncoding, ChatGPT.FrameImagePreview, System.Threading,
   System.Net.HttpClient;
 
 {$R *.fmx}
@@ -48,13 +48,11 @@ begin
         Self.Assign(nil);
       end;
       if Assigned(AfterLoaded) then
-      begin
         TThread.ForceQueue(nil,
           procedure
           begin
             AfterLoaded(Self);
           end);
-      end;
     end);
 end;
 
@@ -66,16 +64,16 @@ begin
   if URL.IsEmpty then
     Exit;
   HTTP := THTTPClient.Create;
-  HTTP.HandleRedirects := True;
   try
+    HTTP.HandleRedirects := True;
     try
       if (HTTP.Get(URL, Result).StatusCode = 200) and (Result.Size > 0) then
         Result.Position := 0;
-    finally
-      HTTP.Free;
+    except
+      //
     end;
-  except
-    //
+  finally
+    HTTP.Free;
   end;
 end;
 
@@ -102,10 +100,10 @@ begin
           end);
         Result := FLoaded;
       end;
-    finally
-      Mem.Free;
+    except
     end;
-  except
+  finally
+    Mem.Free;
   end;
 end;
 

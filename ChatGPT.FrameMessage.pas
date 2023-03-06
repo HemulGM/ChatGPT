@@ -6,7 +6,8 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Memo.Types, FMX.Layouts, FMX.Controls.Presentation,
-  FMX.ScrollBox, FMX.Memo, System.Generics.Collections, FMX.BehaviorManager;
+  FMX.ScrollBox, FMX.Memo, System.Generics.Collections, FMX.BehaviorManager,
+  ChatGPT.FrameImage;
 
 type
   TPartType = (ptText, ptCode);
@@ -29,6 +30,7 @@ type
     LayoutAudio: TLayout;
     Rectangle1: TRectangle;
     Path3: TPath;
+    FlowLayoutImages: TFlowLayout;
     procedure MemoTextChange(Sender: TObject);
     procedure FrameResize(Sender: TObject);
   private
@@ -36,15 +38,18 @@ type
     FText: string;
     FIsError: Boolean;
     FIsAudio: Boolean;
+    FImages: TArray<string>;
     procedure SetIsUser(const Value: Boolean);
     procedure SetText(const Value: string);
     procedure SetIsError(const Value: Boolean);
     procedure ParseText(const Value: string);
     procedure SetIsAudio(const Value: Boolean);
     procedure BuildContent(Parts: TList<TPart>);
+    procedure SetImages(const Value: TArray<string>);
   public
     procedure UpdateContentSize;
     property Text: string read FText write SetText;
+    property Images: TArray<string> read FImages write SetImages;
     property IsUser: Boolean read FIsUser write SetIsUser;
     property IsAudio: Boolean read FIsAudio write SetIsAudio;
     property IsError: Boolean read FIsError write SetIsError;
@@ -60,6 +65,7 @@ uses
 
 procedure TFrameMessage.UpdateContentSize;
 begin
+  // Memo
   var H := Padding.Top + Padding.Bottom;
   for var Control in LayoutContentText.Controls do
     if Control is TMemo then
@@ -70,6 +76,30 @@ begin
       H := H + Max((Control as TMemo).Height, 30);
       H := H + Control.Margins.Top + Control.Margins.Bottom;
     end;
+
+  //Flow
+  if FlowLayoutImages.Visible then
+  begin
+    var ItemW := Min(256, Max(Trunc(FlowLayoutImages.Width / FlowLayoutImages.ControlsCount), 48));
+    if ItemW = 48 then
+      ItemW := Trunc(FlowLayoutImages.Width / Trunc(FlowLayoutImages.Width / 48));
+    H := 0;
+    for var Control in FlowLayoutImages.Controls do
+    begin
+      Control.Size.Size := TSizeF.Create(ItemW, ItemW);
+      H := Max(Control.Position.Y + Control.Height, H);
+    end;
+    if FlowLayoutImages.Height <> H then
+      FlowLayoutImages.Height := H;
+  end;
+
+  //Frame
+  H := Padding.Top + Padding.Bottom;
+  for var Control in LayoutContentText.Controls do
+    if Control.Visible then
+      H := H + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
+
+
   if Height <> H then
     Height := H;
 end;
@@ -82,6 +112,8 @@ begin
   MemoText.HitTest := False;
   {$ENDIF}
   IsAudio := False;
+  MemoText.Visible := False;
+  FlowLayoutImages.Visible := False;
 end;
 
 procedure TFrameMessage.FrameResize(Sender: TObject);
@@ -92,6 +124,21 @@ end;
 
 procedure TFrameMessage.MemoTextChange(Sender: TObject);
 begin
+  UpdateContentSize;
+end;
+
+procedure TFrameMessage.SetImages(const Value: TArray<string>);
+begin
+  FImages := Value;
+  while FlowLayoutImages.ControlsCount > 0 do
+    FlowLayoutImages.Controls[0].Free;
+  for var Item in FImages do
+  begin
+    var Frame := TFrameImage.Create(FlowLayoutImages);
+    Frame.Parent := FlowLayoutImages;
+    Frame.Image := Item;
+  end;
+  FlowLayoutImages.Visible := FlowLayoutImages.ControlsCount > 0;
   UpdateContentSize;
 end;
 
@@ -194,6 +241,7 @@ begin
   else
   begin
     MemoText.Text := Value;
+    MemoText.Visible := True;
     (MemoText.Presentation as TStyledMemo).InvalidateContentSize;
     (MemoText.Presentation as TStyledMemo).PrepareForPaint;
   end;
@@ -210,6 +258,7 @@ begin
       if IsFirstText then
       begin
         Memo := MemoText;
+        MemoText.Visible := True;
         IsFirstText := False;
       end
       else

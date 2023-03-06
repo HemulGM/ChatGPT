@@ -3,8 +3,8 @@ object FrameMessage: TFrameMessage
   Padding.Top = 16.000000000000000000
   Padding.Right = 16.000000000000000000
   Padding.Bottom = 16.000000000000000000
-  Size.Width = 677.000000000000000000
-  Size.Height = 352.000000000000000000
+  Size.Width = 857.000000000000000000
+  Size.Height = 498.000000000000000000
   Size.PlatformDefault = False
   OnResize = FrameResize
   OnResized = FrameResize
@@ -12,24 +12,24 @@ object FrameMessage: TFrameMessage
     Align = Contents
     Fill.Color = xFF343541
     Locked = True
-    Size.Width = 677.000000000000000000
-    Size.Height = 352.000000000000000000
+    Size.Width = 857.000000000000000000
+    Size.Height = 498.000000000000000000
     Size.PlatformDefault = False
     Stroke.Kind = None
   end
   object LayoutContent: TLayout
     Align = HorzCenter
-    Position.X = 16.000000000000000000
+    Position.X = 106.000000000000000000
     Position.Y = 16.000000000000000000
     Size.Width = 645.000000000000000000
-    Size.Height = 320.000000000000000000
+    Size.Height = 466.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 1
     object LayoutInfo: TLayout
       Align = MostLeft
       Margins.Right = 14.000000000000000000
       Size.Width = 30.000000000000000000
-      Size.Height = 320.000000000000000000
+      Size.Height = 466.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
       object RectangleUser: TRectangle
@@ -198,7 +198,7 @@ object FrameMessage: TFrameMessage
     object LayoutContentText: TLayout
       Align = Client
       Size.Width = 557.000000000000000000
-      Size.Height = 320.000000000000000000
+      Size.Height = 466.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
       object MemoText: TMemo
@@ -226,13 +226,24 @@ object FrameMessage: TFrameMessage
         Viewport.Width = 557.000000000000000000
         Viewport.Height = 129.000000000000000000
       end
+      object FlowLayoutImages: TFlowLayout
+        Align = Top
+        Position.Y = 129.000000000000000000
+        Size.Width = 557.000000000000000000
+        Size.Height = 107.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        Justify = Left
+        JustifyLastLine = Left
+        FlowDirection = LeftToRight
+      end
     end
     object LayoutAudio: TLayout
       Align = Left
       Margins.Right = 14.000000000000000000
       Position.X = 44.000000000000000000
       Size.Width = 30.000000000000000000
-      Size.Height = 320.000000000000000000
+      Size.Height = 466.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 2
       object Rectangle1: TRectangle

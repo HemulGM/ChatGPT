@@ -310,11 +310,8 @@
         <DCCReference Include="DelphiOpenAI\OpenAI.Chat.pas"/>
         <DCCReference Include="DelphiOpenAI\OpenAI.Audio.pas"/>
         <DCCReference Include="DelphiOpenAI\OpenAI.Utils.ChatHistory.pas"/>
-        <DCCReference Include="DALLE.FrameImagePreview.pas"/>
-        <DCCReference Include="DALLE.FrameImage.pas"/>
-        <DCCReference Include="DALLE.FrameMessage.pas">
-            <Form>FrameMessageImage</Form>
-        </DCCReference>
+        <DCCReference Include="ChatGPT.FrameImagePreview.pas"/>
+        <DCCReference Include="ChatGPT.FrameImage.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

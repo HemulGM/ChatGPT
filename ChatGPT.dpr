@@ -27,9 +27,8 @@ uses
   OpenAI.Chat in 'DelphiOpenAI\OpenAI.Chat.pas',
   OpenAI.Audio in 'DelphiOpenAI\OpenAI.Audio.pas',
   OpenAI.Utils.ChatHistory in 'DelphiOpenAI\OpenAI.Utils.ChatHistory.pas',
-  DALLE.FrameImagePreview in 'DALLE.FrameImagePreview.pas',
-  DALLE.FrameImage in 'DALLE.FrameImage.pas',
-  DALLE.FrameMessage in 'DALLE.FrameMessage.pas' {FrameMessageImage};
+  ChatGPT.FrameImagePreview in 'ChatGPT.FrameImagePreview.pas',
+  ChatGPT.FrameImage in 'ChatGPT.FrameImage.pas';
 
 {$R *.res}
 
