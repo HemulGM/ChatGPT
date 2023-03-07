@@ -284,12 +284,12 @@ begin
           begin
             StyleLookup := 'memostyle_code';
             Margins.Rect := TRectF.Create(0, 5, 0, 5);
-            TagFloat := 5;
+            TagFloat := 10;
             TextSettings.WordWrap := False;
             TextSettings.Font.Family := 'Consolas';
             TextSettings.FontColor := $FFC6C6C6;
             ShowScrollBars := True;
-            AutoHide := TBehaviorBoolean.True;
+            //AutoHide := TBehaviorBoolean.False;
           end
           else
           begin
