@@ -69,6 +69,7 @@ type
     procedure Clear;
     procedure ShowClearConfirm;
     procedure HideClearConfirm;
+    procedure FOnChatEditClick(Sender: TObject);
   public
     property OpenAI: TOpenAIComponent read FOpenAI;
     constructor Create(AOwner: TComponent); override;
@@ -95,7 +96,7 @@ uses
   {$IFDEF MSWINDOWS}
   ShellAPI,
   {$ENDIF}
-  FMX.Ani, System.Math;
+  FMX.Ani, System.Math, System.Rtti, FMX.Utils, FMX.DialogService;
 
 {$R *.fmx}
 
@@ -214,6 +215,7 @@ begin
   ItemList.TagString := Result;
   ItemList.ImageIndex := 1;
   ItemList.DisableDisappear := True;
+  ItemList.StylesData['edit.OnClick'] := TValue.From<TNotifyEvent>(FOnChatEditClick);
   ListBoxChatList.AddObject(ItemList);
   ItemList.ApplyStyleLookup;
 end;
@@ -228,6 +230,22 @@ end;
 procedure TFormMain.ButtonNewChatCompactClick(Sender: TObject);
 begin
   SelectChat(CreateChat);
+end;
+
+procedure TFormMain.FOnChatEditClick(Sender: TObject);
+var
+  Button: TButton absolute Sender;
+  ListItem: TListBoxItem;
+begin
+  if TFMXObjectHelper.FindNearestParentOfClass<TListBoxItem>(Button, ListItem) then
+  begin
+    TDialogService.InputQuery('Chat name', ['Name'], [ListItem.Text],
+      procedure(const AResult: TModalResult; const AValues: array of string)
+      begin
+        if AResult = mrOk then
+          ListItem.Text := AValues[0];
+      end);
+  end;
 end;
 
 procedure TFormMain.FOnChatItemClick(Sender: TObject);
