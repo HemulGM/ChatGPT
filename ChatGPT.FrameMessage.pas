@@ -7,19 +7,11 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Memo.Types, FMX.Layouts, FMX.Controls.Presentation,
   FMX.ScrollBox, FMX.Memo, System.Generics.Collections, FMX.BehaviorManager,
-  ChatGPT.FrameImage;
+  ChatGPT.FrameImage, ChatGPT.Classes;
 
 type
-  TPartType = (ptText, ptCode);
-
-  TPart = record
-    PartType: TPartType;
-    Content: string;
-  end;
-
   TFrameMessage = class(TFrame)
     RectangleBG: TRectangle;
-    MemoText: TMemo;
     LayoutInfo: TLayout;
     RectangleUser: TRectangle;
     Path1: TPath;
@@ -28,9 +20,10 @@ type
     LayoutContent: TLayout;
     LayoutContentText: TLayout;
     LayoutAudio: TLayout;
-    Rectangle1: TRectangle;
+    RectangleAudio: TRectangle;
     Path3: TPath;
     FlowLayoutImages: TFlowLayout;
+    LayoutClient: TLayout;
     procedure MemoTextChange(Sender: TObject);
     procedure FrameResize(Sender: TObject);
   private
@@ -53,52 +46,41 @@ type
     property IsUser: Boolean read FIsUser write SetIsUser;
     property IsAudio: Boolean read FIsAudio write SetIsAudio;
     property IsError: Boolean read FIsError write SetIsError;
+    procedure StartAnimate;
     constructor Create(AOwner: TComponent); override;
   end;
 
 implementation
 
 uses
-  System.Math, FMX.Memo.Style;
+  System.Math, FMX.Memo.Style, FMX.Ani, ChatGPT.FrameCode, ChatGPT.FrameSVG,
+  ChatGPT.FramePlainText;
 
 {$R *.fmx}
 
 procedure TFrameMessage.UpdateContentSize;
 begin
-  // Memo
-  var H := Padding.Top + Padding.Bottom;
-  for var Control in LayoutContentText.Controls do
-    if Control is TMemo then
-    begin
-      ((Control as TMemo).Presentation as TStyledMemo).InvalidateContentSize;
-      ((Control as TMemo).Presentation as TStyledMemo).PrepareForPaint;
-      (Control as TMemo).Height := Max((Control as TMemo).ContentBounds.Height + (Control as TMemo).TagFloat * 2, 30);
-      H := H + Max((Control as TMemo).Height, 30);
-      H := H + Control.Margins.Top + Control.Margins.Bottom;
-    end;
-
   //Flow
   if FlowLayoutImages.Visible then
   begin
     var ItemW := Min(256, Max(Trunc(FlowLayoutImages.Width / FlowLayoutImages.ControlsCount), 48));
     if ItemW = 48 then
       ItemW := Trunc(FlowLayoutImages.Width / Trunc(FlowLayoutImages.Width / 48));
-    H := 0;
+    var FH: Single := 0;
     for var Control in FlowLayoutImages.Controls do
     begin
       Control.Size.Size := TSizeF.Create(ItemW, ItemW);
-      H := Max(Control.Position.Y + Control.Height, H);
+      FH := Max(Control.Position.Y + Control.Height, FH);
     end;
-    if FlowLayoutImages.Height <> H then
-      FlowLayoutImages.Height := H;
+    if FlowLayoutImages.Height <> FH then
+      FlowLayoutImages.Height := FH;
   end;
 
-  //Frame
-  H := Padding.Top + Padding.Bottom;
+  //Frames
+  var H := LayoutClient.Padding.Top + LayoutClient.Padding.Bottom;
   for var Control in LayoutContentText.Controls do
     if Control.Visible then
       H := H + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
-
 
   if Height <> H then
     Height := H;
@@ -108,17 +90,21 @@ constructor TFrameMessage.Create(AOwner: TComponent);
 begin
   inherited;
   Name := '';
-  {$IFDEF ANDROID}
-  MemoText.HitTest := False;
-  {$ENDIF}
   IsAudio := False;
-  MemoText.Visible := False;
   FlowLayoutImages.Visible := False;
+end;
+
+procedure TFrameMessage.StartAnimate;
+begin
+  LayoutClient.Margins.Top := 50;
+  LayoutClient.Opacity := 0;
+  TAnimator.AnimateFloat(LayoutClient, 'Margins.Top', 0);
+  TAnimator.AnimateFloat(LayoutClient, 'Opacity', 1);
 end;
 
 procedure TFrameMessage.FrameResize(Sender: TObject);
 begin
-  LayoutContent.Width := Min(Width - (Padding.Left + Padding.Right), 650);
+  LayoutContent.Width := Min(Width - (LayoutClient.Padding.Left + LayoutClient.Padding.Right), 650);
   UpdateContentSize;
 end;
 
@@ -151,7 +137,9 @@ end;
 procedure TFrameMessage.SetIsError(const Value: Boolean);
 begin
   FIsError := Value;
-  MemoText.FontColor := $FFEF4444;
+  for var Control in LayoutContentText.Controls do
+    if Control is TFrameText then
+      (Control as TFrameText).MemoText.FontColor := $FFEF4444;
 end;
 
 procedure TFrameMessage.SetIsUser(const Value: Boolean);
@@ -161,15 +149,9 @@ begin
   RectangleBot.Visible := not FIsUser;
 
   if FIsUser then
-  begin
-    RectangleBG.Fill.Color := $00FFFFFF;
-    MemoText.FontColor := $FFECECF1;
-  end
+    RectangleBG.Fill.Color := $00FFFFFF
   else
-  begin
     RectangleBG.Fill.Color := $14FFFFFF;
-    MemoText.FontColor := $FFD1D5E3;
-  end;
 end;
 
 procedure TFrameMessage.ParseText(const Value: string);
@@ -177,138 +159,132 @@ procedure TFrameMessage.ParseText(const Value: string);
   function CreatePart(AType: TPartType; AContent: string): TPart;
   begin
     Result.PartType := AType;
-    Result.Content := AContent.Trim([#13, #10, ' ']);
+    if (AType = ptCode) and (not (AContent.StartsWith(#13) or AContent.StartsWith(' '))) then
+    begin
+      var Len := AContent.IndexOfAny([#13, #10, ' ']);
+      if Len >= 0 then
+      begin
+        Result.Language := AContent.Substring(0, Len);
+        Result.Content := AContent.Remove(0, Len).Trim([#13, #10, ' ']);
+      end
+      else
+        Result.Content := AContent.Trim([#13, #10, ' ']);
+    end
+    else
+      Result.Content := AContent.Trim([#13, #10, ' ']);
   end;
 
 var
   Parts: TList<TPart>;
   CodePairs: Integer;
-  IsCode: Boolean;
+  IsCodeParse: Boolean;
   Buf: string;
 begin
-  if Value.Contains('```') then
-  begin
-    Parts := TList<TPart>.Create;
-    try
-      CodePairs := 0;
-      Buf := '';
-      IsCode := False;
-      for var C in Value do
+  Parts := TList<TPart>.Create;
+  try
+    CodePairs := 0;
+    Buf := '';
+    IsCodeParse := False;
+    for var C in Value do
+    begin
+      if C = '`' then
       begin
-        if C = '`' then
+        Inc(CodePairs);
+        if CodePairs = 3 then
         begin
-          Inc(CodePairs);
-          if CodePairs = 3 then
+          if IsCodeParse then
           begin
-            if IsCode then
-            begin
-              if not Buf.IsEmpty then
-                Parts.Add(CreatePart(ptCode, Buf));
-              IsCode := False;
-            end
-            else
-            begin
-              if not Buf.IsEmpty then
-                Parts.Add(CreatePart(ptText, Buf));
-              IsCode := True;
-            end;
-            Buf := '';
-            CodePairs := 0;
+            if not Buf.Trim([' ']).IsEmpty then
+              Parts.Add(CreatePart(ptCode, Buf));
+            IsCodeParse := False;
+          end
+          else
+          begin
+            if not Buf.Trim([' ']).IsEmpty then
+              Parts.Add(CreatePart(ptText, Buf));
+            IsCodeParse := True;
           end;
-        end
-        else
-        begin
+          Buf := '';
           CodePairs := 0;
-          Buf := Buf + C;
         end;
-      end;
-      if IsCode then
-      begin
-        if not Buf.IsEmpty then
-          Parts.Add(CreatePart(ptCode, Buf));
       end
       else
       begin
-        if not Buf.IsEmpty then
-          Parts.Add(CreatePart(ptText, Buf));
+        CodePairs := 0;
+        Buf := Buf + C;
       end;
-
-      BuildContent(Parts);
-    finally
-      Parts.Free;
     end;
-  end
-  else
-  begin
-    MemoText.Text := Value;
-    MemoText.Visible := True;
-    (MemoText.Presentation as TStyledMemo).InvalidateContentSize;
-    (MemoText.Presentation as TStyledMemo).PrepareForPaint;
+    if IsCodeParse then
+    begin
+      if not Buf.Trim([' ']).IsEmpty then
+        Parts.Add(CreatePart(ptCode, Buf));
+    end
+    else
+    begin
+      if not Buf.Trim([' ']).IsEmpty then
+        Parts.Add(CreatePart(ptText, Buf));
+    end;
+
+    BuildContent(Parts);
+  finally
+    Parts.Free;
   end;
   UpdateContentSize;
 end;
 
 procedure TFrameMessage.BuildContent(Parts: TList<TPart>);
 begin
-  var IsFirstText: Boolean := True;
   for var Part in Parts do
   begin
+    //SVG
+    var PosS := Part.Content.IndexOf('<svg');
+    if PosS >= 0 then
     begin
-      var Memo: TMemo;
-      if IsFirstText then
+      var PosE := Part.Content.IndexOf('</svg>');
+      if PosE >= 0 then
       begin
-        Memo := MemoText;
-        MemoText.Visible := True;
-        IsFirstText := False;
-      end
-      else
-      begin
-        Memo := TMemo.Create(LayoutContentText);
-        with Memo do
-        begin
-          Parent := LayoutContentText;
-          Caret.Color := $00FFFFFF;
-          DisableMouseWheel := True;
-          ReadOnly := True;
-          StyledSettings := [TStyledSetting.Style];
-          CanParentFocus := True;
-          Cursor := crDefault;
-          DisableFocusEffect := True;
-          EnableDragHighlight := False;
-          OnChange := MemoTextChange;
-          {$IFDEF ANDROID}
-          Memo.HitTest := False;
-          {$ENDIF}
-          OnChangeTracking := MemoTextChange;
-          if Part.PartType = ptCode then
-          begin
-            StyleLookup := 'memostyle_code';
-            Margins.Rect := TRectF.Create(0, 5, 0, 5);
-            TagFloat := 10;
-            TextSettings.WordWrap := False;
-            TextSettings.Font.Family := 'Consolas';
-            TextSettings.FontColor := $FFC6C6C6;
-            ShowScrollBars := True;
-            //AutoHide := TBehaviorBoolean.False;
-          end
-          else
-          begin
-            StyleLookup := 'memostyle_clear';
-            TextSettings.Font.Size := 16;
-            TextSettings.FontColor := $FFECECF1;
-            ShowScrollBars := False;
-            TextSettings.WordWrap := True;
-            TagFloat := 2;
-          end;
-          ApplyStyleLookup;
+        var SvgText := Part.Content.Substring(PosS, PosE - PosS + 6);
+        if not SvgText.IsEmpty then
+        try
+          var Frame := TFrameSVG.Create(LayoutContentText, SvgText);
+          Frame.Parent := LayoutContentText;
+          Frame.Align := TAlignLayout.None;
+          Frame.Position.Y := 10000;
+          Frame.Align := TAlignLayout.Top;
+        except
+          // not insert
         end;
       end;
-      Memo.Text := Part.Content;
-      (Memo.Presentation as TStyledMemo).InvalidateContentSize;
-      (Memo.Presentation as TStyledMemo).PrepareForPaint;
-      Memo.Align := TAlignLayout.None;
-      Memo.Position.Y := 10000;
-      Memo.Align := TAlignLayout.Top;
+    end;
+
+    // Code
+    if Part.PartType = ptCode then
+    begin
+      var Frame := TFrameCode.Create(LayoutContentText);
+      Frame.Parent := LayoutContentText;
+      Frame.Fill(Part);
+      Frame.Align := TAlignLayout.None;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      Continue;
+    end;
+
+    // Text
+    if Part.PartType = ptText then
+    begin
+      var Frame := TFrameText.Create(LayoutContentText);
+      Frame.Parent := LayoutContentText;
+      Frame.Fill(Part);
+      Frame.Align := TAlignLayout.None;
+      Frame.Position.Y := 10000;
+      Frame.Align := TAlignLayout.Top;
+      if IsError then
+        Frame.MemoText.FontColor := $FFEF4444
+      else if FIsUser then
+        Frame.MemoText.FontColor := $FFECECF1
+      else
+        Frame.MemoText.FontColor := $FFD1D5E3;
+      Continue;
     end;
   end;
 end;

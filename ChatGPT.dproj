@@ -312,6 +312,20 @@
         <DCCReference Include="DelphiOpenAI\OpenAI.Utils.ChatHistory.pas"/>
         <DCCReference Include="ChatGPT.FrameImagePreview.pas"/>
         <DCCReference Include="ChatGPT.FrameImage.pas"/>
+        <DCCReference Include="ChatGPT.FrameCode.pas">
+            <Form>FrameCode</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="ChatGPT.Classes.pas"/>
+        <DCCReference Include="ChatGPT.FrameSVG.pas">
+            <Form>FrameSVG</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="ChatGPT.FramePlainText.pas">
+            <Form>FrameText</Form>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

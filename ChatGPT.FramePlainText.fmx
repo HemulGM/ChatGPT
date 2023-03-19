@@ -1,0 +1,35 @@
+object FrameText: TFrameText
+  Size.Width = 575.000000000000000000
+  Size.Height = 387.000000000000000000
+  Size.PlatformDefault = False
+  OnResize = FrameResize
+  OnResized = FrameResize
+  object MemoText: TMemo
+    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    Caret.Color = x00FFFFFF
+    DataDetectorTypes = []
+    DisableMouseWheel = True
+    Lines.Strings = (
+      'begin'
+      ''
+      'end.')
+    ReadOnly = True
+    ShowScrollBars = False
+    StyledSettings = [Style]
+    TextSettings.Font.Family = 'Roboto'
+    TextSettings.Font.Size = 16.000000000000000000
+    TextSettings.FontColor = xFFE8E8E8
+    TextSettings.WordWrap = True
+    Align = Client
+    CanParentFocus = True
+    Cursor = crDefault
+    EnableDragHighlight = False
+    Size.Width = 575.000000000000000000
+    Size.Height = 387.000000000000000000
+    Size.PlatformDefault = False
+    StyleLookup = 'memostyle_clear'
+    TabOrder = 0
+    Viewport.Width = 575.000000000000000000
+    Viewport.Height = 387.000000000000000000
+  end
+end

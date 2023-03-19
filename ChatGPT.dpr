@@ -4,6 +4,8 @@
 
 
 
+
+
 uses
   System.StartUpCopy,
   FMX.Forms,
@@ -28,7 +30,11 @@ uses
   OpenAI.Audio in 'DelphiOpenAI\OpenAI.Audio.pas',
   OpenAI.Utils.ChatHistory in 'DelphiOpenAI\OpenAI.Utils.ChatHistory.pas',
   ChatGPT.FrameImagePreview in 'ChatGPT.FrameImagePreview.pas',
-  ChatGPT.FrameImage in 'ChatGPT.FrameImage.pas';
+  ChatGPT.FrameImage in 'ChatGPT.FrameImage.pas',
+  ChatGPT.FrameCode in 'ChatGPT.FrameCode.pas' {FrameCode: TFrame},
+  ChatGPT.Classes in 'ChatGPT.Classes.pas',
+  ChatGPT.FrameSVG in 'ChatGPT.FrameSVG.pas' {FrameSVG: TFrame},
+  ChatGPT.FramePlainText in 'ChatGPT.FramePlainText.pas' {FrameText};
 
 {$R *.res}
 

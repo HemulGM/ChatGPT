@@ -1,0 +1,11 @@
+object FrameSVG: TFrameSVG
+  Size.Width = 654.000000000000000000
+  Size.Height = 150.000000000000000000
+  Size.PlatformDefault = False
+  object SvgImage: TSkSvg
+    Align = Left
+    Size.Width = 150.000000000000000000
+    Size.Height = 150.000000000000000000
+    Size.PlatformDefault = False
+  end
+end

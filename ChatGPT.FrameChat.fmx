@@ -35,11 +35,20 @@ object FrameChat: TFrameChat
       TabOrder = 0
       OnResize = LayoutTypingResize
       OnResized = LayoutTypingResize
+      object RectangleTypeBG: TRectangle
+        Align = Contents
+        Fill.Color = x14FFFFFF
+        Locked = True
+        Size.Width = 874.000000000000000000
+        Size.Height = 62.000000000000000000
+        Size.PlatformDefault = False
+        Stroke.Kind = None
+      end
       object LayoutTypingContent: TLayout
         Align = HorzCenter
-        Position.X = 36.000000000000000000
+        Position.X = 59.000000000000000000
         Position.Y = 16.000000000000000000
-        Size.Width = 801.000000000000000000
+        Size.Width = 755.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 2
@@ -175,7 +184,7 @@ object FrameChat: TFrameChat
         end
         object Layout4: TLayout
           Align = Client
-          Size.Width = 757.000000000000000000
+          Size.Width = 711.000000000000000000
           Size.Height = 30.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 3
@@ -222,9 +231,9 @@ object FrameChat: TFrameChat
       end
       object FlowLayoutWelcome: TFlowLayout
         Align = HorzCenter
-        Position.X = 101.000000000000000000
+        Position.X = 125.000000000000000000
         Position.Y = 300.000000000000000000
-        Size.Width = 671.000000000000000000
+        Size.Width = 624.000000000000000000
         Size.Height = 319.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1

@@ -1,0 +1,141 @@
+object FrameCode: TFrameCode
+  Margins.Bottom = 5.000000000000000000
+  Size.Width = 575.000000000000000000
+  Size.Height = 387.000000000000000000
+  Size.PlatformDefault = False
+  OnResize = FrameResize
+  OnResized = FrameResize
+  object RectangleHead: TRectangle
+    Align = Top
+    Corners = [TopLeft, TopRight]
+    Fill.Color = xFF353440
+    Padding.Left = 16.000000000000000000
+    Padding.Top = 8.000000000000000000
+    Padding.Right = 16.000000000000000000
+    Padding.Bottom = 8.000000000000000000
+    Size.Width = 575.000000000000000000
+    Size.Height = 32.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Kind = None
+    XRadius = 6.000000000000000000
+    YRadius = 6.000000000000000000
+    object LabelLanguage: TLabel
+      Align = Client
+      StyledSettings = [Size, Style]
+      Size.Width = 462.000000000000000000
+      Size.Height = 16.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.FontColor = xFFD9D9E3
+      TextSettings.WordWrap = False
+      Text = 'language'
+      TabOrder = 0
+    end
+    object LayoutCopyCode: TLayout
+      Align = Right
+      Cursor = crHandPoint
+      HitTest = True
+      Position.X = 478.000000000000000000
+      Position.Y = 8.000000000000000000
+      Size.Width = 81.000000000000000000
+      Size.Height = 16.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      object Path1: TPath
+        Align = Left
+        Data.Path = {
+          4E0000000000000000005C410000004002000000ED0D6F410000004002000000
+          4CA67E41D2353B4002000000B3EA7F4106128340010000000000804100008840
+          0200000000008041384A854002000000C0EC7F41499D8240020000007AC77F41
+          D3F67F400100000000008E410000804002000000D8F097410000804002000000
+          0000A0414B3CA040020000000000A0410000C840010000000000A04100009E41
+          020000000000A041D8F0A74102000000D8F097410000B0410200000000008E41
+          0000B041010000000000C8400000B041020000004B3CA0400000B04102000000
+          00008040D8F0A741020000000000804000009E4101000000000080400000C840
+          02000000000080404B3CA040020000004B3CA04000008040020000000000C840
+          00008040010000007C380041D3F67F4002000000061E004102D9814002000000
+          B30C004117BC834002000000E0040041ECA38540010000000000004100008840
+          02000000000000419678404002000000261E1041000000400200000000002441
+          000000400100000000005C41000000400300000000005C410000004000000000
+          00005C410000D04001000000000024410000D04002000000924B17410000D040
+          02000000A5200C4162D6C240020000005CB805416FF5AE400100000077100641
+          A301B040010000000000C8400000B04002000000CBBEBA400000B04002000000
+          0000B040CBBEBA40020000000000B0400000C840010000000000B04000009E41
+          020000000000B0404850A14102000000CBBEBA400000A441020000000000C840
+          0000A4410100000000008E410000A44102000000485091410000A44102000000
+          000094414850A141020000000000944100009E4101000000000094410000C840
+          0200000000009441CBBEBA4002000000485091410000B0400200000000008E41
+          0000B040010000009EEF7941A301B04001000000AE477A416FF5AE4002000000
+          3BDF734162D6C24002000000A2B468410000D0400200000000005C410000D040
+          0300000000005C410000D0400000000000005C41000060400100000000002441
+          0000604002000000655F1D41000060400200000000001841957D754002000000
+          000018410000884002000000000018413541954002000000655F1D410000A040
+          02000000000024410000A0400100000000005C410000A0400200000090A06241
+          0000A04002000000000068413541954002000000000068410000884002000000
+          00006841957D75400200000090A06241000060400200000000005C4100006040
+          0300000000005C4100006040}
+        Fill.Color = xFFD9D9E3
+        HitTest = False
+        Size.Width = 16.000000000000000000
+        Size.Height = 16.000000000000000000
+        Size.PlatformDefault = False
+        Stroke.Kind = None
+        WrapMode = Fit
+      end
+      object Label1: TLabel
+        Align = Client
+        StyledSettings = [Size, Style]
+        Size.Width = 65.000000000000000000
+        Size.Height = 16.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.FontColor = xFFD9D9E3
+        TextSettings.HorzAlign = Trailing
+        TextSettings.WordWrap = False
+        Text = 'Copy code'
+        TabOrder = 0
+      end
+    end
+  end
+  object RectangleClient: TRectangle
+    Align = Client
+    Corners = [BottomLeft, BottomRight]
+    Fill.Color = claBlack
+    Size.Width = 575.000000000000000000
+    Size.Height = 355.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Kind = None
+    XRadius = 6.000000000000000000
+    YRadius = 6.000000000000000000
+    object MemoCode: TMemo
+      Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+      Caret.Color = x00FFFFFF
+      DataDetectorTypes = []
+      DisableMouseWheel = True
+      Lines.Strings = (
+        'begin'
+        ''
+        'end.')
+      ReadOnly = True
+      StyledSettings = [Style]
+      TextSettings.Font.Family = 'Consolas'
+      TextSettings.Font.Size = 14.000000000000000000
+      TextSettings.FontColor = xFFE8E8E8
+      Align = Client
+      CanParentFocus = True
+      Cursor = crDefault
+      EnableDragHighlight = False
+      Margins.Left = 5.000000000000000000
+      Margins.Top = 5.000000000000000000
+      Margins.Right = 5.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Size.Width = 565.000000000000000000
+      Size.Height = 345.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'memostyle_code'
+      TabOrder = 0
+      Viewport.Width = 565.000000000000000000
+      Viewport.Height = 345.000000000000000000
+    end
+  end
+end

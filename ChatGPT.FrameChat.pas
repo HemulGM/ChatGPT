@@ -83,6 +83,7 @@ type
     ButtonImage: TButton;
     PathImage: TPath;
     RectangleImageMode: TRectangle;
+    RectangleTypeBG: TRectangle;
     procedure LayoutSendResize(Sender: TObject);
     procedure MemoQueryChange(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
@@ -111,6 +112,7 @@ type
     FBuffer: TChatHistory;
     FIsImageMode: Boolean;
     function NewMessage(const Text: string; IsUser: Boolean; UseBuffer: Boolean = True; IsAudio: Boolean = False): TFrameMessage;
+    function NewMessageImage(IsUser: Boolean; Images: TArray<string>): TFrameMessage;
     procedure ClearChat;
     procedure SetTyping(const Value: Boolean);
     procedure SetAPI(const Value: IOpenAI);
@@ -127,7 +129,6 @@ type
     procedure SetIsImageMode(const Value: Boolean);
     procedure SendRequestImage;
     procedure SendRequestPrompt;
-    function NewMessageImage(IsUser: Boolean; Images: TArray<string>): TFrame;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -173,7 +174,7 @@ begin
   end;
 end;
 
-function TFrameChat.NewMessageImage(IsUser: Boolean; Images: TArray<string>): TFrame;
+function TFrameChat.NewMessageImage(IsUser: Boolean; Images: TArray<string>): TFrameMessage;
 begin
   LayoutWelcome.Visible := False;
   Result := TFrameMessage.Create(VertScrollBoxChat);
@@ -182,6 +183,7 @@ begin
   Result.Align := TAlignLayout.MostTop;
   TFrameMessage(Result).IsUser := IsUser;
   TFrameMessage(Result).Images := Images;
+  Result.StartAnimate;
 end;
 
 procedure TFrameChat.AppendMessages(Response: TChat);
@@ -329,6 +331,7 @@ begin
         var Completions := API.Chat.Create(
           procedure(Params: TChatParams)
           begin
+            //Params.Model('gpt-4');
             Params.Messages(FBuffer.ToArray);
             Params.MaxTokens(MAX_TOKENS);
             //Params.Temperature(0.5);
@@ -524,10 +527,11 @@ begin
   Result.Position.Y := VertScrollBoxChat.ContentBounds.Height;
   Result.Parent := VertScrollBoxChat;
   Result.Align := TAlignLayout.MostTop;
-  Result.Text := Text;
   Result.IsUser := IsUser;
   Result.IsAudio := IsAudio;
+  Result.Text := Text;
   Result.UpdateContentSize;
+  Result.StartAnimate;
 end;
 
 function TFrameChat.ProcText(const Text: string; FromUser: Boolean): string;

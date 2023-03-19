@@ -60,6 +60,7 @@ type
     procedure UpdateMode;
     function NextChatId: Integer;
     procedure SelectChat(const ChatId: string);
+    procedure DeleteChat(const ChatId: string);
     procedure FOnChatItemClick(Sender: TObject);
     {$HINTS OFF}
     procedure FOnChatItemTap(Sender: TObject; const Point: TPointF);
@@ -70,6 +71,7 @@ type
     procedure ShowClearConfirm;
     procedure HideClearConfirm;
     procedure FOnChatEditClick(Sender: TObject);
+    procedure FOnChatDeleteClick(Sender: TObject);
   public
     property OpenAI: TOpenAIComponent read FOpenAI;
     constructor Create(AOwner: TComponent); override;
@@ -216,8 +218,29 @@ begin
   ItemList.ImageIndex := 1;
   ItemList.DisableDisappear := True;
   ItemList.StylesData['edit.OnClick'] := TValue.From<TNotifyEvent>(FOnChatEditClick);
+  ItemList.StylesData['delete.OnClick'] := TValue.From<TNotifyEvent>(FOnChatDeleteClick);
   ListBoxChatList.AddObject(ItemList);
   ItemList.ApplyStyleLookup;
+end;
+
+procedure TFormMain.DeleteChat(const ChatId: string);
+begin
+  for var Control in LayoutChatsBox.Controls do
+    if Control is TFrameChat then
+    begin
+      var Frame := Control as TFrameChat;
+      if Frame.ChatId = ChatId then
+      begin
+        Frame.Free;
+        Break;
+      end;
+    end;
+  for var i := 0 to Pred(ListBoxChatList.Count) do
+    if ListBoxChatList.ListItems[i].TagString = ChatId then
+    begin
+      ListBoxChatList.ListItems[i].Free;
+      Exit;
+    end;
 end;
 
 procedure TFormMain.ButtonNewChatClick(Sender: TObject);
@@ -245,6 +268,17 @@ begin
         if AResult = mrOk then
           ListItem.Text := AValues[0];
       end);
+  end;
+end;
+
+procedure TFormMain.FOnChatDeleteClick(Sender: TObject);
+var
+  Button: TButton absolute Sender;
+  ListItem: TListBoxItem;
+begin
+  if TFMXObjectHelper.FindNearestParentOfClass<TListBoxItem>(Button, ListItem) then
+  begin
+    DeleteChat(ListItem.TagString);
   end;
 end;
 
