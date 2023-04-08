@@ -24,14 +24,21 @@ type
     Path3: TPath;
     FlowLayoutImages: TFlowLayout;
     LayoutClient: TLayout;
+    LayoutActions: TLayout;
+    ButtonCopy: TButton;
+    Path6: TPath;
+    ButtonDelete: TButton;
+    Path4: TPath;
     procedure MemoTextChange(Sender: TObject);
     procedure FrameResize(Sender: TObject);
+    procedure ButtonCopyClick(Sender: TObject);
   private
     FIsUser: Boolean;
     FText: string;
     FIsError: Boolean;
     FIsAudio: Boolean;
     FImages: TArray<string>;
+    FId: string;
     procedure SetIsUser(const Value: Boolean);
     procedure SetText(const Value: string);
     procedure SetIsError(const Value: Boolean);
@@ -39,8 +46,10 @@ type
     procedure SetIsAudio(const Value: Boolean);
     procedure BuildContent(Parts: TList<TPart>);
     procedure SetImages(const Value: TArray<string>);
+    procedure SetId(const Value: string);
   public
     procedure UpdateContentSize;
+    property Id: string read FId write SetId;
     property Text: string read FText write SetText;
     property Images: TArray<string> read FImages write SetImages;
     property IsUser: Boolean read FIsUser write SetIsUser;
@@ -53,8 +62,8 @@ type
 implementation
 
 uses
-  System.Math, FMX.Memo.Style, FMX.Ani, ChatGPT.FrameCode, ChatGPT.FrameSVG,
-  ChatGPT.FramePlainText;
+  System.Math, FMX.Platform, FMX.Memo.Style, FMX.Ani, ChatGPT.FrameCode,
+  ChatGPT.FrameSVG, ChatGPT.FramePlainText;
 
 {$R *.fmx}
 
@@ -86,10 +95,18 @@ begin
     Height := H;
 end;
 
+procedure TFrameMessage.ButtonCopyClick(Sender: TObject);
+begin
+  var ClipBoard: IFMXClipboardService;
+  if TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService, ClipBoard) then
+    ClipBoard.SetClipboard(Text);
+end;
+
 constructor TFrameMessage.Create(AOwner: TComponent);
 begin
   inherited;
   Name := '';
+  ButtonCopy.Visible := False;
   IsAudio := False;
   FlowLayoutImages.Visible := False;
 end;
@@ -111,6 +128,11 @@ end;
 procedure TFrameMessage.MemoTextChange(Sender: TObject);
 begin
   UpdateContentSize;
+end;
+
+procedure TFrameMessage.SetId(const Value: string);
+begin
+  FId := Value;
 end;
 
 procedure TFrameMessage.SetImages(const Value: TArray<string>);
@@ -296,6 +318,7 @@ begin
   else
     FText := 'empty';
   FText := FText.Trim([' ', #13, #10]);
+  ButtonCopy.Visible := not FText.IsEmpty;
   ParseText(FText);
 end;
 

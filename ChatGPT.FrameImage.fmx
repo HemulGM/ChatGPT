@@ -8,6 +8,7 @@ object FrameImage: TFrameImage
     Fill.Color = xA03F3F3F
     Margins.Right = 5.000000000000000000
     Margins.Bottom = 5.000000000000000000
+    PopupMenu = PopupMenuCopy
     Size.Width = 251.000000000000000000
     Size.Height = 251.000000000000000000
     Size.PlatformDefault = False
@@ -24,6 +25,14 @@ object FrameImage: TFrameImage
       object FillRGBEffect1: TFillRGBEffect
         Color = xFFACACBE
       end
+    end
+  end
+  object PopupMenuCopy: TPopupMenu
+    Left = 64
+    Top = 56
+    object MenuItemCopy: TMenuItem
+      Text = 'Copy image'
+      OnClick = MenuItemCopyClick
     end
   end
 end

@@ -52,6 +52,8 @@ type
     procedure ButtonClearCancelClick(Sender: TObject);
     procedure ButtonDiscordClick(Sender: TObject);
     procedure ButtonFAQClick(Sender: TObject);
+    procedure FrameResize(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     FOpenAI: TOpenAIComponent;
     FMode: TWindowMode;
@@ -73,6 +75,8 @@ type
     procedure FOnChatEditClick(Sender: TObject);
     procedure FOnChatDeleteClick(Sender: TObject);
   public
+    procedure LoadChats;
+    procedure SaveChats;
     property OpenAI: TOpenAIComponent read FOpenAI;
     constructor Create(AOwner: TComponent); override;
     property Mode: TWindowMode read FMode write SetMode;
@@ -93,20 +97,20 @@ implementation
 
 uses
   {$IFDEF ANDROID}
-  Androidapi.Helpers, Androidapi.JNI.GraphicsContentViewText,
+  Androidapi.Helpers, Androidapi.JNI.GraphicsContentViewText, Androidapi.JNI.NET,
   {$ENDIF}
   {$IFDEF MSWINDOWS}
-  ShellAPI,
+  ShellAPI, DarkModeApi.FMX,
   {$ENDIF}
-  FMX.Ani, System.Math, System.Rtti, FMX.Utils, FMX.DialogService;
+  FMX.Ani, System.Math, System.Rtti, FMX.Utils, FMX.DialogService, System.JSON,
+  System.IOUtils;
 
 {$R *.fmx}
 
 {$IFDEF ANDROID}
 procedure OpenUrl(const URL: string);
 begin
-  TAndroidHelper.Context.startActivity(
-    TJIntent.JavaClass.init(TJIntent.JavaClass.ACTION_VIEW, StrToJURI(URL)));
+  TAndroidHelper.Context.startActivity(TJIntent.JavaClass.init(TJIntent.JavaClass.ACTION_VIEW, StrToJURI(URL)));
 end;
 {$ENDIF}
 
@@ -296,6 +300,46 @@ begin
   FOnChatItemClick(Sender);
 end;
 
+procedure TFormMain.LoadChats;
+begin
+  var JsonText: string := '';
+  try
+    JsonText := TFile.ReadAllText('save.json', TEncoding.UTF8);
+  except
+    Exit;
+  end;
+  if JsonText.IsEmpty then
+    Exit;
+  var JSON := TJSONObject.ParseJSONValue(JsonText);
+  try
+    var JSONChats := TJSONArray.Create;
+    if JSON.TryGetValue('chats', JSONChats) then
+      for var JChat in JSONChats do
+      begin
+
+      end;
+  except
+    //
+  end;
+  JSON.Free;
+end;
+
+procedure TFormMain.SaveChats;
+begin
+  var JSON := TJSONObject.Create;
+  try
+    var JSONChats := TJSONArray.Create;
+    JSON.AddPair('chats', JSONChats);
+    for var Control in LayoutChatsBox.Controls do
+      if Control is TFrameChat then
+        JSONChats.Add(TFrameChat(Control).SaveAsJson);
+    TFile.WriteAllText('save.json', JSON.ToJSON, TEncoding.UTF8);
+  except
+    //
+  end;
+  JSON.Free;
+end;
+
 procedure TFormMain.SelectChat(const ChatId: string);
 begin
   for var Control in LayoutChatsBox.Controls do
@@ -340,6 +384,13 @@ begin
   FormResize(Sender);
 end;
 
+procedure TFormMain.FormCreate(Sender: TObject);
+begin
+  {$IFDEF MSWINDOWS}
+  SetWindowColorModeAsSystem;
+  {$ENDIF}
+end;
+
 procedure TFormMain.FormResize(Sender: TObject);
 begin
   LayoutMenuContainer.Width := Min(320, ClientWidth - 45);
@@ -357,6 +408,11 @@ end;
 procedure TFormMain.FormVirtualKeyboardShown(Sender: TObject; KeyboardVisible: Boolean; const Bounds: TRect);
 begin
   Padding.Bottom := Bounds.Height;
+end;
+
+procedure TFormMain.FrameResize(Sender: TObject);
+begin
+  SaveChats;
 end;
 
 procedure TFormMain.UpdateMode;

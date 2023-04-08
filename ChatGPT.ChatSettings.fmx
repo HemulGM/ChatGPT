@@ -1,0 +1,222 @@
+object FrameChatSettings: TFrameChatSettings
+  Size.Width = 683.000000000000000000
+  Size.Height = 491.000000000000000000
+  Size.PlatformDefault = False
+  object RectangleBG: TRectangle
+    Align = Contents
+    Fill.Color = x64000000
+    Locked = True
+    Size.Width = 683.000000000000000000
+    Size.Height = 491.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Kind = None
+    OnClick = ButtonCancelClick
+  end
+  object Layout1: TLayout
+    Align = Center
+    Padding.Left = 10.000000000000000000
+    Padding.Top = 10.000000000000000000
+    Padding.Right = 10.000000000000000000
+    Padding.Bottom = 10.000000000000000000
+    Size.Width = 321.000000000000000000
+    Size.Height = 381.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object RectangleFrame: TRectangle
+      Align = Contents
+      Fill.Color = xFF343541
+      Locked = True
+      Size.Width = 321.000000000000000000
+      Size.Height = 381.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      XRadius = 6.000000000000000000
+      YRadius = 6.000000000000000000
+    end
+    object Label1: TLabel
+      Align = Top
+      AutoSize = True
+      StyledSettings = [Style]
+      Position.X = 10.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 301.000000000000000000
+      Size.Height = 25.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 20.000000000000000000
+      TextSettings.FontColor = xFFE9E9E9
+      TextSettings.HorzAlign = Center
+      TextSettings.WordWrap = False
+      Text = 'Chat Settings'
+      TabOrder = 5
+    end
+    object EditLangSrc: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      Align = Top
+      StyleLookup = 'editstyle_clear'
+      TabOrder = 6
+      Position.X = 10.000000000000000000
+      Position.Y = 72.000000000000000000
+      Margins.Top = 5.000000000000000000
+      Size.Width = 301.000000000000000000
+      Size.Height = 33.000000000000000000
+      Size.PlatformDefault = False
+      TextPrompt = 'Example: "ru" or "de"'
+      object ClearEditButton1: TClearEditButton
+        CanFocus = False
+        Cursor = crArrow
+        Hint = 'Clear'
+        Size.Width = 28.000000000000000000
+        Size.Height = 29.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_clearmini'
+        TabOrder = 0
+        Text = 'buttonstyle_clearmini'
+        object Path4: TPath
+          Align = Center
+          Data.Path = {
+            0E00000000000000000060413333B33F010000009A9949410000000001000000
+            0000E0403333B340010000003333B33F0000000001000000000000003333B33F
+            010000003333B3400000E04001000000000000009A994941010000003333B33F
+            00006041010000000000E04066660641010000009A9949410000604101000000
+            000060419A99494101000000666606410000E04001000000000060413333B33F
+            03000000000060413333B33F}
+          Fill.Color = xFFACACBE
+          Locked = True
+          HitTest = False
+          Margins.Left = 2.000000000000000000
+          Size.Width = 13.000000000000000000
+          Size.Height = 13.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Kind = None
+          WrapMode = Fit
+        end
+      end
+    end
+    object Label2: TLabel
+      Align = Top
+      AutoSize = True
+      StyledSettings = [Style]
+      Margins.Top = 10.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Position.X = 10.000000000000000000
+      Position.Y = 45.000000000000000000
+      Size.Width = 301.000000000000000000
+      Size.Height = 17.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 14.000000000000000000
+      TextSettings.FontColor = xB4FFFFFF
+      TextSettings.WordWrap = False
+      Text = 'Translate to English from your lang'
+      TabOrder = 4
+    end
+    object Label3: TLabel
+      Align = Top
+      AutoSize = True
+      StyledSettings = [Style]
+      Margins.Top = 10.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Position.X = 10.000000000000000000
+      Position.Y = 115.000000000000000000
+      Size.Width = 301.000000000000000000
+      Size.Height = 17.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 14.000000000000000000
+      TextSettings.FontColor = xB4FFFFFF
+      TextSettings.WordWrap = False
+      Text = 'Temperature'
+      TabOrder = 3
+    end
+    object Label4: TLabel
+      Align = Top
+      AutoSize = True
+      StyledSettings = [Style]
+      Margins.Top = 10.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Position.X = 10.000000000000000000
+      Position.Y = 167.000000000000000000
+      Size.Width = 301.000000000000000000
+      Size.Height = 29.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.FontColor = x78FFFFFF
+      Text = 
+        'The higher, the more creativity will be in the answers (less acc' +
+        'urate)'
+      TabOrder = 1
+    end
+    object Layout2: TLayout
+      Align = Bottom
+      Position.X = 10.000000000000000000
+      Position.Y = 325.000000000000000000
+      Size.Width = 301.000000000000000000
+      Size.Height = 46.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      object ButtonCancel: TButton
+        Align = Right
+        Position.X = 221.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_menu'
+        TabOrder = 2
+        Text = 'CANCEL'
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = ButtonCancelClick
+      end
+      object ButtonOk: TButton
+        Align = Right
+        Position.X = 141.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_menu'
+        TabOrder = 3
+        Text = 'OK'
+        OnClick = ButtonOkClick
+      end
+    end
+    object Layout3: TLayout
+      Align = Top
+      Position.X = 10.000000000000000000
+      Position.Y = 137.000000000000000000
+      Size.Width = 301.000000000000000000
+      Size.Height = 20.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 7
+      object TrackBarTemp: TTrackBar
+        Align = Client
+        CanParentFocus = True
+        Frequency = 1.000000000000000000
+        Max = 20.000000000000000000
+        Orientation = Horizontal
+        Size.Width = 267.000000000000000000
+        Size.Height = 19.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 7
+        OnChange = TrackBarTempTracking
+        OnTracking = TrackBarTempTracking
+      end
+      object LabelTemp: TLabel
+        Align = Right
+        StyledSettings = [Style]
+        Margins.Left = 6.000000000000000000
+        Position.X = 273.000000000000000000
+        Size.Width = 28.000000000000000000
+        Size.Height = 20.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xBEFFFFFF
+        TextSettings.HorzAlign = Trailing
+        TextSettings.WordWrap = False
+        Text = '2.0'
+        TabOrder = 72
+      end
+    end
+  end
+end

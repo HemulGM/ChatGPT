@@ -39,9 +39,6 @@ constructor TFrameCode.Create(AOwner: TComponent);
 begin
   inherited;
   Name := '';
-  {$IFDEF ANDROID}
-  Memo.HitTest := False;
-  {$ENDIF}
 end;
 
 procedure TFrameCode.Fill(Data: TPart);

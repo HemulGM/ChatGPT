@@ -34,7 +34,7 @@ begin
   inherited;
   Name := '';
   {$IFDEF ANDROID}
-  Memo.HitTest := False;
+  MemoText.HitTest := False;
   {$ENDIF}
   MemoText.TextSettings.VertAlign := TTextAlign.Center;
 end;

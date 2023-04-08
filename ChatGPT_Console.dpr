@@ -7,7 +7,7 @@
 uses
   System.SysUtils,
   System.Classes,
-  OpenAI.Completions,
+  OpenAI.Chat,
   OpenAI;
 
 begin
@@ -23,21 +23,39 @@ begin
         Break;
       Buf.Add('Human: ' + Prompt);
       try
-        var Completions := OpenAI.Completion.Create(
-          procedure(Params: TCompletionParams)
+        OpenAI.Chat.CreateStream(
+          procedure(Params: TChatParams)
           begin
-            Params.Prompt(Buf.Text);
+            Params.Messages([TchatMessageBuild.User(Buf.Text)]);
+            Params.MaxTokens(1024);
+            Params.Stream;
+          end,
+          procedure(Chat: TChat; IsDone: Boolean; var Cancel: Boolean)
+          begin
+            if (not IsDone) and Assigned(Chat) then
+              Writeln(Chat.Choices[0].Delta.Content)
+            else if IsDone then
+              Writeln('DONE!');
+            Writeln('-------');
+            Sleep(80);
+          end);
+            {
+        var Chat := OpenAI.Chat.Create(
+          procedure(Params: TChatParams)
+          begin
+            Params.Messages([TchatMessageBuild.User(Buf.Text)]);
             Params.MaxTokens(1024);
           end);
         try
-          for var Choise in Completions.Choices do
+          for var Choise in Chat.Choices do
           begin
-            Buf.Add(Choise.Text.Trim([#13, #10, ' ']));
-            Writeln(Choise.Text.Trim([#13, #10, ' ']));
+            Buf.Add(Choise.Message.Content.Trim([#13, #10, ' ']));
+            Writeln(Choise.Message.Content.Trim([#13, #10, ' ']));
           end;
         finally
-          Completions.Free;
+          Chat.Free;
         end;
+                   }
       except
         on E: Exception do
           Writeln('Error: ', E.Message);

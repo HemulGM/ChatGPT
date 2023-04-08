@@ -5,14 +5,17 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Objects, FMX.Effects, FMX.Filter.Effects;
+  FMX.Objects, FMX.Effects, FMX.Filter.Effects, FMX.Menus;
 
 type
   TFrameImage = class(TFrame)
     RectangleImage: TRectangle;
     AniIndicator: TAniIndicator;
     FillRGBEffect1: TFillRGBEffect;
+    PopupMenuCopy: TPopupMenu;
+    MenuItemCopy: TMenuItem;
     procedure RectangleImageClick(Sender: TObject);
+    procedure MenuItemCopyClick(Sender: TObject);
   private
     procedure SetImage(const Value: string);
   public
@@ -32,7 +35,7 @@ implementation
 
 uses
   System.NetEncoding, ChatGPT.FrameImagePreview, System.Threading,
-  System.Net.HttpClient;
+  System.Net.HttpClient, FMX.Platform;
 
 {$R *.fmx}
 
@@ -113,6 +116,13 @@ constructor TFrameImage.Create(AOwner: TComponent);
 begin
   inherited;
   Name := '';
+end;
+
+procedure TFrameImage.MenuItemCopyClick(Sender: TObject);
+begin
+  var ClipBoard: IFMXClipboardService;
+  if TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService, ClipBoard) then
+    ClipBoard.SetClipboard(RectangleImage.Fill.Bitmap.Bitmap);
 end;
 
 procedure TFrameImage.RectangleImageClick(Sender: TObject);

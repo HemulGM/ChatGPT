@@ -1,14 +1,9 @@
 ﻿program ChatGPT;
 
-
-
-
-
-
-
 uses
   System.StartUpCopy,
   FMX.Forms,
+  Skia.FMX,
   ChatGPT.Main in 'ChatGPT.Main.pas' {FormMain},
   OpenAI.API.Params in 'DelphiOpenAI\OpenAI.API.Params.pas',
   OpenAI.API in 'DelphiOpenAI\OpenAI.API.pas',
@@ -34,11 +29,17 @@ uses
   ChatGPT.FrameCode in 'ChatGPT.FrameCode.pas' {FrameCode: TFrame},
   ChatGPT.Classes in 'ChatGPT.Classes.pas',
   ChatGPT.FrameSVG in 'ChatGPT.FrameSVG.pas' {FrameSVG: TFrame},
-  ChatGPT.FramePlainText in 'ChatGPT.FramePlainText.pas' {FrameText};
+  ChatGPT.FramePlainText in 'ChatGPT.FramePlainText.pas' {FrameText},
+  ChatGPT.ChatSettings in 'ChatGPT.ChatSettings.pas' {FrameChatSettings: TFrame},
+  DarkModeApi.Consts in 'WindowDarkMode\DarkModeApi.Consts.pas',
+  DarkModeApi.FMX in 'WindowDarkMode\DarkModeApi.FMX.pas',
+  DarkModeApi in 'WindowDarkMode\DarkModeApi.pas',
+  DarkModeApi.Types in 'WindowDarkMode\DarkModeApi.Types.pas';
 
 {$R *.res}
 
 begin
+  GlobalUseSkia := True;
   Application.Initialize;
   Application.CreateForm(TFormMain, FormMain);
   Application.Run;

@@ -1,3 +1,6 @@
 [submodule "DelphiOpenAI"]
 	path = DelphiOpenAI
 	url = https://github.com/HemulGM/DelphiOpenAI
+[submodule "WindowDarkMode"]
+	path = WindowDarkMode
+	url = https://github.com/HemulGM/WindowDarkMode
