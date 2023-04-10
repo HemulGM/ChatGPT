@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Objects, FMX.Layouts, FMX.Controls.Presentation, FMX.Ani;
+  FMX.Objects, FMX.Layouts, FMX.Controls.Presentation, FMX.Ani, StrUtils;
 
 type
   TFramePreview = class(TFrame)
@@ -36,7 +36,12 @@ implementation
 procedure TFramePreview.Button1Click(Sender: TObject);
 begin
   if SaveDialogJPG.Execute then
-    Image.Bitmap.SaveToFile(SaveDialogJPG.FileName);
+  begin
+    if RightStr(SaveDialogJPG.FileName, 4) = '.jpg' then
+      Image.Bitmap.SaveToFile(SaveDialogJPG.FileName)
+    else
+      Image.Bitmap.SaveToFile(SaveDialogJPG.FileName + '.jpg');
+  end;
 end;
 
 procedure TFramePreview.FrameClick(Sender: TObject);
