@@ -1082,4 +1082,11 @@ object FrameChat: TFrameChat
       end
     end
   end
+  object TimerUpdateTextSize: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = TimerUpdateTextSizeTimer
+    Left = 576
+    Top = 256
+  end
 end

@@ -7,13 +7,11 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Layouts, FMX.Memo.Types, FMX.Controls.Presentation,
   FMX.ScrollBox, FMX.Memo, OpenAI, OpenAI.Completions, ChatGPT.FrameMessage,
-  System.Threading, FMX.Edit, FMX.ImgList, OpenAI.Chat,
+  ChatGPT.Classes, System.Threading, FMX.Edit, FMX.ImgList, OpenAI.Chat,
   System.Generics.Collections, OpenAI.Audio, OpenAI.Utils.ChatHistory,
-  OpenAI.Images, ChatGPT.ChatSettings, System.JSON, FMX.Effects;
+  OpenAI.Images, ChatGPT.ChatSettings, System.JSON, FMX.Effects, FMX.ListBox;
 
 type
-  TWindowMode = (wmCompact, wmFull);
-
   TButton = class(FMX.StdCtrls.TButton)
   public
     procedure SetBounds(X, Y, AWidth, AHeight: Single); override;
@@ -80,6 +78,7 @@ type
     LayoutRetry: TLayout;
     ButtonRetry: TButton;
     ShadowEffect1: TShadowEffect;
+    TimerUpdateTextSize: TTimer;
     procedure LayoutSendResize(Sender: TObject);
     procedure MemoQueryChange(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
@@ -96,6 +95,10 @@ type
     procedure ButtonImageClick(Sender: TObject);
     procedure ButtonSettingsClick(Sender: TObject);
     procedure ButtonRetryClick(Sender: TObject);
+    procedure TimerUpdateTextSizeTimer(Sender: TObject);
+  private
+    class var
+      FChatIdCount: Integer;
   private
     FAPI: IOpenAI;
     FChatId: string;
@@ -108,6 +111,8 @@ type
     FIsImageMode: Boolean;
     FTemperature: Single;
     FLastRequest: TProc;
+    FMenuItem: TListBoxItem;
+    FIsFirstMessage: Boolean;
     function NewMessage(const Text: string; IsUser: Boolean; UseBuffer: Boolean = True; IsAudio: Boolean = False): TFrameMessage;
     function NewMessageImage(IsUser: Boolean; Images: TArray<string>): TFrameMessage;
     procedure ClearChat;
@@ -131,8 +136,12 @@ type
     procedure RequestImage(const Prompt: string);
     procedure RequestAudio(const AudioFile: string);
     procedure SetLastRequest(const Value: TProc);
+    procedure SetMenuItem(const Value: TListBoxItem);
+    procedure UpdateMenuTitle(const Text: string);
+    class function NextChatId: Integer; static;
   public
     constructor Create(AOwner: TComponent); override;
+    constructor CreateFromJson(AOwner: TComponent; JSON: TJSONObject);
     destructor Destroy; override;
     function MakeContentScreenshot: TBitmap;
     function SaveAsJson: TJSONObject;
@@ -145,6 +154,8 @@ type
     property Temperature: Single read FTemperature write SetTemperature;
     property IsImageMode: Boolean read FIsImageMode write SetIsImageMode;
     property LastRequest: TProc read FLastRequest write SetLastRequest;
+    property MenuItem: TListBoxItem read FMenuItem write SetMenuItem;
+    property IsFirstMessage: Boolean read FIsFirstMessage write FIsFirstMessage;
   end;
 
 const
@@ -154,7 +165,8 @@ const
 implementation
 
 uses
-  FMX.Ani, System.Math, OpenAI.API, ChatGPT.Translate, System.IOUtils;
+  FMX.Ani, System.Math, OpenAI.API, ChatGPT.Translate, System.IOUtils,
+  ChatGPT.Overlay;
 
 {$R *.fmx}
 
@@ -236,8 +248,9 @@ end;
 
 procedure TFrameChat.LoadFromJson(JSON: TJSONObject);
 begin
+  var ItemCount: Integer := 0;
   FChatId := JSON.GetValue('chat_id', TGUID.NewGuid.ToString);
-  FTemperature := JSON.GetValue('chat_id', 0.0);
+  FTemperature := JSON.GetValue('temperature', 0.0);
   FLangSrc := JSON.GetValue('user_lang', '');
   FTitle := JSON.GetValue('title', '');
   var JArray: TJSONArray;
@@ -247,17 +260,20 @@ begin
       var Item: TChatMessageBuild;
       Item.Role := TMessageRole.FromString(JItem.GetValue('role', 'user'));
       Item.Content := JItem.GetValue('content', '');
-      //FBuffer.Add(Item);
+      FBuffer.Add(Item);
       var Frame := TFrameMessage.Create(VertScrollBoxChat);
       Frame.Position.Y := VertScrollBoxChat.ContentBounds.Height;
-      Frame.Parent := VertScrollBoxChat;
+      VertScrollBoxChat.AddObject(Frame);
       Frame.Align := TAlignLayout.MostTop;
       Frame.IsUser := Item.Role = TMessageRole.User;
       Frame.IsAudio := False;
       Frame.Text := Item.Content;
       Frame.UpdateContentSize;
       Frame.StartAnimate;
+      Inc(ItemCount);
     end;
+  if ItemCount > 0 then
+    LayoutWelcome.Visible := False;
 end;
 
 procedure TFrameChat.ScrollDown;
@@ -305,6 +321,7 @@ begin
   TFrameChatSettings.Execute(Self,
     procedure(Frame: TFrameChatSettings)
     begin
+      Frame.Mode := FMode;
       Frame.EditLangSrc.Text := LangSrc;
       Frame.TrackBarTemp.Value := Temperature * 10;
     end,
@@ -477,7 +494,7 @@ begin
     Exit;
   MemoQuery.Text := '';
   NewMessage(Prompt, True);
-  if not Prompt.StartsWith('/system ') then
+  if (not Prompt.StartsWith('/system ')) and (not Prompt.StartsWith('/assistant ')) and (not Prompt.StartsWith('/user ')) then
     RequestPrompt;
 end;
 
@@ -542,9 +559,18 @@ begin
   LayoutWelcome.Parent := VertScrollBoxChat;
 end;
 
+class function TFrameChat.NextChatId: Integer;
+begin
+  Inc(FChatIdCount);
+  Result := FChatIdCount;
+end;
+
 constructor TFrameChat.Create(AOwner: TComponent);
 begin
   inherited;
+  ChatId := TGUID.NewGuid.ToString;
+  Title := 'New chat ' + NextChatId.ToString;
+  FIsFirstMessage := True;
   LastRequest := nil;
   FBuffer := TChatHistory.Create;
   FPool := TThreadPool.Create;
@@ -557,8 +583,15 @@ begin
   IsImageMode := False;
 end;
 
+constructor TFrameChat.CreateFromJson(AOwner: TComponent; JSON: TJSONObject);
+begin
+  Create(AOwner);
+  LoadFromJson(JSON);
+end;
+
 destructor TFrameChat.Destroy;
 begin
+  FMenuItem := nil;
   FPool.Free;
   FBuffer.Free;
   inherited;
@@ -621,15 +654,8 @@ end;
 
 procedure TFrameChat.MemoQueryChange(Sender: TObject);
 begin
-  TThread.ForceQueue(nil,
-    procedure
-    begin
-      var H: Single :=
-        LayoutSend.Padding.Top + LayoutSend.Padding.Bottom +
-        MemoQuery.ContentBounds.Height +
-        LayoutQuery.Padding.Top + LayoutQuery.Padding.Bottom;
-      LayoutSend.Height := Max(LayoutSend.TagFloat, Min(H, 400));
-    end);
+  TimerUpdateTextSize.Enabled := False;
+  TimerUpdateTextSize.Enabled := True;
 end;
 
 procedure TFrameChat.MemoQueryKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
@@ -647,8 +673,25 @@ begin
   MemoQueryChange(Sender);
 end;
 
+procedure TFrameChat.UpdateMenuTitle(const Text: string);
+begin
+  if not Assigned(FMenuItem) then
+    Exit;
+  if not FMenuItem.StylesData['changed_title'].AsBoolean then
+  begin
+    FTitle := Text.Substring(0, 50);
+    FMenuItem.Text := FTitle;
+  end;
+end;
+
 function TFrameChat.NewMessage(const Text: string; IsUser: Boolean; UseBuffer: Boolean; IsAudio: Boolean): TFrameMessage;
 begin
+  if IsUser and IsFirstMessage then
+  begin
+    IsFirstMessage := False;
+    UpdateMenuTitle(Text);
+  end;
+
   if UseBuffer then
   begin
     var MessageTag := TGUID.NewGuid.ToString;
@@ -657,10 +700,20 @@ begin
       if Text.StartsWith('/system ') then
       begin
         var AText := Text.Replace('/system ', '', []);
-        if not AText.IsEmpty then
-          FBuffer.New(TMessageRole.System, ProcText(AText, IsUser), MessageTag);
-      end;
-      FBuffer.New(TMessageRole.User, ProcText(Text, IsUser), MessageTag);
+        FBuffer.New(TMessageRole.System, ProcText(AText, IsUser), MessageTag);
+      end
+      else if Text.StartsWith('/user ') then
+      begin
+        var AText := Text.Replace('/user ', '', []);
+        FBuffer.New(TMessageRole.User, ProcText(AText, IsUser), MessageTag);
+      end
+      else if Text.StartsWith('/assistant ') then
+      begin
+        var AText := Text.Replace('/assistant ', '', []);
+        FBuffer.New(TMessageRole.Assistant, ProcText(AText, IsUser), MessageTag);
+      end
+      else
+        FBuffer.New(TMessageRole.User, ProcText(Text, IsUser), MessageTag);
     end
     else
       FBuffer.New(TMessageRole.Assistant, ProcText(Text, IsUser), MessageTag);
@@ -728,9 +781,20 @@ begin
   LayoutRetry.Visible := Assigned(FLastRequest);
 end;
 
+procedure TFrameChat.SetMenuItem(const Value: TListBoxItem);
+begin
+  FMenuItem := Value;
+end;
+
 procedure TFrameChat.SetMode(const Value: TWindowMode);
 begin
   FMode := Value;
+  for var Control in Controls do
+    if Control is TFrameOveraly then
+    begin
+      var Frame := Control as TFrameOveraly;
+      Frame.Mode := FMode;
+    end;
   case FMode of
     wmCompact:
       begin
@@ -781,6 +845,16 @@ begin
     LabelTyping.Text := '.'
   else
     LabelTyping.Text := LabelTyping.Text + '.';
+end;
+
+procedure TFrameChat.TimerUpdateTextSizeTimer(Sender: TObject);
+begin
+  TimerUpdateTextSize.Enabled := False;
+  var H: Single :=
+    LayoutSend.Padding.Top + LayoutSend.Padding.Bottom +
+    MemoQuery.ContentBounds.Height +
+    LayoutQuery.Padding.Top + LayoutQuery.Padding.Bottom;
+  LayoutSend.Height := Max(LayoutSend.TagFloat, Min(H, 400));
 end;
 
 { TButton }

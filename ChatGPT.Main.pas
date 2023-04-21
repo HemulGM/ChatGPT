@@ -8,7 +8,7 @@ uses
   FMX.Objects, FMX.Layouts, FMX.ListBox, FMX.Controls.Presentation, FMX.StdCtrls,
   System.ImageList, FMX.ImgList, FMX.SVGIconImageList, ChatGPT.FrameChat,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Effects, FMX.Filter.Effects,
-  FMX.Edit;
+  FMX.Edit, ChatGPT.Classes, System.JSON;
 
 type
   TFormMain = class(TForm)
@@ -39,6 +39,8 @@ type
     Layout2: TLayout;
     ButtonClearConfirm: TButton;
     ButtonClearCancel: TButton;
+    LayoutOverlay: TLayout;
+    ButtonSettings: TButton;
     procedure ButtonNewChatClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure ButtonMenuClick(Sender: TObject);
@@ -52,46 +54,64 @@ type
     procedure ButtonClearCancelClick(Sender: TObject);
     procedure ButtonDiscordClick(Sender: TObject);
     procedure ButtonFAQClick(Sender: TObject);
-    procedure FrameResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure ButtonSettingsClick(Sender: TObject);
   private
     FOpenAI: TOpenAIComponent;
     FMode: TWindowMode;
-    FChatIdCount: Integer;
+    FToken: string;
+    FTemperature: Single;
+    FLang: string;
+    FChatsFileName: string;
+    FSettingsFileName: string;
+    FSelectedChatId: string;    
     procedure SetMode(const Value: TWindowMode);
     procedure UpdateMode;
-    function NextChatId: Integer;
     procedure SelectChat(const ChatId: string);
     procedure DeleteChat(const ChatId: string);
     procedure FOnChatItemClick(Sender: TObject);
     {$HINTS OFF}
     procedure FOnChatItemTap(Sender: TObject; const Point: TPointF);
     {$HINTS ON}
-    function CreateChat: string;
+    function CreateChat(JSON: TJSONObject = nil): string;
     procedure CloseMenu;
     procedure Clear;
     procedure ShowClearConfirm;
     procedure HideClearConfirm;
     procedure FOnChatEditClick(Sender: TObject);
     procedure FOnChatDeleteClick(Sender: TObject);
+    procedure OpenSettings;
+    procedure LoadSettings;
+    procedure SaveSettings;
+    procedure SetToken(const Value: string);
+    procedure SetLang(const Value: string);
+    procedure SetTemperature(const Value: Single);
+    function GetSettingsFileName: string;
+    function GetChatsFileName: string;
   public
     procedure LoadChats;
     procedure SaveChats;
     property OpenAI: TOpenAIComponent read FOpenAI;
     constructor Create(AOwner: TComponent); override;
     property Mode: TWindowMode read FMode write SetMode;
+    property Token: string read FToken write SetToken;
+    property Temperature: Single read FTemperature write SetTemperature;
+    property Lang: string read FLang write SetLang;
   end;
 
 const
-  API_TOKEN = {$include MY_TOKEN.txt};
   URL_DISCORD = 'https://discord.com/invite/openai';
   URL_FAQ = 'https://help.openai.com/en/collections/3742473-chatgpt';
 
 var
   FormMain: TFormMain;
+  FAppFolder: string;
 
 const
   AniInterpolation = TInterpolationType.Quadratic;
+
+procedure OpenUrl(const URL: string);
 
 implementation
 
@@ -102,25 +122,26 @@ uses
   {$IFDEF MSWINDOWS}
   ShellAPI, DarkModeApi.FMX,
   {$ENDIF}
-  FMX.Ani, System.Math, System.Rtti, FMX.Utils, FMX.DialogService, System.JSON,
-  System.IOUtils;
+  FMX.Ani, System.Math, System.Rtti, FMX.Utils, FMX.DialogService,
+  System.IOUtils, ChatGPT.Settings, ChatGPT.Overlay;
 
 {$R *.fmx}
 
-{$IFDEF ANDROID}
-procedure OpenUrl(const URL: string);
+procedure CreateAppFolder;
 begin
+  TDirectory.CreateDirectory(FAppFolder);
+end;
+
+procedure OpenUrl(const URL: string);
+begin    
+  {$IFDEF ANDROID}
   TAndroidHelper.Context.startActivity(TJIntent.JavaClass.init(TJIntent.JavaClass.ACTION_VIEW, StrToJURI(URL)));
-end;
-{$ENDIF}
+  {$ENDIF}
 
-{$IFDEF MSWINDOWS}
-
-procedure OpenUrl(const URL: string);
-begin
-  ShellExecute(0, 'open', PChar(URL), nil, nil, 0);
+  {$IFDEF MSWINDOWS}  
+  ShellExecute(0, 'open', PChar(URL), nil, nil, 0);   
+  {$ENDIF}
 end;
-{$ENDIF}
 
 { TFormMain }
 
@@ -151,6 +172,7 @@ end;
 procedure TFormMain.ButtonClearConfirmClick(Sender: TObject);
 begin
   Clear;
+  SelectChat(CreateChat);
 end;
 
 procedure TFormMain.ButtonCloseMenuClick(Sender: TObject);
@@ -181,12 +203,6 @@ begin
   TAnimator.AnimateFloat(LayoutMenuContainer, 'Margins.Left', 0, 0.2, TAnimationType.InOut, AniInterpolation);
 end;
 
-function TFormMain.NextChatId: Integer;
-begin
-  Inc(FChatIdCount);
-  Result := FChatIdCount;
-end;
-
 procedure TFormMain.CloseMenu;
 begin
   TAnimator.AnimateFloat(RectangleMenuBG, 'Opacity', 0, 0.2, TAnimationType.InOut, AniInterpolation);
@@ -196,18 +212,23 @@ begin
   LayoutMenuContent.Visible := False;
 end;
 
-function TFormMain.CreateChat: string;
+function TFormMain.CreateChat(JSON: TJSONObject): string;
 begin
-  Result := TGUID.NewGuid.ToString;
-  var ChatTitle := 'New chat ' + NextChatId.ToString;
+  var Frame: TFrameChat;
+  if Assigned(JSON) then
+    Frame := TFrameChat.CreateFromJson(LayoutChatsBox, JSON)
+  else
+  begin
+    Frame := TFrameChat.Create(LayoutChatsBox);
+    Frame.Temperature := Temperature;
+    Frame.LangSrc := Lang;
+  end;
 
-  var Frame := TFrameChat.Create(LayoutChatsBox);
   Frame.Align := TAlignLayout.Client;
   Frame.Parent := LayoutChatsBox;
   Frame.API := OpenAI;
-  Frame.ChatId := Result;
-  Frame.Title := ChatTitle;
   Frame.Mode := Mode;
+  Frame.Visible := False;  
 
   var ItemList := TListBoxItem.Create(ListBoxChatList);
   ItemList.HitTest := True;
@@ -217,14 +238,17 @@ begin
   ItemList.OnClick := FOnChatItemClick;
   {$ENDIF}
   ItemList.Margins.Bottom := 8;
-  ItemList.Text := ChatTitle;
-  ItemList.TagString := Result;
+  ItemList.Text := Frame.Title;
+  ItemList.TagString := Frame.ChatId;
   ItemList.ImageIndex := 1;
   ItemList.DisableDisappear := True;
   ItemList.StylesData['edit.OnClick'] := TValue.From<TNotifyEvent>(FOnChatEditClick);
   ItemList.StylesData['delete.OnClick'] := TValue.From<TNotifyEvent>(FOnChatDeleteClick);
   ListBoxChatList.AddObject(ItemList);
   ItemList.ApplyStyleLookup;
+  Frame.MenuItem := ItemList;
+
+  Result := Frame.ChatId;
 end;
 
 procedure TFormMain.DeleteChat(const ChatId: string);
@@ -235,14 +259,14 @@ begin
       var Frame := Control as TFrameChat;
       if Frame.ChatId = ChatId then
       begin
-        Frame.Free;
+        Frame.Release;
         Break;
       end;
     end;
   for var i := 0 to Pred(ListBoxChatList.Count) do
     if ListBoxChatList.ListItems[i].TagString = ChatId then
     begin
-      ListBoxChatList.ListItems[i].Free;
+      ListBoxChatList.ListItems[i].Release;
       Exit;
     end;
 end;
@@ -259,6 +283,11 @@ begin
   SelectChat(CreateChat);
 end;
 
+procedure TFormMain.ButtonSettingsClick(Sender: TObject);
+begin
+  OpenSettings;
+end;
+
 procedure TFormMain.FOnChatEditClick(Sender: TObject);
 var
   Button: TButton absolute Sender;
@@ -270,7 +299,10 @@ begin
       procedure(const AResult: TModalResult; const AValues: array of string)
       begin
         if AResult = mrOk then
+        begin
           ListItem.Text := AValues[0];
+          ListItem.StylesData['changed_title'] := True;
+        end;
       end);
   end;
 end;
@@ -300,28 +332,93 @@ begin
   FOnChatItemClick(Sender);
 end;
 
-procedure TFormMain.LoadChats;
+function TFormMain.GetSettingsFileName: string;
 begin
-  var JsonText: string := '';
-  try
-    JsonText := TFile.ReadAllText('save.json', TEncoding.UTF8);
-  except
-    Exit;
-  end;
-  if JsonText.IsEmpty then
-    Exit;
-  var JSON := TJSONObject.ParseJSONValue(JsonText);
-  try
-    var JSONChats := TJSONArray.Create;
-    if JSON.TryGetValue('chats', JSONChats) then
-      for var JChat in JSONChats do
-      begin
+  if FSettingsFileName.IsEmpty then
+    FSettingsFileName := TPath.Combine(FAppFolder, 'settings.json');
+  Result := FSettingsFileName;
+end;
 
-      end;
+function TFormMain.GetChatsFileName: string;
+begin
+  if FChatsFileName.IsEmpty then
+    FChatsFileName := TPath.Combine(FAppFolder, 'chats.json');
+  Result := FChatsFileName;
+end;
+
+procedure TFormMain.LoadSettings;
+begin
+  try
+    if not TFile.Exists(GetSettingsFileName) then
+      Exit;
+    var JsonText: string := '';
+    try
+      JsonText := TFile.ReadAllText(GetSettingsFileName, TEncoding.UTF8);
+    except
+      Exit;
+    end;
+    if JsonText.IsEmpty then
+      Exit;
+    var JSON := TJSONObject.ParseJSONValue(JsonText);
+    if Assigned(JSON) then
+    try
+      Token := JSON.GetValue('api_key', '');
+      Temperature := JSON.GetValue('temperature', 0);
+      Lang := JSON.GetValue('translate_lang', '');
+      FSelectedChatId := JSON.GetValue('selected_chat', '');
+    finally
+      JSON.Free;
+    end;
+  finally
+    if Token.IsEmpty then
+      OpenSettings;
+  end;
+end;
+
+procedure TFormMain.SaveSettings;
+begin
+  var JSON := TJSONObject.Create;
+  try
+    JSON.AddPair('api_key', Token);
+    JSON.AddPair('temperature', TJSONNumber.Create(Temperature));
+    JSON.AddPair('translate_lang', Lang);   
+    JSON.AddPair('selected_chat', FSelectedChatId);
+    TFile.WriteAllText(GetSettingsFileName, JSON.ToJSON, TEncoding.UTF8);
   except
     //
   end;
   JSON.Free;
+end;
+
+procedure TFormMain.LoadChats;
+begin
+  try
+    if not TFile.Exists(GetChatsFileName) then
+      Exit;
+    var JsonText: string := '';
+    try
+      JsonText := TFile.ReadAllText(GetChatsFileName, TEncoding.UTF8);
+    except
+      Exit;
+    end;
+    if JsonText.IsEmpty then
+      Exit;
+    var JSON := TJSONObject.ParseJSONValue(JsonText);
+    if Assigned(JSON) then
+    try
+      var JSONChats: TJSONArray;
+      if JSON.TryGetValue('items', JSONChats) then
+        for var JChat in JSONChats do
+          if JChat is TJSONObject then
+            CreateChat(JChat as TJSONObject);
+      SelectChat(FSelectedChatId);
+    finally
+      JSON.Free;
+    end;
+  finally
+    if LayoutChatsBox.ControlsCount <= 0 then
+      SelectChat(CreateChat);
+  end;
 end;
 
 procedure TFormMain.SaveChats;
@@ -329,11 +426,11 @@ begin
   var JSON := TJSONObject.Create;
   try
     var JSONChats := TJSONArray.Create;
-    JSON.AddPair('chats', JSONChats);
+    JSON.AddPair('items', JSONChats);
     for var Control in LayoutChatsBox.Controls do
       if Control is TFrameChat then
         JSONChats.Add(TFrameChat(Control).SaveAsJson);
-    TFile.WriteAllText('save.json', JSON.ToJSON, TEncoding.UTF8);
+    TFile.WriteAllText(GetChatsFileName, JSON.ToJSON, TEncoding.UTF8);
   except
     //
   end;
@@ -342,6 +439,7 @@ end;
 
 procedure TFormMain.SelectChat(const ChatId: string);
 begin
+  FSelectedChatId := ChatId;
   for var Control in LayoutChatsBox.Controls do
     if Control is TFrameChat then
     begin
@@ -360,23 +458,24 @@ end;
 constructor TFormMain.Create(AOwner: TComponent);
 begin
   inherited;
-  FChatIdCount := 0;
   FOpenAI := TOpenAIComponent.Create(Self);
-  FOpenAI.Token := API_TOKEN;
   ListBoxChatList.AniCalculations.Animation := True;
   Clear;
   FMode := wmFull;
   UpdateMode;
+  Temperature := 0;
+  Lang := '';
+  Token := '';
+  LoadSettings;
+  LoadChats;
 end;
 
 procedure TFormMain.Clear;
 begin
-  FChatIdCount := 0;
   HideClearConfirm;
   ListBoxChatList.Clear;
   while LayoutChatsBox.ControlsCount > 0 do
     LayoutChatsBox.Controls[0].Free;
-  SelectChat(CreateChat);
 end;
 
 procedure TFormMain.FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight, MaxWidth, MaxHeight: Single);
@@ -384,11 +483,41 @@ begin
   FormResize(Sender);
 end;
 
+procedure TFormMain.OpenSettings;
+begin
+  LayoutOverlay.Visible := True;
+  LayoutOverlay.BringToFront;
+  TFrameSettings.Execute(LayoutOverlay,
+    procedure(Frame: TFrameSettings)
+    begin
+      Frame.Mode := FMode;
+      Frame.EditToken.Text := Token;
+      Frame.EditLangSrc.Text := Lang;
+      Frame.TrackBarTemp.Value := Temperature * 10;
+    end,
+    procedure(Frame: TFrameSettings; Success: Boolean)
+    begin
+      LayoutOverlay.Visible := False;
+      if not Success then
+        Exit;
+      Token := Frame.EditToken.Text;
+      Lang := Frame.EditLangSrc.Text;
+      Temperature := Frame.TrackBarTemp.Value / 10;
+      SaveSettings;
+    end);
+end;
+
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   {$IFDEF MSWINDOWS}
   SetWindowColorModeAsSystem;
   {$ENDIF}
+end;
+
+procedure TFormMain.FormDestroy(Sender: TObject);
+begin
+  SaveChats;
+  SaveSettings;
 end;
 
 procedure TFormMain.FormResize(Sender: TObject);
@@ -410,17 +539,18 @@ begin
   Padding.Bottom := Bounds.Height;
 end;
 
-procedure TFormMain.FrameResize(Sender: TObject);
-begin
-  SaveChats;
-end;
-
 procedure TFormMain.UpdateMode;
 begin
   for var Control in LayoutChatsBox.Controls do
     if Control is TFrameChat then
     begin
       var Frame := Control as TFrameChat;
+      Frame.Mode := FMode;
+    end;
+  for var Control in LayoutOverlay.Controls do
+    if Control is TFrameOveraly then
+    begin
+      var Frame := Control as TFrameOveraly;
       Frame.Mode := FMode;
     end;
   case FMode of
@@ -444,6 +574,11 @@ begin
   end;
 end;
 
+procedure TFormMain.SetLang(const Value: string);
+begin
+  FLang := Value;
+end;
+
 procedure TFormMain.SetMode(const Value: TWindowMode);
 begin
   if FMode = Value then
@@ -452,10 +587,23 @@ begin
   UpdateMode;
 end;
 
+procedure TFormMain.SetTemperature(const Value: Single);
+begin
+  FTemperature := Value;
+end;
+
+procedure TFormMain.SetToken(const Value: string);
+begin
+  FToken := Value;
+  FOpenAI.Token := FToken;
+end;
+
 initialization
   {$IFDEF DEBUG}
   ReportMemoryLeaksOnShutdown := True;
   {$ENDIF}
+  FAppFolder := TPath.Combine(TPath.GetHomePath, 'ChatGPT');
+  CreateAppFolder;
 
 end.
 

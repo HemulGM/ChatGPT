@@ -12,12 +12,12 @@ type
     RectangleBG: TRectangle;
     Image: TImage;
     LayoutControlsContent: TLayout;
-    Button1: TButton;
+    ButtonDownload: TButton;
     Rectangle1: TRectangle;
     SaveDialogJPG: TSaveDialog;
     LayoutControls: TLayout;
     procedure FrameClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure ButtonDownloadClick(Sender: TObject);
     procedure FrameResized(Sender: TObject);
   private
     FInitImageBounds: TRectF;
@@ -33,7 +33,7 @@ implementation
 
 { TFramePreview }
 
-procedure TFramePreview.Button1Click(Sender: TObject);
+procedure TFramePreview.ButtonDownloadClick(Sender: TObject);
 begin
   if SaveDialogJPG.Execute then
     Image.Bitmap.SaveToFile(SaveDialogJPG.FileName);

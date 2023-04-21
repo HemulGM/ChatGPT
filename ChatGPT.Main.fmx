@@ -11,7 +11,7 @@ object FormMain: TFormMain
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   OnCreate = FormCreate
-  OnDestroy = FrameResize
+  OnDestroy = FormDestroy
   OnResize = FormResize
   OnConstrainedResize = FormConstrainedResize
   OnVirtualKeyboardShown = FormVirtualKeyboardShown
@@ -1100,7 +1100,7 @@ object FormMain: TFormMain
         HitTest = False
         Margins.Top = 4.000000000000000000
         Size.Width = 299.000000000000000000
-        Size.Height = 467.000000000000000000
+        Size.Height = 419.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'listboxstyle_clear'
         TabOrder = 1
@@ -1114,7 +1114,7 @@ object FormMain: TFormMain
         DefaultItemStyles.GroupHeaderStyle = ''
         DefaultItemStyles.GroupFooterStyle = ''
         Viewport.Width = 299.000000000000000000
-        Viewport.Height = 467.000000000000000000
+        Viewport.Height = 419.000000000000000000
         object ListBoxItem1: TListBoxItem
           HitTest = True
           IsSelected = True
@@ -1146,12 +1146,12 @@ object FormMain: TFormMain
         Images = SVGIconImageList
         ImageIndex = 7
         Margins.Top = 4.000000000000000000
-        Position.Y = 578.000000000000000000
+        Position.Y = 530.000000000000000000
         Size.Width = 299.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'buttonstyle_menu'
-        TabOrder = 4
+        TabOrder = 5
         Text = 'OpenAI Discord'
         TextSettings.HorzAlign = Leading
         OnClick = ButtonDiscordClick
@@ -1159,7 +1159,7 @@ object FormMain: TFormMain
       object Line1: TLine
         Align = Bottom
         LineType = Top
-        Position.Y = 525.000000000000000000
+        Position.Y = 477.000000000000000000
         Size.Width = 299.000000000000000000
         Size.Height = 1.000000000000000000
         Size.PlatformDefault = False
@@ -1171,7 +1171,7 @@ object FormMain: TFormMain
         Images = SVGIconImageList
         ImageIndex = 8
         Margins.Top = 4.000000000000000000
-        Position.Y = 530.000000000000000000
+        Position.Y = 482.000000000000000000
         Size.Width = 299.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
@@ -1224,15 +1224,31 @@ object FormMain: TFormMain
         Images = SVGIconImageList
         ImageIndex = 9
         Margins.Top = 4.000000000000000000
+        Position.Y = 578.000000000000000000
+        Size.Width = 299.000000000000000000
+        Size.Height = 44.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_menu'
+        TabOrder = 4
+        Text = 'Updates & FAQ'
+        TextSettings.HorzAlign = Leading
+        OnClick = ButtonFAQClick
+      end
+      object ButtonSettings: TButton
+        Align = Bottom
+        Cursor = crHandPoint
+        Images = SVGIconImageList
+        ImageIndex = 12
+        Margins.Top = 4.000000000000000000
         Position.Y = 626.000000000000000000
         Size.Width = 299.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'buttonstyle_menu'
         TabOrder = 3
-        Text = 'Updates & FAQ'
+        Text = 'Settings'
         TextSettings.HorzAlign = Leading
-        OnClick = ButtonFAQClick
+        OnClick = ButtonSettingsClick
       end
     end
     object Layout1: TLayout
@@ -1258,6 +1274,14 @@ object FormMain: TFormMain
         OnClick = ButtonCloseMenuClick
       end
     end
+  end
+  object LayoutOverlay: TLayout
+    Align = Contents
+    Size.Width = 1053.000000000000000000
+    Size.Height = 686.000000000000000000
+    Size.PlatformDefault = False
+    Visible = False
+    TabOrder = 7
   end
   object SVGIconImageList: TSVGIconImageList
     Source = <
@@ -1321,7 +1345,7 @@ object FormMain: TFormMain
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 20
           end>
         IconName = 'Item 4'
         SVGText = 
@@ -1359,7 +1383,7 @@ object FormMain: TFormMain
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 20
           end>
         IconName = 'Item 7'
         SVGText = 
@@ -1384,7 +1408,7 @@ object FormMain: TFormMain
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 20
           end>
         IconName = 'Item 8'
         SVGText = 
@@ -1508,6 +1532,29 @@ object FormMain: TFormMain
           '0.343,23.071 16,17.414 21.657,23.071    23.071,21.657 17.414,16 ' +
           '23.071,10.343  "/></g></svg>'
         Opacity = 1.000000000000000000
+      end
+      item
+        MultiResBitmap = <
+          item
+            Size = 16
+          end>
+        IconName = 'Item 14'
+        SVGText = 
+          '<?xml version="1.0" ?><svg height="48" viewBox="0 0 48 48" width' +
+          '="48" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h48v48h-48' +
+          'z" fill="none"/><path d="M38.86 25.95c.08-.64.14-1.29.14-1.95s-.' +
+          '06-1.31-.14-1.95l4.23-3.31c.38-.3.49-.84.24-1.28l-4-6.93c-.25-.4' +
+          '3-.77-.61-1.22-.43l-4.98 2.01c-1.03-.79-2.16-1.46-3.38-1.97l-.75' +
+          '-5.3c-.09-.47-.5-.84-1-.84h-8c-.5 0-.91.37-.99.84l-.75 5.3c-1.22' +
+          '.51-2.35 1.17-3.38 1.97l-4.98-2.01c-.45-.17-.97 0-1.22.43l-4 6.9' +
+          '3c-.25.43-.14.97.24 1.28l4.22 3.31c-.08.64-.14 1.29-.14 1.95s.06' +
+          ' 1.31.14 1.95l-4.22 3.31c-.38.3-.49.84-.24 1.28l4 6.93c.25.43.77' +
+          '.61 1.22.43l4.98-2.01c1.03.79 2.16 1.46 3.38 1.97l.75 5.3c.08.47' +
+          '.49.84.99.84h8c.5 0 .91-.37.99-.84l.75-5.3c1.22-.51 2.35-1.17 3.' +
+          '38-1.97l4.98 2.01c.45.17.97 0 1.22-.43l4-6.93c.25-.43.14-.97-.24' +
+          '-1.28l-4.22-3.31zm-14.86 5.05c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.' +
+          '13 7 7-3.13 7-7 7z"/></svg>'
+        Opacity = 1.000000000000000000
       end>
     Destination = <
       item
@@ -1544,24 +1591,24 @@ object FormMain: TFormMain
         Layers = <
           item
             Name = 'Item 4'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 20.000000000000000000
+            SourceRect.Bottom = 20.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 7'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 20.000000000000000000
+            SourceRect.Bottom = 20.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 8'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 20.000000000000000000
+            SourceRect.Bottom = 20.000000000000000000
           end>
       end
       item
@@ -1596,6 +1643,20 @@ object FormMain: TFormMain
             Name = 'Item 13'
             SourceRect.Right = 24.000000000000000000
             SourceRect.Bottom = 24.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Item 14'
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'Item 14'
+            SourceRect.Right = 20.000000000000000000
+            SourceRect.Bottom = 20.000000000000000000
           end>
       end>
     Size = 24

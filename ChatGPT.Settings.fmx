@@ -1,0 +1,319 @@
+inherited FrameSettings: TFrameSettings
+  Size.Width = 906.000000000000000000
+  Size.Height = 601.000000000000000000
+  OnResize = FrameResize
+  OnResized = FrameResize
+  inherited RectangleBG: TRectangle
+    Size.Width = 906.000000000000000000
+    Size.Height = 601.000000000000000000
+    OnClick = RectangleBGClick
+  end
+  object LayoutClient: TLayout
+    Align = Center
+    Padding.Left = 10.000000000000000000
+    Padding.Top = 10.000000000000000000
+    Padding.Right = 10.000000000000000000
+    Padding.Bottom = 10.000000000000000000
+    Size.Width = 440.000000000000000000
+    Size.Height = 450.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object RectangleFrame: TRectangle
+      Align = Contents
+      Fill.Color = xFF343541
+      Locked = True
+      Size.Width = 440.000000000000000000
+      Size.Height = 450.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      XRadius = 6.000000000000000000
+      YRadius = 6.000000000000000000
+    end
+    object VertScrollBoxContent: TVertScrollBox
+      Align = Client
+      Size.Width = 420.000000000000000000
+      Size.Height = 384.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Viewport.Width = 420.000000000000000000
+      Viewport.Height = 384.000000000000000000
+      object EditLangSrc: TEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        Align = Top
+        StyleLookup = 'editstyle_clear'
+        TabOrder = 9
+        Position.Y = 245.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Size.Width = 420.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        TextPrompt = 'Example: "ru" or "de"'
+        object ClearEditButton1: TClearEditButton
+          CanFocus = False
+          Cursor = crArrow
+          Hint = 'Clear'
+          Size.Width = 28.000000000000000000
+          Size.Height = 29.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyle_clearmini'
+          TabOrder = 0
+          Text = 'buttonstyle_clearmini'
+          object Path4: TPath
+            Align = Center
+            Data.Path = {
+              0E00000000000000000060413333B33F010000009A9949410000000001000000
+              0000E0403333B340010000003333B33F0000000001000000000000003333B33F
+              010000003333B3400000E04001000000000000009A994941010000003333B33F
+              00006041010000000000E04066660641010000009A9949410000604101000000
+              000060419A99494101000000666606410000E04001000000000060413333B33F
+              03000000000060413333B33F}
+            Fill.Color = xFFACACBE
+            Locked = True
+            HitTest = False
+            Margins.Left = 2.000000000000000000
+            Size.Width = 13.000000000000000000
+            Size.Height = 13.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+            WrapMode = Fit
+          end
+        end
+      end
+      object EditToken: TEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        Align = Top
+        StyleLookup = 'editstyle_clear'
+        TabOrder = 8
+        Position.Y = 62.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Size.Width = 420.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        TextPrompt = 'sk-rBYbw....'
+        object ClearEditButton2: TClearEditButton
+          CanFocus = False
+          Cursor = crArrow
+          Hint = 'Clear'
+          Size.Width = 28.000000000000000000
+          Size.Height = 29.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyle_clearmini'
+          TabOrder = 0
+          Text = 'buttonstyle_clearmini'
+          object Path1: TPath
+            Align = Center
+            Data.Path = {
+              0E00000000000000000060413333B33F010000009A9949410000000001000000
+              0000E0403333B340010000003333B33F0000000001000000000000003333B33F
+              010000003333B3400000E04001000000000000009A994941010000003333B33F
+              00006041010000000000E04066660641010000009A9949410000604101000000
+              000060419A99494101000000666606410000E04001000000000060413333B33F
+              03000000000060413333B33F}
+            Fill.Color = xFFACACBE
+            Locked = True
+            HitTest = False
+            Margins.Left = 2.000000000000000000
+            Size.Width = 13.000000000000000000
+            Size.Height = 13.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+            WrapMode = Fit
+          end
+        end
+      end
+      object Label1: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Size.Width = 420.000000000000000000
+        Size.Height = 25.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 20.000000000000000000
+        TextSettings.FontColor = xFFE9E9E9
+        TextSettings.HorzAlign = Center
+        TextSettings.WordWrap = False
+        Text = 'Settings'
+        TabOrder = 7
+      end
+      object Label2: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 218.000000000000000000
+        Size.Width = 420.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xB4FFFFFF
+        TextSettings.WordWrap = False
+        Text = 'Translate to English from your lang'
+        TabOrder = 5
+      end
+      object Label3: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 288.000000000000000000
+        Size.Width = 420.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xB4FFFFFF
+        TextSettings.WordWrap = False
+        Text = 'Temperature'
+        TabOrder = 3
+      end
+      object Label4: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 340.000000000000000000
+        Size.Width = 420.000000000000000000
+        Size.Height = 15.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.FontColor = x78FFFFFF
+        Text = 
+          'The higher, the more creativity will be in the answers (less acc' +
+          'urate)'
+        TabOrder = 1
+      end
+      object Label5: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 35.000000000000000000
+        Size.Width = 420.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xB4FFFFFF
+        TextSettings.WordWrap = False
+        Text = 'Token'
+        TabOrder = 4
+      end
+      object Label6: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 30.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 181.000000000000000000
+        Size.Width = 420.000000000000000000
+        Size.Height = 22.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 18.000000000000000000
+        TextSettings.FontColor = xFFE9E9E9
+        TextSettings.WordWrap = False
+        Text = 'Default chat settings (for new chats)'
+        TabOrder = 6
+      end
+      object Layout3: TLayout
+        Align = Top
+        Position.Y = 310.000000000000000000
+        Size.Width = 420.000000000000000000
+        Size.Height = 20.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 10
+        object TrackBarTemp: TTrackBar
+          Align = Client
+          CanParentFocus = True
+          Frequency = 1.000000000000000000
+          Max = 20.000000000000000000
+          Orientation = Horizontal
+          Size.Width = 386.000000000000000000
+          Size.Height = 19.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 7
+          OnTracking = TrackBarTempTracking
+        end
+        object LabelTemp: TLabel
+          Align = Right
+          StyledSettings = [Style]
+          Margins.Left = 6.000000000000000000
+          Position.X = 392.000000000000000000
+          Size.Width = 28.000000000000000000
+          Size.Height = 20.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 14.000000000000000000
+          TextSettings.FontColor = xBEFFFFFF
+          TextSettings.HorzAlign = Trailing
+          TextSettings.WordWrap = False
+          Text = '2.0'
+          TabOrder = 72
+        end
+      end
+      object Layout4: TLayout
+        Align = Top
+        Margins.Top = 10.000000000000000000
+        Position.Y = 105.000000000000000000
+        Size.Width = 420.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 2
+        object ButtonGetToken: TButton
+          Align = Left
+          Images = FormMain.SVGIconImageList
+          ImageIndex = 9
+          Size.Width = 289.000000000000000000
+          Size.Height = 46.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyle_menu'
+          TabOrder = 2
+          Text = 'Obtain API token from your Open AI'
+          TextSettings.HorzAlign = Leading
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = ButtonGetTokenClick
+        end
+      end
+    end
+    object Layout2: TLayout
+      Align = Bottom
+      Position.X = 10.000000000000000000
+      Position.Y = 394.000000000000000000
+      Size.Width = 420.000000000000000000
+      Size.Height = 46.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 3
+      object ButtonCancel: TButton
+        Align = Right
+        Position.X = 340.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_menu'
+        TabOrder = 2
+        Text = 'CANCEL'
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = ButtonCancelClick
+      end
+      object ButtonOk: TButton
+        Align = Right
+        Position.X = 260.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_menu'
+        TabOrder = 3
+        Text = 'OK'
+        OnClick = ButtonOkClick
+      end
+    end
+  end
+end

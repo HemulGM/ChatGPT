@@ -327,15 +327,25 @@
         <DCCReference Include="ChatGPT.FramePlainText.pas">
             <Form>FrameText</Form>
         </DCCReference>
+        <DCCReference Include="WindowDarkMode\DarkModeApi.Consts.pas"/>
+        <DCCReference Include="WindowDarkMode\DarkModeApi.FMX.pas"/>
+        <DCCReference Include="WindowDarkMode\DarkModeApi.pas"/>
+        <DCCReference Include="WindowDarkMode\DarkModeApi.Types.pas"/>
+        <DCCReference Include="ChatGPT.Overlay.pas">
+            <Form>FrameOveraly</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="ChatGPT.Settings.pas">
+            <Form>FrameSettings</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <DCCReference Include="ChatGPT.ChatSettings.pas">
             <Form>FrameChatSettings</Form>
             <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="WindowDarkMode\DarkModeApi.Consts.pas"/>
-        <DCCReference Include="WindowDarkMode\DarkModeApi.FMX.pas"/>
-        <DCCReference Include="WindowDarkMode\DarkModeApi.pas"/>
-        <DCCReference Include="WindowDarkMode\DarkModeApi.Types.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

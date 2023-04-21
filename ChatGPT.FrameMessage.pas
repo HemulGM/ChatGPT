@@ -26,12 +26,14 @@ type
     LayoutClient: TLayout;
     LayoutActions: TLayout;
     ButtonCopy: TButton;
-    Path6: TPath;
+    PathCopy: TPath;
     ButtonDelete: TButton;
     Path4: TPath;
+    TimerRestoreCopy: TTimer;
     procedure MemoTextChange(Sender: TObject);
     procedure FrameResize(Sender: TObject);
     procedure ButtonCopyClick(Sender: TObject);
+    procedure TimerRestoreCopyTimer(Sender: TObject);
   private
     FIsUser: Boolean;
     FText: string;
@@ -58,6 +60,9 @@ type
     procedure StartAnimate;
     constructor Create(AOwner: TComponent); override;
   end;
+
+//const
+//  PathCopy: string = {$INCLUDE PathCopy.txt};   }
 
 implementation
 
@@ -99,7 +104,13 @@ procedure TFrameMessage.ButtonCopyClick(Sender: TObject);
 begin
   var ClipBoard: IFMXClipboardService;
   if TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService, ClipBoard) then
+  begin
     ClipBoard.SetClipboard(Text);
+    TimerRestoreCopyTimer(nil);
+    TimerRestoreCopy.Enabled := True;
+  end
+  else
+    ShowMessage('Clipboard error');
 end;
 
 constructor TFrameMessage.Create(AOwner: TComponent);
@@ -117,6 +128,11 @@ begin
   LayoutClient.Opacity := 0;
   TAnimator.AnimateFloat(LayoutClient, 'Margins.Top', 0);
   TAnimator.AnimateFloat(LayoutClient, 'Opacity', 1);
+end;
+
+procedure TFrameMessage.TimerRestoreCopyTimer(Sender: TObject);
+begin
+  TimerRestoreCopy.Enabled := False;
 end;
 
 procedure TFrameMessage.FrameResize(Sender: TObject);

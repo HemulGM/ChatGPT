@@ -3,6 +3,8 @@
 interface
 
 type
+  TWindowMode = (wmCompact, wmFull);
+
   TPartType = (ptText, ptCode);
 
   TPart = record

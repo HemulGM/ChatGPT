@@ -1,5 +1,7 @@
 ﻿program ChatGPT;
 
+
+
 uses
   System.StartUpCopy,
   FMX.Forms,
@@ -30,11 +32,13 @@ uses
   ChatGPT.Classes in 'ChatGPT.Classes.pas',
   ChatGPT.FrameSVG in 'ChatGPT.FrameSVG.pas' {FrameSVG: TFrame},
   ChatGPT.FramePlainText in 'ChatGPT.FramePlainText.pas' {FrameText},
-  ChatGPT.ChatSettings in 'ChatGPT.ChatSettings.pas' {FrameChatSettings: TFrame},
   DarkModeApi.Consts in 'WindowDarkMode\DarkModeApi.Consts.pas',
   DarkModeApi.FMX in 'WindowDarkMode\DarkModeApi.FMX.pas',
   DarkModeApi in 'WindowDarkMode\DarkModeApi.pas',
-  DarkModeApi.Types in 'WindowDarkMode\DarkModeApi.Types.pas';
+  DarkModeApi.Types in 'WindowDarkMode\DarkModeApi.Types.pas',
+  ChatGPT.Overlay in 'ChatGPT.Overlay.pas' {FrameOveraly: TFrame},
+  ChatGPT.Settings in 'ChatGPT.Settings.pas' {FrameSettings: TFrame},
+  ChatGPT.ChatSettings in 'ChatGPT.ChatSettings.pas' {FrameChatSettings: TFrame};
 
 {$R *.res}
 

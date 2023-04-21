@@ -274,7 +274,7 @@ object FrameMessage: TFrameMessage
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 1
           OnClick = ButtonCopyClick
-          object Path6: TPath
+          object PathCopy: TPath
             Align = Center
             Data.Path = {
               8E0000000000000077BE40422546B8420200000077BE4042717DA74202000000
@@ -423,5 +423,12 @@ object FrameMessage: TFrameMessage
         end
       end
     end
+  end
+  object TimerRestoreCopy: TTimer
+    Enabled = False
+    Interval = 3000
+    OnTimer = TimerRestoreCopyTimer
+    Left = 501
+    Top = 64
   end
 end
