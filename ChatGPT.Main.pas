@@ -363,7 +363,7 @@ begin
     if Assigned(JSON) then
     try
       Token := JSON.GetValue('api_key', '');
-      Temperature := JSON.GetValue('temperature', 0);
+      Temperature := JSON.GetValue<Single>('temperature', 0.0);
       Lang := JSON.GetValue('translate_lang', '');
       FSelectedChatId := JSON.GetValue('selected_chat', '');
     finally
