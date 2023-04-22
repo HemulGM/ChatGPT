@@ -1,0 +1,47 @@
+object FrameUIMessage: TFrameUIMessage
+  Align = Contents
+  HitTest = False
+  Size.Width = 754.000000000000000000
+  Size.Height = 460.000000000000000000
+  Size.PlatformDefault = False
+  object LayoutContent: TLayout
+    Align = Bottom
+    Position.Y = 376.000000000000000000
+    Size.Width = 754.000000000000000000
+    Size.Height = 84.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object RectangleBG: TRectangle
+      Align = Center
+      Fill.Color = xA0000000
+      Size.Width = 101.000000000000000000
+      Size.Height = 34.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      XRadius = 6.000000000000000000
+      YRadius = 6.000000000000000000
+      object LabelText: TLabel
+        Align = Center
+        AutoSize = True
+        StyledSettings = [Family, Style]
+        Size.Width = 57.000000000000000000
+        Size.Height = 20.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Size = 15.000000000000000000
+        TextSettings.FontColor = claWhite
+        TextSettings.HorzAlign = Center
+        TextSettings.WordWrap = False
+        Text = 'Coppied'
+        TabOrder = 0
+        OnResize = LabelTextResize
+        OnResized = LabelTextResize
+      end
+    end
+  end
+  object TimerClose: TTimer
+    Interval = 3000
+    OnTimer = TimerCloseTimer
+    Left = 280
+    Top = 176
+  end
+end

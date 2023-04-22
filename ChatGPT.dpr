@@ -38,7 +38,8 @@ uses
   DarkModeApi.Types in 'WindowDarkMode\DarkModeApi.Types.pas',
   ChatGPT.Overlay in 'ChatGPT.Overlay.pas' {FrameOveraly: TFrame},
   ChatGPT.Settings in 'ChatGPT.Settings.pas' {FrameSettings: TFrame},
-  ChatGPT.ChatSettings in 'ChatGPT.ChatSettings.pas' {FrameChatSettings: TFrame};
+  ChatGPT.ChatSettings in 'ChatGPT.ChatSettings.pas' {FrameChatSettings: TFrame},
+  ChatGPT.FrameUIMessage in 'ChatGPT.FrameUIMessage.pas' {FrameUIMessage: TFrame};
 
 {$R *.res}
 

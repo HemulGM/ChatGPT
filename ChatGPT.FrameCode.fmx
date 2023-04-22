@@ -41,6 +41,7 @@ object FrameCode: TFrameCode
       Size.Height = 16.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
+      OnClick = LayoutCopyCodeClick
       object Path1: TPath
         Align = Left
         Data.Path = {

@@ -18,6 +18,7 @@ type
     Path1: TPath;
     Label1: TLabel;
     procedure FrameResize(Sender: TObject);
+    procedure LayoutCopyCodeClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -29,7 +30,7 @@ type
 implementation
 
 uses
-  System.Math;
+  System.Math, FMX.Clipboard, FMX.Platform, ChatGPT.FrameUIMessage;
 
 {$R *.fmx}
 
@@ -64,6 +65,18 @@ begin
     MemoCode.Margins.Top +
     MemoCode.Margins.Bottom +
     RectangleHead.Height;
+end;
+
+procedure TFrameCode.LayoutCopyCodeClick(Sender: TObject);
+begin
+  var ClipBoard: IFMXClipboardService;
+  if TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService, ClipBoard) then
+  begin
+    ClipBoard.SetClipboard(MemoCode.Text);
+    ShowUIMessage('Coppied');
+  end
+  else
+    ShowUIMessage('Clipboard error');
 end;
 
 end.

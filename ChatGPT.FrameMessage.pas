@@ -68,7 +68,7 @@ implementation
 
 uses
   System.Math, FMX.Platform, FMX.Memo.Style, FMX.Ani, ChatGPT.FrameCode,
-  ChatGPT.FrameSVG, ChatGPT.FramePlainText;
+  ChatGPT.FrameSVG, ChatGPT.FramePlainText, ChatGPT.FrameUIMessage;
 
 {$R *.fmx}
 
@@ -106,11 +106,10 @@ begin
   if TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService, ClipBoard) then
   begin
     ClipBoard.SetClipboard(Text);
-    TimerRestoreCopyTimer(nil);
-    TimerRestoreCopy.Enabled := True;
+    ShowUIMessage('Coppied');
   end
   else
-    ShowMessage('Clipboard error');
+    ShowUIMessage('Clipboard error');
 end;
 
 constructor TFrameMessage.Create(AOwner: TComponent);

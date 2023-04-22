@@ -35,7 +35,7 @@ implementation
 
 uses
   System.NetEncoding, ChatGPT.FrameImagePreview, System.Threading,
-  System.Net.HttpClient, FMX.Platform;
+  System.Net.HttpClient, FMX.Platform, ChatGPT.FrameUIMessage;
 
 {$R *.fmx}
 
@@ -122,7 +122,12 @@ procedure TFrameImage.MenuItemCopyClick(Sender: TObject);
 begin
   var ClipBoard: IFMXClipboardService;
   if TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService, ClipBoard) then
+  begin
     ClipBoard.SetClipboard(RectangleImage.Fill.Bitmap.Bitmap);
+    ShowUIMessage('Image coppied');
+  end
+  else
+    ShowUIMessage('ClipBoard error');
 end;
 
 procedure TFrameImage.RectangleImageClick(Sender: TObject);

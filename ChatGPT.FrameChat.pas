@@ -273,7 +273,10 @@ begin
       Inc(ItemCount);
     end;
   if ItemCount > 0 then
+  begin
     LayoutWelcome.Visible := False;
+    IsFirstMessage := False;    
+  end;
 end;
 
 procedure TFrameChat.ScrollDown;
@@ -445,7 +448,7 @@ begin
       try
         var Images := API.Image.Create(
           procedure(Params: TImageCreateParams)
-          begin
+          begin     
             Params.Prompt(ProcText(Prompt, True));
             Params.ResponseFormat(TImageResponseFormat.Url);
             Params.N(4);
@@ -800,7 +803,8 @@ begin
       begin
         LayoutSend.TagFloat := 100;
         VertScrollBoxChat.Padding.Bottom := 100;
-        LayoutSend.Height := 100;
+        LayoutSend.Height := 100;         
+        LayoutRetry.Margins.Bottom := 0;
         LineBorder.Visible := True;
         LayoutSend.Padding.Rect := TRectF.Create(0, 10, 0, 40);
         RectangleSendBG.Fill.Kind := TBrushKind.Solid;
@@ -809,6 +813,7 @@ begin
     wmFull:
       begin
         LayoutSend.TagFloat := 170;
+        LayoutRetry.Margins.Bottom := -70;
         VertScrollBoxChat.Padding.Bottom := 170;
         LayoutSend.Height := 170;
         LineBorder.Visible := False;

@@ -641,7 +641,7 @@ object FrameChat: TFrameChat
     end
   end
   object LayoutSend: TLayout
-    Align = Bottom
+    Align = MostBottom
     Padding.Top = 10.000000000000000000
     Padding.Bottom = 40.000000000000000000
     Position.Y = 700.000000000000000000
@@ -695,7 +695,7 @@ object FrameChat: TFrameChat
         TextSettings.FontColor = xAFFFFFFF
         TextSettings.HorzAlign = Center
         TextSettings.WordWrap = False
-        Text = 'by HemulGM (https://github.com/HemulGM)'
+        Text = 'by HemulGM'
         TabOrder = 0
       end
     end
@@ -920,7 +920,7 @@ object FrameChat: TFrameChat
       end
       object ButtonSettings: TButton
         Align = Left
-        Hint = 'Use translate. Your lang - en - your lang'
+        Hint = 'Chat settings'
         Position.X = 16.000000000000000000
         Position.Y = 12.000000000000000000
         Size.Width = 26.000000000000000000
