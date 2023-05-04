@@ -27,9 +27,13 @@ type
     LayoutActions: TLayout;
     ButtonCopy: TButton;
     PathCopy: TPath;
-    ButtonDelete: TButton;
-    Path4: TPath;
     TimerRestoreCopy: TTimer;
+    Line1: TLine;
+    LayoutCompact: TLayout;
+    ButtonCopyCompact: TButton;
+    Path5: TPath;
+    RectangleAudioCompact: TRectangle;
+    Path6: TPath;
     procedure MemoTextChange(Sender: TObject);
     procedure FrameResize(Sender: TObject);
     procedure ButtonCopyClick(Sender: TObject);
@@ -41,6 +45,7 @@ type
     FIsAudio: Boolean;
     FImages: TArray<string>;
     FId: string;
+    FMode: TWindowMode;
     procedure SetIsUser(const Value: Boolean);
     procedure SetText(const Value: string);
     procedure SetIsError(const Value: Boolean);
@@ -49,6 +54,8 @@ type
     procedure BuildContent(Parts: TList<TPart>);
     procedure SetImages(const Value: TArray<string>);
     procedure SetId(const Value: string);
+    procedure FOnTextWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
+    procedure UpdateMode;
   public
     procedure UpdateContentSize;
     property Id: string read FId write SetId;
@@ -57,6 +64,7 @@ type
     property IsUser: Boolean read FIsUser write SetIsUser;
     property IsAudio: Boolean read FIsAudio write SetIsAudio;
     property IsError: Boolean read FIsError write SetIsError;
+    procedure SetMode(const Value: TWindowMode);
     procedure StartAnimate;
     constructor Create(AOwner: TComponent); override;
   end;
@@ -68,7 +76,7 @@ implementation
 
 uses
   System.Math, FMX.Platform, FMX.Memo.Style, FMX.Ani, ChatGPT.FrameCode,
-  ChatGPT.FrameSVG, ChatGPT.FramePlainText, ChatGPT.FrameUIMessage;
+  ChatGPT.FrameSVG, ChatGPT.FramePlainText, ChatGPT.FrameUIMessage, System.JSON;
 
 {$R *.fmx}
 
@@ -96,8 +104,27 @@ begin
     if Control.Visible then
       H := H + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
 
+  if LayoutCompact.Visible then
+    H := H + LayoutCompact.Height;
   if Height <> H then
     Height := H;
+end;
+
+procedure TFrameMessage.UpdateMode;
+begin
+  case FMode of
+    wmCompact:
+      begin
+        LayoutCompact.Visible := not FText.IsEmpty;
+        LayoutActions.Visible := False;
+        LayoutAudio.Visible := False;
+      end;
+    wmFull:
+      begin
+        LayoutCompact.Visible := False;
+        LayoutActions.Visible := not FText.IsEmpty;
+      end;
+  end;
 end;
 
 procedure TFrameMessage.ButtonCopyClick(Sender: TObject);
@@ -116,7 +143,7 @@ constructor TFrameMessage.Create(AOwner: TComponent);
 begin
   inherited;
   Name := '';
-  ButtonCopy.Visible := False;
+  LayoutActions.Visible := False;
   IsAudio := False;
   FlowLayoutImages.Visible := False;
 end;
@@ -132,6 +159,19 @@ end;
 procedure TFrameMessage.TimerRestoreCopyTimer(Sender: TObject);
 begin
   TimerRestoreCopy.Enabled := False;
+end;
+
+procedure TFrameMessage.FOnTextWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
+begin
+  if ssTouch in Shift then
+  begin
+    if ParentControl.ParentControl is TCustomScrollBox then
+      (ParentControl.ParentControl as TCustomScrollBox).ViewportPosition :=
+        TPointF.Create((ParentControl.ParentControl as TCustomScrollBox).ViewportPosition.X,
+        (ParentControl.ParentControl as TCustomScrollBox).ViewportPosition.Y + WheelDelta);
+  end
+  else if ParentControl.ParentControl is TCustomScrollBox then
+    (ParentControl.ParentControl as TCustomScrollBox).AniCalculations.MouseWheel(0, -WheelDelta);
 end;
 
 procedure TFrameMessage.FrameResize(Sender: TObject);
@@ -169,6 +209,7 @@ procedure TFrameMessage.SetIsAudio(const Value: Boolean);
 begin
   FIsAudio := Value;
   LayoutAudio.Visible := FIsAudio;
+  RectangleAudioCompact.Visible := FIsAudio;
 end;
 
 procedure TFrameMessage.SetIsError(const Value: Boolean);
@@ -189,6 +230,12 @@ begin
     RectangleBG.Fill.Color := $00FFFFFF
   else
     RectangleBG.Fill.Color := $14FFFFFF;
+end;
+
+procedure TFrameMessage.SetMode(const Value: TWindowMode);
+begin
+  FMode := Value;
+  UpdateMode;
 end;
 
 procedure TFrameMessage.ParseText(const Value: string);
@@ -219,6 +266,22 @@ var
 begin
   Parts := TList<TPart>.Create;
   try
+    try
+      var JSON := TJSONObject.ParseJSONValue(Value);
+      if Assigned(JSON) then
+      try
+        var Part: TPart;
+        Part.PartType := ptCode;
+        Part.Content := Value;
+        Part.Language := 'json';
+        Parts.Add(Part);
+        Exit;
+      finally
+        JSON.Free;
+      end;
+    except
+      //
+    end;
     CodePairs := 0;
     Buf := '';
     IsCodeParse := False;
@@ -227,22 +290,23 @@ begin
       if C = '`' then
       begin
         Inc(CodePairs);
+        Buf := Buf + C;
         if CodePairs = 3 then
         begin
           if IsCodeParse then
           begin
-            if not Buf.Trim([' ']).IsEmpty then
-              Parts.Add(CreatePart(ptCode, Buf));
+            if not Buf.Trim([' ', '`']).IsEmpty then
+              Parts.Add(CreatePart(ptCode, Buf.Trim(['`'])));
             IsCodeParse := False;
           end
           else
           begin
-            if not Buf.Trim([' ']).IsEmpty then
-              Parts.Add(CreatePart(ptText, Buf));
+            if not Buf.Trim([' ', '`']).IsEmpty then
+              Parts.Add(CreatePart(ptText, Buf.Trim([' ', '`'])));
             IsCodeParse := True;
           end;
-          Buf := '';
           CodePairs := 0;
+          Buf := '';
         end;
       end
       else
@@ -253,17 +317,16 @@ begin
     end;
     if IsCodeParse then
     begin
-      if not Buf.Trim([' ']).IsEmpty then
-        Parts.Add(CreatePart(ptCode, Buf));
+      if not Buf.Trim([' ', '`']).IsEmpty then
+        Parts.Add(CreatePart(ptCode, Buf.Trim(['`'])));
     end
     else
     begin
       if not Buf.Trim([' ']).IsEmpty then
         Parts.Add(CreatePart(ptText, Buf));
     end;
-
-    BuildContent(Parts);
   finally
+    BuildContent(Parts);
     Parts.Free;
   end;
   UpdateContentSize;
@@ -303,6 +366,7 @@ begin
       Frame.Align := TAlignLayout.None;
       Frame.Position.Y := 10000;
       Frame.Align := TAlignLayout.Top;
+      Frame.OnWheel := FOnTextWheel;
       Continue;
     end;
 
@@ -315,6 +379,7 @@ begin
       Frame.Align := TAlignLayout.None;
       Frame.Position.Y := 10000;
       Frame.Align := TAlignLayout.Top;
+      Frame.OnWheel := FOnTextWheel;
       if IsError then
         Frame.MemoText.FontColor := $FFEF4444
       else if FIsUser then
@@ -333,7 +398,7 @@ begin
   else
     FText := 'empty';
   FText := FText.Trim([' ', #13, #10]);
-  ButtonCopy.Visible := not FText.IsEmpty;
+  UpdateMode;
   ParseText(FText);
 end;
 

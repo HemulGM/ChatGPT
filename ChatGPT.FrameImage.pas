@@ -23,92 +23,13 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-  TBitmapHelper = class helper for TBitmap
-  private
-    class function Get(const URL: string): TMemoryStream; static;
-  public
-    function LoadFromUrl(const Url: string; UseCache: Boolean = True): Boolean;
-    function LoadFromUrlAsync(const Url: string; UseCache: Boolean = True; AfterLoaded: TProc<TBitmap> = nil): Boolean;
-  end;
-
 implementation
 
 uses
   System.NetEncoding, ChatGPT.FrameImagePreview, System.Threading,
-  System.Net.HttpClient, FMX.Platform, ChatGPT.FrameUIMessage;
+  System.Net.HttpClient, FMX.Platform, ChatGPT.FrameUIMessage, HGM.FMX.Image;
 
 {$R *.fmx}
-
-function TBitmapHelper.LoadFromUrlAsync(const Url: string; UseCache: Boolean; AfterLoaded: TProc<TBitmap>): Boolean;
-begin
-  Result := False;
-  TTask.Run(
-    procedure
-    begin
-      try
-        Self.LoadFromUrl(Url, UseCache);
-      except
-        Self.Assign(nil);
-      end;
-      if Assigned(AfterLoaded) then
-        TThread.ForceQueue(nil,
-          procedure
-          begin
-            AfterLoaded(Self);
-          end);
-    end);
-end;
-
-class function TBitmapHelper.Get(const URL: string): TMemoryStream;
-var
-  HTTP: THTTPClient;
-begin
-  Result := TMemoryStream.Create;
-  if URL.IsEmpty then
-    Exit;
-  HTTP := THTTPClient.Create;
-  try
-    HTTP.HandleRedirects := True;
-    try
-      if (HTTP.Get(URL, Result).StatusCode = 200) and (Result.Size > 0) then
-        Result.Position := 0;
-    except
-      //
-    end;
-  finally
-    HTTP.Free;
-  end;
-end;
-
-function TBitmapHelper.LoadFromUrl(const Url: string; UseCache: Boolean): Boolean;
-var
-  Mem: TMemoryStream;
-  FLoaded: Boolean;
-begin
-  Result := False;
-  Mem := Get(Url);
-  try
-    try
-      if Mem.Size > 0 then
-      begin
-        TThread.Synchronize(nil,
-          procedure
-          begin
-            try
-              Self.LoadFromStream(Mem);
-              FLoaded := True;
-            except
-              FLoaded := False;
-            end;
-          end);
-        Result := FLoaded;
-      end;
-    except
-    end;
-  finally
-    Mem.Free;
-  end;
-end;
 
 { TFrameImage }
 
@@ -142,7 +63,7 @@ end;
 
 procedure TFrameImage.SetImage(const Value: string);
 begin
-  RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(Value, False,
+  RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(RectangleImage, Value, False,
     procedure(Bitmap: TBitmap)
     begin
       AniIndicator.Visible := False;

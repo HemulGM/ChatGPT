@@ -5,10 +5,14 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  ChatGPT.Overlay, FMX.Edit, FMX.Objects, FMX.Controls.Presentation, FMX.Layouts,
-  ChatGPT.Classes;
+  ChatGPT.Overlay, FMX.Edit, FMX.Objects, FMX.Layouts, ChatGPT.Classes,
+  FMX.ComboEdit, FMX.ListBox, FMX.Controls.Presentation, FMX.ComboEdit.Style;
 
 type
+  TStyledComboEdit = class(FMX.ComboEdit.Style.TStyledComboEdit)
+    procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean); override;
+  end;
+
   TFrameSettings = class(TFrameOveraly)
     LayoutClient: TLayout;
     RectangleFrame: TRectangle;
@@ -33,14 +37,55 @@ type
     Layout4: TLayout;
     ButtonGetToken: TButton;
     VertScrollBoxContent: TVertScrollBox;
+    Label7: TLabel;
+    Label8: TLabel;
+    ComboEditModel: TComboEdit;
+    Label9: TLabel;
+    EditMaxTokens: TEdit;
+    ClearEditButton3: TClearEditButton;
+    Path2: TPath;
+    Layout1: TLayout;
+    TrackBarPP: TTrackBar;
+    LabelPP: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    Layout5: TLayout;
+    TrackBarFP: TTrackBar;
+    LabelFP: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
+    EditQueryMaxToken: TEdit;
+    ClearEditButton4: TClearEditButton;
+    Path3: TPath;
+    Label17: TLabel;
+    Label18: TLabel;
+    Label19: TLabel;
+    LabelAppearance: TLabel;
+    Label14: TLabel;
+    EditOrg: TEdit;
+    ClearEditButton5: TClearEditButton;
+    Path5: TPath;
+    Label20: TLabel;
+    EditBaseUrl: TEdit;
+    ClearEditButton6: TClearEditButton;
+    Path6: TPath;
+    Label21: TLabel;
+    Label22: TLabel;
+    LayoutOnTop: TLayout;
+    SwitchOnTop: TSwitch;
+    Label23: TLabel;
     procedure TrackBarTempTracking(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);
     procedure ButtonGetTokenClick(Sender: TObject);
     procedure FrameResize(Sender: TObject);
     procedure RectangleBGClick(Sender: TObject);
+    procedure TrackBarPPTracking(Sender: TObject);
+    procedure TrackBarFPTracking(Sender: TObject);
   private
     FProcCallback: TProc<TFrameSettings, Boolean>;
+    FLayoutClientWidth, FLayoutClientHeight: Single;
   protected
     procedure SetMode(const Value: TWindowMode); override;
   public
@@ -54,7 +99,8 @@ var
 implementation
 
 uses
-  ChatGPT.Main, System.Math, FMX.Ani;
+  ChatGPT.Main, System.Math, FMX.Ani, FMX.Presentation.Style,
+  FMX.Presentation.Factory, HGM.FMX.Ani;
 
 {$R *.fmx}
 
@@ -64,7 +110,7 @@ procedure TFrameSettings.ButtonCancelClick(Sender: TObject);
 begin
   if Assigned(FProcCallback) then
     FProcCallback(Self, False);
-  TThread.ForceQueue(nil, Free);
+  Release;
 end;
 
 procedure TFrameSettings.ButtonGetTokenClick(Sender: TObject);
@@ -76,13 +122,19 @@ procedure TFrameSettings.ButtonOkClick(Sender: TObject);
 begin
   if Assigned(FProcCallback) then
     FProcCallback(Self, True);
-  TThread.ForceQueue(nil, Free);
+  Release;
 end;
 
 constructor TFrameSettings.Create(AOwner: TComponent);
 begin
   inherited;
+  {$IFDEF ANDROID OR IOS OR IOS64}
+  LabelAppearance.Visible := False;
+  LayoutOnTop.Visible := False;
+  {$ENDIF}
   Name := '';
+  FLayoutClientWidth := LayoutClient.Width;
+  FLayoutClientHeight := LayoutClient.Height;
   VertScrollBoxContent.AniCalculations.Animation := True;
 end;
 
@@ -100,30 +152,64 @@ end;
 
 procedure TFrameSettings.FrameResize(Sender: TObject);
 begin
-  LayoutClient.Width := Min(440, Width);
-  LayoutClient.Height := Min(450, Height);
+  LayoutClient.Width := Min(FLayoutClientWidth, Width);
+  LayoutClient.Height := Min(FLayoutClientHeight, Height);
 end;
 
 procedure TFrameSettings.RectangleBGClick(Sender: TObject);
 begin
-  TAnimator.AnimateFloatWait(LayoutClient, 'RotationAngle', 2, 0.2, TAnimationType.Out, TInterpolationType.Elastic);
-  TAnimator.AnimateFloatWait(LayoutClient, 'RotationAngle', 0, 0.2, TAnimationType.Out, TInterpolationType.Back);
+  TAnimator.AnimateFloatWithFinish(LayoutClient, 'RotationAngle', 2,
+    procedure
+    begin
+      TAnimator.AnimateFloat(LayoutClient, 'RotationAngle', 0, 0.2, TAnimationType.out, TInterpolationType.Back);
+    end,
+    0.2, TAnimationType.out, TInterpolationType.Elastic);
 end;
 
 procedure TFrameSettings.SetMode(const Value: TWindowMode);
 begin
   inherited;
   if Mode = TWindowMode.wmCompact then
-    LayoutClient.Align := TAlignLayout.Client
+  begin
+    LayoutClient.Align := TAlignLayout.Client;
+    RectangleFrame.Corners := [];
+  end
   else
+  begin
     LayoutClient.Align := TAlignLayout.Center;
+    RectangleFrame.Corners := AllCorners;
+  end;
   FrameResize(nil);
+end;
+
+procedure TFrameSettings.TrackBarFPTracking(Sender: TObject);
+begin
+  LabelFP.Text := FormatFloat('0.0', TrackBarFP.Value / 10);
+end;
+
+procedure TFrameSettings.TrackBarPPTracking(Sender: TObject);
+begin
+  LabelPP.Text := FormatFloat('0.0', TrackBarPP.Value / 10);
 end;
 
 procedure TFrameSettings.TrackBarTempTracking(Sender: TObject);
 begin
   LabelTemp.Text := FormatFloat('0.0', TrackBarTemp.Value / 10);
 end;
+
+{ TStyledComboEdit }
+
+procedure TStyledComboEdit.MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
+begin
+  Handled := False;
+end;
+
+initialization
+  TPresentationProxyFactory.Current.Unregister(TComboEdit, TControlType.Styled, TStyledPresentationProxy<FMX.ComboEdit.Style.TStyledComboEdit>);
+  TPresentationProxyFactory.Current.Register(TComboEdit, TControlType.Styled, TStyledPresentationProxy<TStyledComboEdit>);
+
+finalization
+  TPresentationProxyFactory.Current.Unregister(TComboEdit, TControlType.Styled, TStyledPresentationProxy<TStyledComboEdit>);
 
 end.
 

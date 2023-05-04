@@ -1,7 +1,5 @@
 ﻿program ChatGPT;
 
-
-
 uses
   System.StartUpCopy,
   FMX.Forms,
@@ -39,7 +37,14 @@ uses
   ChatGPT.Overlay in 'ChatGPT.Overlay.pas' {FrameOveraly: TFrame},
   ChatGPT.Settings in 'ChatGPT.Settings.pas' {FrameSettings: TFrame},
   ChatGPT.ChatSettings in 'ChatGPT.ChatSettings.pas' {FrameChatSettings: TFrame},
-  ChatGPT.FrameUIMessage in 'ChatGPT.FrameUIMessage.pas' {FrameUIMessage: TFrame};
+  ChatGPT.FrameUIMessage in 'ChatGPT.FrameUIMessage.pas' {FrameUIMessage: TFrame},
+  ChatGPT.Code.Pascal in 'Code\ChatGPT.Code.Pascal.pas',
+  ChatGPT.Code in 'ChatGPT.Code.pas',
+  ChatGPT.Code.Python in 'Code\ChatGPT.Code.Python.pas',
+  ChatGPT.Code.MarkDown in 'Code\ChatGPT.Code.MarkDown.pas',
+  HGM.FMX.Image in 'HGM.FMX.Image.pas',
+  HGM.FMX.Ani in 'HGM.FMX.Ani.pas',
+  ChatGPT.Code.JSON in 'Code\ChatGPT.Code.JSON.pas';
 
 {$R *.res}
 
@@ -49,3 +54,4 @@ begin
   Application.CreateForm(TFormMain, FormMain);
   Application.Run;
 end.
+

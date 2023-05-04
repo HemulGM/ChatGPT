@@ -6,32 +6,60 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   ChatGPT.Overlay, FMX.Objects, FMX.Edit, FMX.Controls.Presentation, FMX.Layouts,
-  ChatGPT.Classes;
+  ChatGPT.Classes, FMX.ComboEdit;
 
 type
   TFrameChatSettings = class(TFrameOveraly)
     LayoutClient: TLayout;
     RectangleFrame: TRectangle;
-    Label1: TLabel;
+    LayoutActs: TLayout;
+    ButtonCancel: TButton;
+    ButtonOk: TButton;
+    VertScrollBox: TVertScrollBox;
+    ComboEditModel: TComboEdit;
     EditLangSrc: TEdit;
     ClearEditButton1: TClearEditButton;
     Path4: TPath;
+    EditMaxTokens: TEdit;
+    ClearEditButton3: TClearEditButton;
+    Path2: TPath;
+    EditQueryMaxToken: TEdit;
+    ClearEditButton4: TClearEditButton;
+    Path3: TPath;
+    Label1: TLabel;
+    Label16: TLabel;
+    Label17: TLabel;
+    Label18: TLabel;
+    Label19: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
-    Layout2: TLayout;
-    ButtonCancel: TButton;
-    ButtonOk: TButton;
+    Label8: TLabel;
+    Label9: TLabel;
     Layout3: TLayout;
     TrackBarTemp: TTrackBar;
     LabelTemp: TLabel;
+    Layout1: TLayout;
+    TrackBarPP: TTrackBar;
+    LabelPP: TLabel;
+    Label12: TLabel;
+    Label11: TLabel;
+    Label15: TLabel;
+    Layout5: TLayout;
+    TrackBarFP: TTrackBar;
+    LabelFP: TLabel;
+    Label13: TLabel;
     procedure TrackBarTempTracking(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);
     procedure FrameResize(Sender: TObject);
     procedure RectangleBGClick(Sender: TObject);
+    procedure TrackBarPPTracking(Sender: TObject);
+    procedure TrackBarFPTracking(Sender: TObject);
   private
     FProcCallback: TProc<TFrameChatSettings, Boolean>;
+    FLayoutClientWidth: Single;
+    FLayoutClientHeight: Single;
   protected
     procedure SetMode(const Value: TWindowMode); override;
   public
@@ -45,7 +73,7 @@ var
 implementation
 
 uses
-  System.Math, FMX.Ani;
+  System.Math, FMX.Ani, HGM.FMX.Ani;
 
 {$R *.fmx}
 
@@ -55,19 +83,22 @@ procedure TFrameChatSettings.ButtonCancelClick(Sender: TObject);
 begin
   if Assigned(FProcCallback) then
     FProcCallback(Self, False);
-  TThread.ForceQueue(nil, Free);
+  Release;
 end;
 
 procedure TFrameChatSettings.ButtonOkClick(Sender: TObject);
 begin
   if Assigned(FProcCallback) then
     FProcCallback(Self, True);
-  TThread.ForceQueue(nil, Free);
+  Release;
 end;
 
 constructor TFrameChatSettings.Create(AOwner: TComponent);
 begin
   inherited;
+  FLayoutClientWidth := LayoutClient.Width;
+  FLayoutClientHeight := LayoutClient.Height;
+  VertScrollBox.AniCalculations.Animation := True;
   Name := '';
 end;
 
@@ -85,24 +116,44 @@ end;
 
 procedure TFrameChatSettings.FrameResize(Sender: TObject);
 begin
-  LayoutClient.Width := Min(320, Width);
-  LayoutClient.Height := Min(380, Height);
+  LayoutClient.Width := Min(FLayoutClientWidth, Width);
+  LayoutClient.Height := Min(FLayoutClientHeight, Height);
 end;
 
 procedure TFrameChatSettings.RectangleBGClick(Sender: TObject);
 begin
-  TAnimator.AnimateFloatWait(LayoutClient, 'RotationAngle', 2, 0.2, TAnimationType.out, TInterpolationType.Elastic);
-  TAnimator.AnimateFloatWait(LayoutClient, 'RotationAngle', 0, 0.2, TAnimationType.out, TInterpolationType.Back);
+  TAnimator.AnimateFloatWithFinish(LayoutClient, 'RotationAngle', 2,
+    procedure
+    begin
+      TAnimator.AnimateFloat(LayoutClient, 'RotationAngle', 0, 0.2, TAnimationType.out, TInterpolationType.Back);
+    end,
+    0.2, TAnimationType.out, TInterpolationType.Elastic);
 end;
 
 procedure TFrameChatSettings.SetMode(const Value: TWindowMode);
 begin
   inherited;
   if Mode = TWindowMode.wmCompact then
-    LayoutClient.Align := TAlignLayout.Client
+  begin
+    LayoutClient.Align := TAlignLayout.Client;
+    RectangleFrame.Corners := [];
+  end
   else
+  begin
     LayoutClient.Align := TAlignLayout.Center;
+    RectangleFrame.Corners := AllCorners;
+  end;
   FrameResize(nil);
+end;
+
+procedure TFrameChatSettings.TrackBarFPTracking(Sender: TObject);
+begin
+  LabelFP.Text := FormatFloat('0.0', TrackBarFP.Value / 10);
+end;
+
+procedure TFrameChatSettings.TrackBarPPTracking(Sender: TObject);
+begin
+  LabelPP.Text := FormatFloat('0.0', TrackBarPP.Value / 10);
 end;
 
 procedure TFrameChatSettings.TrackBarTempTracking(Sender: TObject);

@@ -6,10 +6,11 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Layouts, FMX.Memo.Types, FMX.Controls.Presentation,
-  FMX.ScrollBox, FMX.Memo, OpenAI, OpenAI.Completions, ChatGPT.FrameMessage,
-  ChatGPT.Classes, System.Threading, FMX.Edit, FMX.ImgList, OpenAI.Chat,
-  System.Generics.Collections, OpenAI.Audio, OpenAI.Utils.ChatHistory,
-  OpenAI.Images, ChatGPT.ChatSettings, System.JSON, FMX.Effects, FMX.ListBox;
+  FMX.Memo.Style, FMX.ScrollBox, FMX.Memo, OpenAI, OpenAI.Completions,
+  ChatGPT.FrameMessage, ChatGPT.Classes, System.Threading, FMX.Edit, FMX.ImgList,
+  OpenAI.Chat, System.Generics.Collections, OpenAI.Audio,
+  OpenAI.Utils.ChatHistory, OpenAI.Images, ChatGPT.ChatSettings, System.JSON,
+  FMX.Effects, FMX.ListBox;
 
 type
   TButton = class(FMX.StdCtrls.TButton)
@@ -20,6 +21,14 @@ type
   TLabel = class(FMX.StdCtrls.TLabel)
   public
     procedure SetBounds(X, Y, AWidth, AHeight: Single); override;
+  end;
+
+  TVertScrollBox = class(FMX.Layouts.TVertScrollBox)
+  private
+    FViewPositionY: Single;
+    procedure SetViewPositionY(const Value: Single);
+  published
+    property ViewPositionY: Single read FViewPositionY write SetViewPositionY;
   end;
 
   TFrameChat = class(TFrame)
@@ -42,23 +51,20 @@ type
     LineBorder: TLine;
     LayoutWelcome: TLayout;
     RectangleBG: TRectangle;
-    Label11: TLabel;
+    LabelWelcomeTitle: TLabel;
     FlowLayoutWelcome: TFlowLayout;
     LayoutExampleTitle: TLayout;
-    Label2: TLabel;
-    Path6: TPath;
+    PathExaFull: TPath;
     ButtonExample3: TButton;
     ButtonExample2: TButton;
     ButtonExample1: TButton;
     LayoutCapabilitiesTitle: TLayout;
-    Label3: TLabel;
-    Path5: TPath;
+    PathCapFull: TPath;
     Label5: TLabel;
     Label6: TLabel;
     Label9: TLabel;
     LayoutLimitationsTitle: TLayout;
-    Label4: TLabel;
-    Path7: TPath;
+    PathLimFull: TPath;
     Label8: TLabel;
     Label7: TLabel;
     Label10: TLabel;
@@ -73,12 +79,25 @@ type
     PathImage: TPath;
     RectangleImageMode: TRectangle;
     RectangleTypeBG: TRectangle;
-    ButtonSettings: TButton;
-    Path9: TPath;
     LayoutRetry: TLayout;
     ButtonRetry: TButton;
     ShadowEffect1: TShadowEffect;
     TimerUpdateTextSize: TTimer;
+    LabelSendTip: TLabel;
+    Layout5: TLayout;
+    Label2: TLabel;
+    PathExaCompact: TPath;
+    Layout6: TLayout;
+    Label1: TLabel;
+    PathCapCompact: TPath;
+    Layout7: TLayout;
+    Label11: TLabel;
+    PathLimCompact: TPath;
+    Layout8: TLayout;
+    ButtonSettings: TButton;
+    Path9: TPath;
+    LayoutScrollDown: TLayout;
+    ButtonScrollDown: TButton;
     procedure LayoutSendResize(Sender: TObject);
     procedure MemoQueryChange(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
@@ -96,6 +115,8 @@ type
     procedure ButtonSettingsClick(Sender: TObject);
     procedure ButtonRetryClick(Sender: TObject);
     procedure TimerUpdateTextSizeTimer(Sender: TObject);
+    procedure ButtonScrollDownClick(Sender: TObject);
+    procedure VertScrollBoxChatViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
   private
     class var
       FChatIdCount: Integer;
@@ -113,6 +134,11 @@ type
     FLastRequest: TProc;
     FMenuItem: TListBoxItem;
     FIsFirstMessage: Boolean;
+    FPresencePenalty: Single;
+    FModel: string;
+    FMaxTokens: Integer;
+    FMaxTokensQuery: Integer;
+    FFrequencyPenalty: Single;
     function NewMessage(const Text: string; IsUser: Boolean; UseBuffer: Boolean = True; IsAudio: Boolean = False): TFrameMessage;
     function NewMessageImage(IsUser: Boolean; Images: TArray<string>): TFrameMessage;
     procedure ClearChat;
@@ -122,7 +148,7 @@ type
     procedure ShowError(const Text: string);
     procedure AppendMessages(Response: TChat); overload;
     procedure AppendMessages(Response: TImageGenerations); overload;
-    procedure ScrollDown;
+    procedure ScrollDown(Animate: Boolean = False);
     procedure SetTitle(const Value: string);
     procedure SetMode(const Value: TWindowMode);
     function ProcText(const Text: string; FromUser: Boolean): string;
@@ -139,9 +165,14 @@ type
     procedure SetMenuItem(const Value: TListBoxItem);
     procedure UpdateMenuTitle(const Text: string);
     class function NextChatId: Integer; static;
+    procedure SetFrequencyPenalty(const Value: Single);
+    procedure SetMaxTokens(const Value: Integer);
+    procedure SetMaxTokensQuery(const Value: Integer);
+    procedure SetModel(const Value: string);
+    procedure SetPresencePenalty(const Value: Single);
+    procedure ChatToUp;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateFromJson(AOwner: TComponent; JSON: TJSONObject);
     destructor Destroy; override;
     function MakeContentScreenshot: TBitmap;
     function SaveAsJson: TJSONObject;
@@ -152,6 +183,11 @@ type
     property Mode: TWindowMode read FMode write SetMode;
     property LangSrc: string read FLangSrc write SetLangSrc;
     property Temperature: Single read FTemperature write SetTemperature;
+    property MaxTokens: Integer read FMaxTokens write SetMaxTokens;
+    property MaxTokensQuery: Integer read FMaxTokensQuery write SetMaxTokensQuery;
+    property PresencePenalty: Single read FPresencePenalty write SetPresencePenalty;
+    property FrequencyPenalty: Single read FFrequencyPenalty write SetFrequencyPenalty;
+    property Model: string read FModel write SetModel;
     property IsImageMode: Boolean read FIsImageMode write SetIsImageMode;
     property LastRequest: TProc read FLastRequest write SetLastRequest;
     property MenuItem: TListBoxItem read FMenuItem write SetMenuItem;
@@ -166,7 +202,7 @@ implementation
 
 uses
   FMX.Ani, System.Math, OpenAI.API, ChatGPT.Translate, System.IOUtils,
-  ChatGPT.Overlay;
+  ChatGPT.Overlay, FMX.BehaviorManager;
 
 {$R *.fmx}
 
@@ -195,8 +231,10 @@ end;
 
 function TFrameChat.NewMessageImage(IsUser: Boolean; Images: TArray<string>): TFrameMessage;
 begin
+  ChatToUp;
   LayoutWelcome.Visible := False;
   Result := TFrameMessage.Create(VertScrollBoxChat);
+  Result.SetMode(FMode);
   Result.Position.Y := VertScrollBoxChat.ContentBounds.Height;
   Result.Parent := VertScrollBoxChat;
   Result.Align := TAlignLayout.MostTop;
@@ -234,9 +272,17 @@ begin
     Result.AddPair('user_lang', FLangSrc);
     Result.AddPair('title', FTitle);
     Result.AddPair('items', JArray);
+
+    Result.AddPair('frequency_penalty', TJSONNumber.Create(FrequencyPenalty));
+    Result.AddPair('presence_penalty', TJSONNumber.Create(PresencePenalty));
+    Result.AddPair('max_tokens', TJSONNumber.Create(MaxTokens));
+    Result.AddPair('max_tokens_query', TJSONNumber.Create(MaxTokensQuery));
+    Result.AddPair('model', Model);
+
     for var Item in FBuffer do
     begin
       var JItem := TJSONObject.Create;
+      JItem.AddPair('id', Item.Tag);
       JItem.AddPair('role', Item.Role.ToString);
       JItem.AddPair('content', Item.Content);
       JArray.Add(JItem);
@@ -249,10 +295,16 @@ end;
 procedure TFrameChat.LoadFromJson(JSON: TJSONObject);
 begin
   var ItemCount: Integer := 0;
+  var LastRoleIsUser: Boolean := False;
   FChatId := JSON.GetValue('chat_id', TGUID.NewGuid.ToString);
   FTemperature := JSON.GetValue('temperature', 0.0);
   FLangSrc := JSON.GetValue('user_lang', '');
   FTitle := JSON.GetValue('title', '');
+  FrequencyPenalty := JSON.GetValue<Single>('frequency_penalty', 0.0);
+  PresencePenalty := JSON.GetValue<Single>('presence_penalty', 0.0);
+  Model := JSON.GetValue('model', '');
+  MaxTokens := JSON.GetValue<Integer>('max_tokens', 0);
+  MaxTokensQuery := JSON.GetValue<Integer>('max_tokens_query', 0);
   var JArray: TJSONArray;
   if JSON.TryGetValue<TJSONArray>('items', JArray) then
     for var JItem in JArray do
@@ -260,28 +312,37 @@ begin
       var Item: TChatMessageBuild;
       Item.Role := TMessageRole.FromString(JItem.GetValue('role', 'user'));
       Item.Content := JItem.GetValue('content', '');
+      Item.Tag := JItem.GetValue('id', TGUID.NewGuid.ToString);
       FBuffer.Add(Item);
       var Frame := TFrameMessage.Create(VertScrollBoxChat);
       Frame.Position.Y := VertScrollBoxChat.ContentBounds.Height;
       VertScrollBoxChat.AddObject(Frame);
       Frame.Align := TAlignLayout.MostTop;
       Frame.IsUser := Item.Role = TMessageRole.User;
+      LastRoleIsUser := Frame.IsUser;
       Frame.IsAudio := False;
       Frame.Text := Item.Content;
+      Frame.SetMode(FMode);
       Frame.UpdateContentSize;
-      Frame.StartAnimate;
       Inc(ItemCount);
     end;
   if ItemCount > 0 then
   begin
     LayoutWelcome.Visible := False;
-    IsFirstMessage := False;    
+    IsFirstMessage := False;
+    ScrollDown;
+    if LastRoleIsUser then
+      LastRequest := RequestPrompt;
   end;
 end;
 
-procedure TFrameChat.ScrollDown;
+procedure TFrameChat.ScrollDown(Animate: Boolean = False);
 begin
-  VertScrollBoxChat.ViewportPosition := TPointF.Create(0, VertScrollBoxChat.ContentBounds.Height);
+  VertScrollBoxChat.RecalcSize;
+  if Animate then
+    TAnimator.AnimateFloat(VertScrollBoxChat, 'ViewPositionY', VertScrollBoxChat.ContentBounds.Height - VertScrollBoxChat.Height, 1, TAnimationType.out, TInterpolationType.Circular)
+  else
+    VertScrollBoxChat.ViewportPosition := TPointF.Create(0, VertScrollBoxChat.ContentBounds.Height - VertScrollBoxChat.Height);
 end;
 
 function TFrameChat.MakeContentScreenshot: TBitmap;
@@ -327,6 +388,11 @@ begin
       Frame.Mode := FMode;
       Frame.EditLangSrc.Text := LangSrc;
       Frame.TrackBarTemp.Value := Temperature * 10;
+      Frame.TrackBarPP.Value := PresencePenalty * 10;
+      Frame.TrackBarFP.Value := FrequencyPenalty * 10;
+      Frame.EditMaxTokens.Text := MaxTokens.ToString;
+      Frame.EditQueryMaxToken.Text := MaxTokensQuery.ToString;
+      Frame.ComboEditModel.Text := Model;
     end,
     procedure(Frame: TFrameChatSettings; Success: Boolean)
     begin
@@ -335,6 +401,11 @@ begin
         Exit;
       LangSrc := Frame.EditLangSrc.Text;
       Temperature := Frame.TrackBarTemp.Value / 10;
+      PresencePenalty := Frame.TrackBarPP.Value / 10;
+      FrequencyPenalty := Frame.TrackBarFP.Value / 10;
+      MaxTokens := StrToIntDef(Frame.EditMaxTokens.Text, 0);
+      MaxTokensQuery := StrToIntDef(Frame.EditQueryMaxToken.Text, 0);
+      Model := Frame.ComboEditModel.Text;
     end);
 end;
 
@@ -448,7 +519,7 @@ begin
       try
         var Images := API.Image.Create(
           procedure(Params: TImageCreateParams)
-          begin     
+          begin
             Params.Prompt(ProcText(Prompt, True));
             Params.ResponseFormat(TImageResponseFormat.Url);
             Params.N(4);
@@ -513,9 +584,14 @@ begin
         var Completions := API.Chat.Create(
           procedure(Params: TChatParams)
           begin
-            //Params.Model('gpt-4');
+            if not Model.IsEmpty then
+              Params.Model(Model);
+            if PresencePenalty <> 0 then
+              Params.PresencePenalty(PresencePenalty);
+            if FrequencyPenalty <> 0 then
+              Params.FrequencyPenalty(FrequencyPenalty);
             Params.Messages(FBuffer.ToArray);
-            Params.MaxTokens(MAX_TOKENS);
+            Params.MaxTokens(FBuffer.MaxTokensForQuery);
             Params.Temperature(Temperature);
             Params.User(FChatId);
           end);
@@ -542,6 +618,11 @@ begin
           SetTyping(False);
         end);
     end, FPool);
+end;
+
+procedure TFrameChat.ButtonScrollDownClick(Sender: TObject);
+begin
+  ScrollDown(True);
 end;
 
 procedure TFrameChat.ButtonSendClick(Sender: TObject);
@@ -576,20 +657,17 @@ begin
   FIsFirstMessage := True;
   LastRequest := nil;
   FBuffer := TChatHistory.Create;
+  FBuffer.MaxTokensForQuery := MAX_TOKENS;
+  FBuffer.MaxTokensOfModel := MODEL_TOKENS_LIMIT;
   FPool := TThreadPool.Create;
   LangSrc := '';
   Temperature := 0.2;
   Name := '';
   VertScrollBoxChat.AniCalculations.Animation := True;
+  MemoQuery.ScrollAnimation := TBehaviorBoolean.True;
   SetTyping(False);
   ClearChat;
   IsImageMode := False;
-end;
-
-constructor TFrameChat.CreateFromJson(AOwner: TComponent; JSON: TJSONObject);
-begin
-  Create(AOwner);
-  LoadFromJson(JSON);
 end;
 
 destructor TFrameChat.Destroy;
@@ -657,6 +735,7 @@ end;
 
 procedure TFrameChat.MemoQueryChange(Sender: TObject);
 begin
+  LabelSendTip.Visible := MemoQuery.Text.IsEmpty;
   TimerUpdateTextSize.Enabled := False;
   TimerUpdateTextSize.Enabled := True;
 end;
@@ -687,39 +766,64 @@ begin
   end;
 end;
 
+procedure TFrameChat.VertScrollBoxChatViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
+begin
+  VertScrollBoxChat.FViewPositionY := NewViewportPosition.Y;
+  LayoutScrollDown.Visible := NewViewportPosition.Y < VertScrollBoxChat.ContentBounds.Height - VertScrollBoxChat.Height - 100;
+end;
+
+procedure TFrameChat.ChatToUp;
+begin
+  if not Assigned(FMenuItem) then
+    Exit;
+  FMenuItem.Index := 0;
+  FMenuItem.IsSelected := True;
+end;
+
 function TFrameChat.NewMessage(const Text: string; IsUser: Boolean; UseBuffer: Boolean; IsAudio: Boolean): TFrameMessage;
 begin
+  ChatToUp;
   if IsUser and IsFirstMessage then
   begin
     IsFirstMessage := False;
     UpdateMenuTitle(Text);
   end;
 
+  var AppendText := Text;
   if UseBuffer then
   begin
     var MessageTag := TGUID.NewGuid.ToString;
     if IsUser then
     begin
-      if Text.StartsWith('/system ') then
+      if AppendText.StartsWith('/system ') then
       begin
-        var AText := Text.Replace('/system ', '', []);
-        FBuffer.New(TMessageRole.System, ProcText(AText, IsUser), MessageTag);
+        AppendText := AppendText.Replace('/system ', '', []);
+        AppendText := ProcText(AppendText, IsUser);
+        FBuffer.New(TMessageRole.System, AppendText, MessageTag);
       end
-      else if Text.StartsWith('/user ') then
+      else if AppendText.StartsWith('/user ') then
       begin
-        var AText := Text.Replace('/user ', '', []);
-        FBuffer.New(TMessageRole.User, ProcText(AText, IsUser), MessageTag);
+        AppendText := AppendText.Replace('/user ', '', []);
+        AppendText := ProcText(AppendText, IsUser);
+        FBuffer.New(TMessageRole.User, AppendText, MessageTag);
       end
-      else if Text.StartsWith('/assistant ') then
+      else if AppendText.StartsWith('/assistant ') then
       begin
-        var AText := Text.Replace('/assistant ', '', []);
-        FBuffer.New(TMessageRole.Assistant, ProcText(AText, IsUser), MessageTag);
+        AppendText := AppendText.Replace('/assistant ', '', []);
+        AppendText := ProcText(AppendText, IsUser);
+        FBuffer.New(TMessageRole.Assistant, AppendText, MessageTag);
       end
       else
-        FBuffer.New(TMessageRole.User, ProcText(Text, IsUser), MessageTag);
+      begin
+        AppendText := ProcText(AppendText, IsUser);
+        FBuffer.New(TMessageRole.User, AppendText, MessageTag);
+      end;
     end
     else
-      FBuffer.New(TMessageRole.Assistant, ProcText(Text, IsUser), MessageTag);
+    begin
+      AppendText := ProcText(AppendText, IsUser);
+      FBuffer.New(TMessageRole.Assistant, AppendText, MessageTag);
+    end;
   end;
   LayoutWelcome.Visible := False;
   Result := TFrameMessage.Create(VertScrollBoxChat);
@@ -728,7 +832,8 @@ begin
   Result.Align := TAlignLayout.MostTop;
   Result.IsUser := IsUser;
   Result.IsAudio := IsAudio;
-  Result.Text := Text;
+  Result.Text := AppendText;
+  Result.SetMode(FMode);
   Result.UpdateContentSize;
   Result.StartAnimate;
 end;
@@ -758,6 +863,11 @@ begin
   FChatId := Value;
 end;
 
+procedure TFrameChat.SetFrequencyPenalty(const Value: Single);
+begin
+  FFrequencyPenalty := Value;
+end;
+
 procedure TFrameChat.SetIsImageMode(const Value: Boolean);
 begin
   FIsImageMode := Value;
@@ -784,6 +894,18 @@ begin
   LayoutRetry.Visible := Assigned(FLastRequest);
 end;
 
+procedure TFrameChat.SetMaxTokens(const Value: Integer);
+begin
+  FMaxTokens := Value;
+  FBuffer.MaxTokensOfModel := FMaxTokens;
+end;
+
+procedure TFrameChat.SetMaxTokensQuery(const Value: Integer);
+begin
+  FMaxTokensQuery := Value;
+  FBuffer.MaxTokensForQuery := FMaxTokensQuery;
+end;
+
 procedure TFrameChat.SetMenuItem(const Value: TListBoxItem);
 begin
   FMenuItem := Value;
@@ -798,30 +920,73 @@ begin
       var Frame := Control as TFrameOveraly;
       Frame.Mode := FMode;
     end;
+  for var Control in VertScrollBoxChat do
+    if Control is TFrameMessage then
+    begin
+      var Frame := Control as TFrameMessage;
+      Frame.SetMode(FMode);
+    end;
+
   case FMode of
     wmCompact:
       begin
+        {$IFNDEF ANDROID OR IOS OR IOS64}
+        LayoutSend.Margins.Right := 11;
+        {$ELSE}
+        LayoutSend.Margins.Right := 0;
+        {$ENDIF}
+        LabelWelcomeTitle.Margins.Top := 20;
         LayoutSend.TagFloat := 100;
         VertScrollBoxChat.Padding.Bottom := 100;
-        LayoutSend.Height := 100;         
+        LayoutSend.Height := 100;
         LayoutRetry.Margins.Bottom := 0;
+        LayoutScrollDown.Margins.Bottom := 0;
         LineBorder.Visible := True;
+        PathExaCompact.Visible := True;
+        PathExaFull.Visible := False;
+        PathCapCompact.Visible := True;
+        PathCapFull.Visible := False;
+        PathLimCompact.Visible := True;
+        PathLimFull.Visible := False;
         LayoutSend.Padding.Rect := TRectF.Create(0, 10, 0, 40);
         RectangleSendBG.Fill.Kind := TBrushKind.Solid;
         RectangleSendBG.Fill.Color := $FF343541;
       end;
     wmFull:
       begin
+        {$IFNDEF ANDROID OR IOS OR IOS64}
+        LayoutSend.Margins.Right := 11;
+        {$ELSE}
+        LayoutSend.Margins.Right := 0;
+        {$ENDIF}
+        LabelWelcomeTitle.Margins.Top := 188;
         LayoutSend.TagFloat := 170;
         LayoutRetry.Margins.Bottom := -70;
+        LayoutScrollDown.Margins.Bottom := -70;
         VertScrollBoxChat.Padding.Bottom := 170;
         LayoutSend.Height := 170;
         LineBorder.Visible := False;
+        PathExaCompact.Visible := False;
+        PathExaFull.Visible := True;
+        PathCapCompact.Visible := False;
+        PathCapFull.Visible := True;
+        PathLimCompact.Visible := False;
+        PathLimFull.Visible := True;
         LayoutSend.Padding.Rect := TRectF.Create(0, 80, 0, 40);
         RectangleSendBG.Fill.Kind := TBrushKind.Gradient;
       end;
   end;
   FlowLayoutWelcomeResize(nil);
+end;
+
+procedure TFrameChat.SetModel(const Value: string);
+begin
+  FModel := Value;
+end;
+
+procedure TFrameChat.SetPresencePenalty(const Value: Single);
+begin
+  FPresencePenalty := Value;
 end;
 
 procedure TFrameChat.SetTemperature(const Value: Single);
@@ -890,6 +1055,14 @@ begin
     if AHeight <> H.Height + 24 then
       Height := H.Height + 24;
   end;
+end;
+
+{ TVertScrollBox }
+
+procedure TVertScrollBox.SetViewPositionY(const Value: Single);
+begin
+  FViewPositionY := Value;
+  ViewportPosition := TPointF.Create(ViewportPosition.X, FViewPositionY);
 end;
 
 end.

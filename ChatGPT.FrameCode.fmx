@@ -1,4 +1,6 @@
 object FrameCode: TFrameCode
+  ClipChildren = True
+  HitTest = False
   Margins.Bottom = 5.000000000000000000
   Size.Width = 575.000000000000000000
   Size.Height = 387.000000000000000000
@@ -7,12 +9,13 @@ object FrameCode: TFrameCode
   OnResized = FrameResize
   object RectangleHead: TRectangle
     Align = Top
+    ClipChildren = True
     Corners = [TopLeft, TopRight]
     Fill.Color = xFF353440
     Padding.Left = 16.000000000000000000
-    Padding.Top = 8.000000000000000000
+    Padding.Top = 6.000000000000000000
     Padding.Right = 16.000000000000000000
-    Padding.Bottom = 8.000000000000000000
+    Padding.Bottom = 6.000000000000000000
     Size.Width = 575.000000000000000000
     Size.Height = 32.000000000000000000
     Size.PlatformDefault = False
@@ -21,11 +24,11 @@ object FrameCode: TFrameCode
     YRadius = 6.000000000000000000
     object LabelLanguage: TLabel
       Align = Client
-      StyledSettings = [Size, Style]
+      StyledSettings = [Style]
       Size.Width = 462.000000000000000000
-      Size.Height = 16.000000000000000000
+      Size.Height = 20.000000000000000000
       Size.PlatformDefault = False
-      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 11.500000000000000000
       TextSettings.FontColor = xFFD9D9E3
       TextSettings.WordWrap = False
       Text = 'language'
@@ -36,13 +39,13 @@ object FrameCode: TFrameCode
       Cursor = crHandPoint
       HitTest = True
       Position.X = 478.000000000000000000
-      Position.Y = 8.000000000000000000
+      Position.Y = 6.000000000000000000
       Size.Width = 81.000000000000000000
-      Size.Height = 16.000000000000000000
+      Size.Height = 20.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
       OnClick = LayoutCopyCodeClick
-      object Path1: TPath
+      object PathCopy: TPath
         Align = Left
         Data.Path = {
           4E0000000000000000005C410000004002000000ED0D6F410000004002000000
@@ -77,24 +80,28 @@ object FrameCode: TFrameCode
           0300000000005C4100006040}
         Fill.Color = xFFD9D9E3
         HitTest = False
-        Size.Width = 16.000000000000000000
-        Size.Height = 16.000000000000000000
+        Size.Width = 11.000000000000000000
+        Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
         Stroke.Kind = None
         WrapMode = Fit
       end
-      object Label1: TLabel
-        Align = Client
-        StyledSettings = [Size, Style]
-        Size.Width = 65.000000000000000000
-        Size.Height = 16.000000000000000000
+      object LabelCopy: TLabel
+        Align = Right
+        AutoSize = True
+        StyledSettings = [Style]
+        Position.X = 26.000000000000000000
+        Size.Width = 55.000000000000000000
+        Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
-        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 11.500000000000000000
         TextSettings.FontColor = xFFD9D9E3
         TextSettings.HorzAlign = Trailing
         TextSettings.WordWrap = False
         Text = 'Copy code'
         TabOrder = 0
+        OnResize = LabelCopyResize
+        OnResized = LabelCopyResize
       end
     end
   end
@@ -108,6 +115,7 @@ object FrameCode: TFrameCode
     Stroke.Kind = None
     XRadius = 6.000000000000000000
     YRadius = 6.000000000000000000
+    OnDblClick = RectangleClientDblClick
     object MemoCode: TMemo
       Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
       Caret.Color = x00FFFFFF
@@ -135,8 +143,10 @@ object FrameCode: TFrameCode
       Size.PlatformDefault = False
       StyleLookup = 'memostyle_code'
       TabOrder = 0
-      Viewport.Width = 555.000000000000000000
-      Viewport.Height = 335.000000000000000000
+      OnExit = MemoCodeExit
+      OnMouseWheel = MemoCodeMouseWheel
+      Viewport.Width = 565.000000000000000000
+      Viewport.Height = 345.000000000000000000
     end
   end
 end

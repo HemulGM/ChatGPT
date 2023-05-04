@@ -29,6 +29,9 @@ type
 
 implementation
 
+uses
+  HGM.FMX.Ani;
+
 {$R *.fmx}
 
 { TFramePreview }
@@ -46,10 +49,13 @@ begin
   TAnimator.AnimateFloat(Image, 'Position.Y', FInitImageBounds.Top);
   TAnimator.AnimateFloat(Image, 'Width', FInitImageBounds.Width);
   TAnimator.AnimateFloat(LayoutControlsContent, 'Margins.Bottom', -LayoutControlsContent.Height);
-  TAnimator.AnimateFloatWait(Image, 'Height', FInitImageBounds.Height);
-  if Assigned(FOnClose) then
-    FOnClose;
-  TThread.ForceQueue(nil, Free);
+  TAnimator.AnimateFloatWithFinish(Image, 'Height', FInitImageBounds.Height,
+    procedure
+    begin
+      if Assigned(FOnClose) then
+        FOnClose;
+      Release;
+    end);
 end;
 
 procedure TFramePreview.FrameResized(Sender: TObject);

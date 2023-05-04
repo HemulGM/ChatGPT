@@ -16,9 +16,9 @@ object FrameText: TFrameText
     ReadOnly = True
     ShowScrollBars = False
     StyledSettings = [Style]
-    TextSettings.Font.Family = 'Roboto'
+    TextSettings.Font.Family = 'Segoe UI, Roboto'
     TextSettings.Font.Size = 16.000000000000000000
-    TextSettings.FontColor = xFFE8E8E8
+    TextSettings.FontColor = xFFECECF1
     TextSettings.WordWrap = True
     Align = Client
     CanParentFocus = True
@@ -29,6 +29,8 @@ object FrameText: TFrameText
     Size.PlatformDefault = False
     StyleLookup = 'memostyle_clear'
     TabOrder = 0
+    OnApplyStyleLookup = MemoTextApplyStyleLookup
+    OnMouseWheel = MemoTextMouseWheel
     Viewport.Width = 575.000000000000000000
     Viewport.Height = 387.000000000000000000
   end

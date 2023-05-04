@@ -4,8 +4,8 @@
         <ProjectVersion>19.5</ProjectVersion>
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
-        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>32787</TargetedPlatforms>
         <AppType>Application</AppType>
         <MainSource>ChatGPT.dpr</MainSource>
@@ -109,7 +109,7 @@
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
         <SanitizedProjectName>ChatGPT</SanitizedProjectName>
-        <DCC_Define>SKIA;$(DCC_Define)</DCC_Define>
+        <DCC_Define>SKIA;NEW_MEMO;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_UsePackage>fmx;DbxCommonDriver;bindengine;IndyIPCommon;emsclient;FireDACCommonDriver;IndyProtocols;Skia.Package.RTL;IndyIPClient;dbxcds;FmxTeeUI;bindcompfmx;FireDACSqliteDriver;DbxClientDriver;soapmidas;fmxFireDAC;dbexpress;inet;DataSnapCommon;fmxase;DzHTMLText_FMX;dbrtl;FireDACDBXDriver;Skia.Package.FMX;CustomIPTransport;DBXInterBaseDriver;IndySystem;bindcomp;FireDACCommon;IndyCore;RESTBackendComponents;bindcompdbx;rtl;RESTComponents;DBXSqliteDriver;IndyIPServer;dsnapxml;DataSnapClient;DataSnapProviderClient;DataSnapFireDAC;emsclientfiredac;FireDAC;FireDACDSDriver;xmlrtl;tethering;dsnap;CloudService;DataSnapNativeClient;FMXTee;soaprtl;soapserver;FireDACIBDriver;$(DCC_UsePackage)</DCC_UsePackage>
@@ -256,6 +256,7 @@
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
+        <Icon_MainIcon>Res\chatgptfmx\chatgptfmx.ico</Icon_MainIcon>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
@@ -282,7 +283,6 @@
         </DelphiCompile>
         <DCCReference Include="ChatGPT.Main.pas">
             <Form>FormMain</Form>
-            <FormType>fmx</FormType>
         </DCCReference>
         <DCCReference Include="DelphiOpenAI\OpenAI.API.Params.pas"/>
         <DCCReference Include="DelphiOpenAI\OpenAI.API.pas"/>
@@ -299,12 +299,10 @@
         <DCCReference Include="DelphiOpenAI\OpenAI.pas"/>
         <DCCReference Include="ChatGPT.FrameChat.pas">
             <Form>FrameChat</Form>
-            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="ChatGPT.FrameMessage.pas">
             <Form>FrameMessage</Form>
-            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="ChatGPT.Translate.pas"/>
@@ -315,13 +313,11 @@
         <DCCReference Include="ChatGPT.FrameImage.pas"/>
         <DCCReference Include="ChatGPT.FrameCode.pas">
             <Form>FrameCode</Form>
-            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="ChatGPT.Classes.pas"/>
         <DCCReference Include="ChatGPT.FrameSVG.pas">
             <Form>FrameSVG</Form>
-            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="ChatGPT.FramePlainText.pas">
@@ -333,24 +329,27 @@
         <DCCReference Include="WindowDarkMode\DarkModeApi.Types.pas"/>
         <DCCReference Include="ChatGPT.Overlay.pas">
             <Form>FrameOveraly</Form>
-            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="ChatGPT.Settings.pas">
             <Form>FrameSettings</Form>
-            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="ChatGPT.ChatSettings.pas">
             <Form>FrameChatSettings</Form>
-            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="ChatGPT.FrameUIMessage.pas">
             <Form>FrameUIMessage</Form>
-            <FormType>fmx</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="Code\ChatGPT.Code.Pascal.pas"/>
+        <DCCReference Include="ChatGPT.Code.pas"/>
+        <DCCReference Include="Code\ChatGPT.Code.Python.pas"/>
+        <DCCReference Include="Code\ChatGPT.Code.MarkDown.pas"/>
+        <DCCReference Include="HGM.FMX.Image.pas"/>
+        <DCCReference Include="HGM.FMX.Ani.pas"/>
+        <DCCReference Include="Code\ChatGPT.Code.JSON.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

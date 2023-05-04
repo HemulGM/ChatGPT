@@ -4,7 +4,7 @@ object FrameOveraly: TFrameOveraly
   Size.PlatformDefault = False
   object RectangleBG: TRectangle
     Align = Contents
-    Fill.Color = x64000000
+    Fill.Color = xBF565869
     Locked = True
     Size.Width = 689.000000000000000000
     Size.Height = 469.000000000000000000

@@ -8,12 +8,16 @@ uses
   System.SysUtils,
   System.Classes,
   OpenAI.Chat,
+  OpenAI.Utils.ChatHistory,
   OpenAI;
+
+var
+   History: TChatHistory;
 
 begin
   try
     var OpenAI := TOpenAI.Create({$include MY_TOKEN.txt});
-    var Buf := TStringList.Create;
+    History := TChatHistory.Create;
     Writeln('ChatGPT is ready');
     var Prompt: string := '';
     repeat
@@ -21,12 +25,12 @@ begin
       Readln(Prompt);
       if Prompt.IsEmpty then
         Break;
-      Buf.Add('Human: ' + Prompt);
-      try
+      History.New(TMessageRole.User, Prompt, '');
+      try    {
         OpenAI.Chat.CreateStream(
           procedure(Params: TChatParams)
           begin
-            Params.Messages([TchatMessageBuild.User(Buf.Text)]);
+            Params.Messages(History.ToArray);
             Params.MaxTokens(1024);
             Params.Stream;
           end,
@@ -38,30 +42,29 @@ begin
               Writeln('DONE!');
             Writeln('-------');
             Sleep(80);
-          end);
-            {
+          end);   }
+
         var Chat := OpenAI.Chat.Create(
           procedure(Params: TChatParams)
           begin
-            Params.Messages([TchatMessageBuild.User(Buf.Text)]);
+            Params.Messages(History.ToArray);
             Params.MaxTokens(1024);
           end);
         try
           for var Choise in Chat.Choices do
           begin
-            Buf.Add(Choise.Message.Content.Trim([#13, #10, ' ']));
+            History.New(TMessageRole.Assistant, Choise.Message.Content, '');
             Writeln(Choise.Message.Content.Trim([#13, #10, ' ']));
           end;
         finally
           Chat.Free;
         end;
-                   }
       except
         on E: Exception do
           Writeln('Error: ', E.Message);
       end;
     until False;
-    Buf.Free;
+    History.Free;
   except
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);
