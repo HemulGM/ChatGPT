@@ -9,9 +9,6 @@
         <Projects Include="ChatGPT_Console.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Tests\Project35.dproj">
-            <Dependencies/>
-        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -38,23 +35,14 @@
     <Target Name="ChatGPT_Console:Make">
         <MSBuild Projects="ChatGPT_Console.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Project35">
-        <MSBuild Projects="Tests\Project35.dproj"/>
-    </Target>
-    <Target Name="Project35:Clean">
-        <MSBuild Projects="Tests\Project35.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="Project35:Make">
-        <MSBuild Projects="Tests\Project35.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ChatGPT;ChatGPT_Console;Project35"/>
+        <CallTarget Targets="ChatGPT;ChatGPT_Console"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ChatGPT:Clean;ChatGPT_Console:Clean;Project35:Clean"/>
+        <CallTarget Targets="ChatGPT:Clean;ChatGPT_Console:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ChatGPT:Make;ChatGPT_Console:Make;Project35:Make"/>
+        <CallTarget Targets="ChatGPT:Make;ChatGPT_Console:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
