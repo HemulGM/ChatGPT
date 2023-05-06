@@ -11,6 +11,8 @@
 
 ## Dependencies
 
+❗ Build requires Delphi 11.3+
+
 Skia - https://github.com/skia4delphi/skia4delphi
 
 SVGImageList - https://github.com/EtheaDev/SVGIconImageList
