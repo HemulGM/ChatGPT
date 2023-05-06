@@ -8,6 +8,9 @@
 [Windows 64](https://github.com/HemulGM/ChatGPT/releases)
 [Android 32](https://github.com/HemulGM/ChatGPT/releases)
 [Android 64](https://github.com/HemulGM/ChatGPT/releases)
+[Linux 64](https://github.com/HemulGM/ChatGPT/releases)
+[MacOS arm64](https://github.com/HemulGM/ChatGPT/releases)
+[MacOS Intel64](https://github.com/HemulGM/ChatGPT/releases)
 
 ## Dependencies
 
