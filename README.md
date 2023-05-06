@@ -12,6 +12,12 @@
 [MacOS arm64](https://github.com/HemulGM/ChatGPT/releases)
 [MacOS Intel64](https://github.com/HemulGM/ChatGPT/releases)
 
+## List of planned features
+- Display of mathematical formulas
+- Support MarkDown
+- Syntax highlighting for Linux
+- Additional functions OpenAI (such as: text correction, customizing your model via Fine-tunes, quick commands)
+
 ## Dependencies
 
 ❗ Build requires Delphi 11.3+
