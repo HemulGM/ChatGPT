@@ -4,10 +4,10 @@
 ![Preview](https://github.com/HemulGM/ChatGPT/blob/main/preview.png?raw=true)
 
 ## Builds
-[Windows 32](https://github.com/HemulGM/ChatGPT/releases/tag/last)
-[Windows 64](https://github.com/HemulGM/ChatGPT/releases/tag/last_64)
-[Android 32](https://github.com/HemulGM/ChatGPT/releases/tag/last_android_32)
-[Android 64](https://github.com/HemulGM/ChatGPT/releases/tag/last_android_64)
+[Windows 32](https://github.com/HemulGM/ChatGPT/releases)
+[Windows 64](https://github.com/HemulGM/ChatGPT/releases)
+[Android 32](https://github.com/HemulGM/ChatGPT/releases)
+[Android 64](https://github.com/HemulGM/ChatGPT/releases)
 
 ## Dependencies
 
