@@ -122,6 +122,7 @@ begin
     wmFull:
       begin
         LayoutCompact.Visible := False;
+        LayoutAudio.Visible := FIsAudio;
         LayoutActions.Visible := not FText.IsEmpty;
       end;
   end;
