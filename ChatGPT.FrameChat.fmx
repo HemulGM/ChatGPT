@@ -816,7 +816,7 @@ object FrameChat: TFrameChat
     Size.Width = 879.000000000000000000
     Size.Height = 100.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 2
+    TabOrder = 1
     OnResize = LayoutSendResize
     OnResized = LayoutSendResize
     object LineBorder: TLine
@@ -1246,32 +1246,6 @@ object FrameChat: TFrameChat
     Left = 64
     Top = 202
   end
-  object LayoutRetry: TLayout
-    Align = Bottom
-    Position.Y = 600.000000000000000000
-    Size.Width = 890.000000000000000000
-    Size.Height = 50.000000000000000000
-    Size.PlatformDefault = False
-    TabOrder = 1
-    object ButtonRetry: TButton
-      Align = Center
-      Size.Width = 103.000000000000000000
-      Size.Height = 38.000000000000000000
-      Size.PlatformDefault = False
-      StyleLookup = 'buttonstyle_retry'
-      TabOrder = 0
-      Text = '  Retry'
-      TextSettings.HorzAlign = Leading
-      OnClick = ButtonRetryClick
-      object ShadowEffect1: TShadowEffect
-        Distance = 0.001000000047497451
-        Direction = 45.000000000000000000
-        Softness = 0.600000023841857900
-        Opacity = 0.600000023841857900
-        ShadowColor = xFF343541
-      end
-    end
-  end
   object TimerUpdateTextSize: TTimer
     Enabled = False
     Interval = 100
@@ -1279,27 +1253,59 @@ object FrameChat: TFrameChat
     Left = 64
     Top = 144
   end
-  object LayoutScrollDown: TLayout
-    Align = MostBottom
-    Padding.Top = 10.000000000000000000
-    Padding.Right = 30.000000000000000000
-    Padding.Bottom = 10.000000000000000000
+  object LayoutButtom: TLayout
+    Align = Bottom
     Position.Y = 650.000000000000000000
     Size.Width = 890.000000000000000000
     Size.Height = 50.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 6
-    object ButtonScrollDown: TButton
-      Align = Right
-      Position.X = 830.000000000000000000
-      Position.Y = 10.000000000000000000
-      Size.Width = 30.000000000000000000
-      Size.Height = 30.000000000000000000
+    TabOrder = 5
+    object LayoutRetry: TLayout
+      Align = Client
+      Size.Width = 890.000000000000000000
+      Size.Height = 50.000000000000000000
       Size.PlatformDefault = False
-      StyleLookup = 'button_scrolldown'
-      TabOrder = 0
-      Text = 'button_scrolldown'
-      OnClick = ButtonScrollDownClick
+      TabOrder = 1
+      object ButtonRetry: TButton
+        Align = Center
+        Size.Width = 103.000000000000000000
+        Size.Height = 38.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_retry'
+        TabOrder = 0
+        Text = '  Retry'
+        TextSettings.HorzAlign = Leading
+        OnClick = ButtonRetryClick
+        object ShadowEffect1: TShadowEffect
+          Distance = 0.001000000047497451
+          Direction = 45.000000000000000000
+          Softness = 0.600000023841857900
+          Opacity = 0.600000023841857900
+          ShadowColor = xFF343541
+        end
+      end
+    end
+    object LayoutScrollDown: TLayout
+      Align = Client
+      Padding.Top = 10.000000000000000000
+      Padding.Right = 30.000000000000000000
+      Padding.Bottom = 10.000000000000000000
+      Size.Width = 890.000000000000000000
+      Size.Height = 50.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 5
+      object ButtonScrollDown: TButton
+        Align = Right
+        Position.X = 830.000000000000000000
+        Position.Y = 10.000000000000000000
+        Size.Width = 30.000000000000000000
+        Size.Height = 30.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'button_scrolldown'
+        TabOrder = 0
+        Text = 'button_scrolldown'
+        OnClick = ButtonScrollDownClick
+      end
     end
   end
 end

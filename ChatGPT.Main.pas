@@ -73,6 +73,7 @@ type
     FOrganization: string;
     FBaseUrl: string;
     FModel: string;
+    FTopP: Single;
     procedure SetMode(const Value: TWindowMode);
     procedure UpdateMode;
     procedure SelectChat(const ChatId: string);
@@ -104,6 +105,7 @@ type
     procedure SetBaseUrl(const Value: string);
     procedure SetModel(const Value: string);
     function GetChatFrame(const ChatId: string): TFrameChat;
+    procedure SetTopP(const Value: Single);
   protected
     procedure CreateHandle; override;
   public
@@ -120,6 +122,7 @@ type
     property MaxTokensQuery: Integer read FMaxTokensQuery write SetMaxTokensQuery;
     property PresencePenalty: Single read FPresencePenalty write SetPresencePenalty;
     property FrequencyPenalty: Single read FFrequencyPenalty write SetFrequencyPenalty;
+    property TopP: Single read FTopP write SetTopP;
     property Model: string read FModel write SetModel;
     property Lang: string read FLang write SetLang;
   end;
@@ -153,7 +156,8 @@ uses
   Posix.Stdlib,
   {$ENDIF POSIX}
   FMX.Ani, System.Math, System.Rtti, FMX.Utils, FMX.DialogService,
-  System.IOUtils, ChatGPT.Settings, ChatGPT.Overlay, FMX.Styles, HGM.FMX.Ani;
+  System.Net.URLClient, System.IOUtils, ChatGPT.Settings, ChatGPT.Overlay,
+  FMX.Styles, HGM.FMX.Ani, HGM.FMX.Image;
 
 {$R *.fmx}
 
@@ -438,6 +442,7 @@ begin
       Temperature := JSON.GetValue<Single>('temperature', 0.0);
       FrequencyPenalty := JSON.GetValue<Single>('frequency_penalty', 0.0);
       PresencePenalty := JSON.GetValue<Single>('presence_penalty', 0.0);
+      TopP := JSON.GetValue<Single>('top_p', 0.0);
       Model := JSON.GetValue('model', '');
       MaxTokens := JSON.GetValue<Integer>('max_tokens', 0);
       MaxTokensQuery := JSON.GetValue<Integer>('max_tokens_query', 0);
@@ -448,6 +453,13 @@ begin
         FormStyle := TFormStyle.StayOnTop
       else
         FormStyle := TFormStyle.Normal;
+
+      OpenAI.API.Client.ProxySettings := TProxySettings.Create(
+        JSON.GetValue('proxy_host', ''),
+        JSON.GetValue<integer>('proxy_port', 0),
+        JSON.GetValue('proxy_username', ''),
+        JSON.GetValue('proxy_password', ''));
+      TBitmap.Client.ProxySettings := OpenAI.API.Client.ProxySettings;
     finally
       JSON.Free;
     end;
@@ -468,11 +480,17 @@ begin
 
     JSON.AddPair('frequency_penalty', TJSONNumber.Create(FrequencyPenalty));
     JSON.AddPair('presence_penalty', TJSONNumber.Create(PresencePenalty));
+    JSON.AddPair('top_p', TJSONNumber.Create(TopP));
     JSON.AddPair('max_tokens', TJSONNumber.Create(MaxTokens));
     JSON.AddPair('max_tokens_query', TJSONNumber.Create(MaxTokensQuery));
     JSON.AddPair('model', Model);
 
     JSON.AddPair('on_top', FormStyle = TFormStyle.StayOnTop);
+
+    JSON.AddPair('proxy_host', OpenAI.API.Client.ProxySettings.Host);
+    JSON.AddPair('proxy_port', OpenAI.API.Client.ProxySettings.Port);
+    JSON.AddPair('proxy_username', OpenAI.API.Client.ProxySettings.UserName);
+    JSON.AddPair('proxy_password', OpenAI.API.Client.ProxySettings.Password);
 
     TFile.WriteAllText(GetSettingsFileName, JSON.ToJSON, TEncoding.UTF8);
   except
@@ -638,7 +656,12 @@ begin
       Frame.EditMaxTokens.Text := MaxTokens.ToString;
       Frame.EditQueryMaxToken.Text := MaxTokensQuery.ToString;
       Frame.ComboEditModel.Text := Model;
+      Frame.TrackBarTopP.Value := TopP * 10;
       Frame.SwitchOnTop.IsChecked := FormStyle = TFormStyle.StayOnTop;
+      Frame.EditProxyServer.Text := OpenAI.API.Client.ProxySettings.Host;
+      Frame.EditProxyPort.Text := OpenAI.API.Client.ProxySettings.Port.ToString;
+      Frame.EditProxyUsername.Text := OpenAI.API.Client.ProxySettings.UserName;
+      Frame.EditProxyPassword.Text := OpenAI.API.Client.ProxySettings.Password;
     end,
     procedure(Frame: TFrameSettings; Success: Boolean)
     begin
@@ -651,6 +674,7 @@ begin
       Temperature := Frame.TrackBarTemp.Value / 10;
       PresencePenalty := Frame.TrackBarPP.Value / 10;
       FrequencyPenalty := Frame.TrackBarFP.Value / 10;
+      TopP := Frame.TrackBarTopP.Value / 10;
       MaxTokens := StrToIntDef(Frame.EditMaxTokens.Text, 0);
       MaxTokensQuery := StrToIntDef(Frame.EditQueryMaxToken.Text, 0);
       Model := Frame.ComboEditModel.Text;
@@ -658,6 +682,12 @@ begin
         FormStyle := TFormStyle.StayOnTop
       else
         FormStyle := TFormStyle.Normal;
+      OpenAI.API.Client.ProxySettings := TProxySettings.Create(
+        Frame.EditProxyServer.Text,
+        StrToIntDef(Frame.EditProxyPort.Text, 0),
+        Frame.EditProxyUsername.Text,
+        Frame.EditProxyPassword.Text);
+      TBitmap.Client.ProxySettings := OpenAI.API.Client.ProxySettings;
       {$IFDEF MSWINDOWS}
       SetWindowColorModeAsSystem;
       {$ENDIF}
@@ -786,6 +816,11 @@ procedure TFormMain.SetToken(const Value: string);
 begin
   FToken := Value;
   FOpenAI.Token := FToken;
+end;
+
+procedure TFormMain.SetTopP(const Value: Single);
+begin
+  FTopP := Value;
 end;
 
 initialization

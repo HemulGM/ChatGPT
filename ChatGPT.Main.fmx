@@ -2058,7 +2058,7 @@ object FormMain: TFormMain
       item
         MultiResBitmap = <
           item
-            Size = 24
+            Size = 16
           end>
         IconName = 'Item 7'
         SVGText = 
@@ -2274,8 +2274,6 @@ object FormMain: TFormMain
         Layers = <
           item
             Name = 'Item 7'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
           end>
       end
       item

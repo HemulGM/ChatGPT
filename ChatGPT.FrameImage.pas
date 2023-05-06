@@ -26,8 +26,7 @@ type
 implementation
 
 uses
-  System.NetEncoding, ChatGPT.FrameImagePreview, System.Threading,
-  System.Net.HttpClient, FMX.Platform, ChatGPT.FrameUIMessage, HGM.FMX.Image;
+  ChatGPT.FrameImagePreview, FMX.Platform, ChatGPT.FrameUIMessage, HGM.FMX.Image;
 
 {$R *.fmx}
 

@@ -79,9 +79,6 @@ type
     PathImage: TPath;
     RectangleImageMode: TRectangle;
     RectangleTypeBG: TRectangle;
-    LayoutRetry: TLayout;
-    ButtonRetry: TButton;
-    ShadowEffect1: TShadowEffect;
     TimerUpdateTextSize: TTimer;
     LabelSendTip: TLabel;
     Layout5: TLayout;
@@ -96,6 +93,10 @@ type
     Layout8: TLayout;
     ButtonSettings: TButton;
     Path9: TPath;
+    LayoutButtom: TLayout;
+    LayoutRetry: TLayout;
+    ButtonRetry: TButton;
+    ShadowEffect1: TShadowEffect;
     LayoutScrollDown: TLayout;
     ButtonScrollDown: TButton;
     procedure LayoutSendResize(Sender: TObject);
@@ -139,6 +140,7 @@ type
     FMaxTokens: Integer;
     FMaxTokensQuery: Integer;
     FFrequencyPenalty: Single;
+    FTopP: Single;
     function NewMessage(const Text: string; IsUser: Boolean; UseBuffer: Boolean = True; IsAudio: Boolean = False): TFrameMessage;
     function NewMessageImage(IsUser: Boolean; Images: TArray<string>): TFrameMessage;
     procedure ClearChat;
@@ -171,6 +173,7 @@ type
     procedure SetModel(const Value: string);
     procedure SetPresencePenalty(const Value: Single);
     procedure ChatToUp;
+    procedure SetTopP(const Value: Single);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -188,6 +191,7 @@ type
     property PresencePenalty: Single read FPresencePenalty write SetPresencePenalty;
     property FrequencyPenalty: Single read FFrequencyPenalty write SetFrequencyPenalty;
     property Model: string read FModel write SetModel;
+    property TopP: Single read FTopP write SetTopP;
     property IsImageMode: Boolean read FIsImageMode write SetIsImageMode;
     property LastRequest: TProc read FLastRequest write SetLastRequest;
     property MenuItem: TListBoxItem read FMenuItem write SetMenuItem;
@@ -277,6 +281,7 @@ begin
     Result.AddPair('presence_penalty', TJSONNumber.Create(PresencePenalty));
     Result.AddPair('max_tokens', TJSONNumber.Create(MaxTokens));
     Result.AddPair('max_tokens_query', TJSONNumber.Create(MaxTokensQuery));
+    Result.AddPair('top_p', TJSONNumber.Create(TopP));
     Result.AddPair('model', Model);
 
     for var Item in FBuffer do
@@ -302,6 +307,7 @@ begin
   FTitle := JSON.GetValue('title', '');
   FrequencyPenalty := JSON.GetValue<Single>('frequency_penalty', 0.0);
   PresencePenalty := JSON.GetValue<Single>('presence_penalty', 0.0);
+  TopP := JSON.GetValue<Single>('top_p', 0.0);
   Model := JSON.GetValue('model', '');
   MaxTokens := JSON.GetValue<Integer>('max_tokens', 0);
   MaxTokensQuery := JSON.GetValue<Integer>('max_tokens_query', 0);
@@ -393,6 +399,7 @@ begin
       Frame.EditMaxTokens.Text := MaxTokens.ToString;
       Frame.EditQueryMaxToken.Text := MaxTokensQuery.ToString;
       Frame.ComboEditModel.Text := Model;
+      Frame.TrackBarTopP.Value := TopP * 10;
     end,
     procedure(Frame: TFrameChatSettings; Success: Boolean)
     begin
@@ -405,6 +412,7 @@ begin
       FrequencyPenalty := Frame.TrackBarFP.Value / 10;
       MaxTokens := StrToIntDef(Frame.EditMaxTokens.Text, 0);
       MaxTokensQuery := StrToIntDef(Frame.EditQueryMaxToken.Text, 0);
+      TopP := Frame.TrackBarTopP.Value / 10;
       Model := Frame.ComboEditModel.Text;
     end);
 end;
@@ -591,7 +599,8 @@ begin
             if FrequencyPenalty <> 0 then
               Params.FrequencyPenalty(FrequencyPenalty);
             Params.Messages(FBuffer.ToArray);
-            Params.MaxTokens(FBuffer.MaxTokensForQuery);
+            if FBuffer.MaxTokensForQuery <> 0 then
+              Params.MaxTokens(FBuffer.MaxTokensForQuery);
             Params.Temperature(Temperature);
             Params.User(FChatId);
           end);
@@ -659,6 +668,7 @@ begin
   FBuffer := TChatHistory.Create;
   FBuffer.MaxTokensForQuery := MAX_TOKENS;
   FBuffer.MaxTokensOfModel := MODEL_TOKENS_LIMIT;
+  FBuffer.AutoTrim := True;
   FPool := TThreadPool.Create;
   LangSrc := '';
   Temperature := 0.2;
@@ -761,7 +771,7 @@ begin
     Exit;
   if not FMenuItem.StylesData['changed_title'].AsBoolean then
   begin
-    FTitle := Text.Substring(0, 50);
+    FTitle := Text.Replace(#10, '').Replace(#13, '').Substring(0, 50);
     FMenuItem.Text := FTitle;
   end;
 end;
@@ -939,8 +949,7 @@ begin
         LayoutSend.TagFloat := 100;
         VertScrollBoxChat.Padding.Bottom := 100;
         LayoutSend.Height := 100;
-        LayoutRetry.Margins.Bottom := 0;
-        LayoutScrollDown.Margins.Bottom := 0;
+        LayoutButtom.Margins.Bottom := 0;
         LineBorder.Visible := True;
         PathExaCompact.Visible := True;
         PathExaFull.Visible := False;
@@ -961,8 +970,7 @@ begin
         {$ENDIF}
         LabelWelcomeTitle.Margins.Top := 188;
         LayoutSend.TagFloat := 170;
-        LayoutRetry.Margins.Bottom := -70;
-        LayoutScrollDown.Margins.Bottom := -70;
+        LayoutButtom.Margins.Bottom := -70;
         VertScrollBoxChat.Padding.Bottom := 170;
         LayoutSend.Height := 170;
         LineBorder.Visible := False;
@@ -997,6 +1005,11 @@ end;
 procedure TFrameChat.SetTitle(const Value: string);
 begin
   FTitle := Value;
+end;
+
+procedure TFrameChat.SetTopP(const Value: Single);
+begin
+  FTopP := Value;
 end;
 
 procedure TFrameChat.SetTyping(const Value: Boolean);

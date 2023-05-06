@@ -29,7 +29,7 @@ type
     class procedure AddCallback(Callback: TCallbackObject);
     class procedure Ready(const Url: string; Stream: TStream);
     class function Get(const URL: string): TMemoryStream; static;
-    class function GetClient: THTTPClient;
+    class function GetClient: THTTPClient; static;
   public
     class procedure RemoveCallback(const AOwner: TComponent);
     procedure LoadFromUrl(const Url: string; UseCache: Boolean = True);
@@ -40,6 +40,7 @@ type
     procedure SaveToFile(const AFileName: string; const Ext: string); overload;
     class function CreateFromUrl(const Url: string; UseCache: Boolean = True): TBitmap;
     class function CreateFromResource(ResName: string; Url: string = ''): TBitmap;
+    class property Client: THTTPClient read GetClient;
   end;
 
 implementation

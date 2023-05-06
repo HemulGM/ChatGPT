@@ -49,6 +49,12 @@ type
     TrackBarFP: TTrackBar;
     LabelFP: TLabel;
     Label13: TLabel;
+    Label28: TLabel;
+    Layout6: TLayout;
+    TrackBarTopP: TTrackBar;
+    LabelTopP: TLabel;
+    Label30: TLabel;
+    LabelAppearance: TLabel;
     procedure TrackBarTempTracking(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);

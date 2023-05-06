@@ -43,9 +43,9 @@ inherited FrameSettings: TFrameSettings
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'editstyle_clear'
-        TabOrder = 30
+        TabOrder = 22
         KeyboardType = Alphabet
-        Position.Y = 942.000000000000000000
+        Position.Y = 962.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 33.000000000000000000
@@ -56,7 +56,7 @@ inherited FrameSettings: TFrameSettings
           Cursor = crArrow
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
-          Size.Height = 50.000000000000000000
+          Size.Height = 29.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 0
@@ -86,8 +86,8 @@ inherited FrameSettings: TFrameSettings
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'editstyle_clear'
-        TabOrder = 28
-        Position.Y = 206.000000000000000000
+        TabOrder = 4
+        Position.Y = 226.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 33.000000000000000000
@@ -128,6 +128,9 @@ inherited FrameSettings: TFrameSettings
         Align = Top
         AutoSize = True
         StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 10.000000000000000000
+        Position.Y = 10.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 25.000000000000000000
         Size.PlatformDefault = False
@@ -137,7 +140,7 @@ inherited FrameSettings: TFrameSettings
         TextSettings.HorzAlign = Center
         TextSettings.WordWrap = False
         Text = 'Settings'
-        TabOrder = 24
+        TabOrder = 45
       end
       object Label2: TLabel
         Align = Top
@@ -145,7 +148,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 915.000000000000000000
+        Position.Y = 935.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -153,7 +156,8 @@ inherited FrameSettings: TFrameSettings
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
         Text = 'Translate to English from your lang'
-        TabOrder = 19
+        TabOrder = 21
+        TabStop = False
       end
       object Label3: TLabel
         Align = Top
@@ -161,7 +165,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 1039.000000000000000000
+        Position.Y = 1059.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -170,7 +174,8 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Temperature'
-        TabOrder = 12
+        TabOrder = 24
+        TabStop = False
       end
       object Label4: TLabel
         Align = Top
@@ -181,7 +186,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 1091.000000000000000000
+        Position.Y = 1111.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
@@ -190,7 +195,8 @@ inherited FrameSettings: TFrameSettings
         Text = 
           'The higher, the more creativity will be in the answers (less acc' +
           'urate)'
-        TabOrder = 9
+        TabOrder = 26
+        TabStop = False
       end
       object Label5: TLabel
         Align = Top
@@ -198,7 +204,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 179.000000000000000000
+        Position.Y = 199.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -207,7 +213,8 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Token'
-        TabOrder = 15
+        TabOrder = 3
+        TabStop = False
       end
       object Label6: TLabel
         Align = Top
@@ -215,7 +222,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 30.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 524.000000000000000000
+        Position.Y = 544.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
@@ -224,15 +231,17 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xFFE9E9E9
         TextSettings.WordWrap = False
         Text = 'Default chat settings (for new chats)'
-        TabOrder = 22
+        TabOrder = 11
+        TabStop = False
       end
       object Layout3: TLayout
         Align = Top
-        Position.Y = 1061.000000000000000000
+        Position.Y = 1081.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 32
+        TabOrder = 25
+        TabStop = False
         object TrackBarTemp: TTrackBar
           Align = Client
           CanParentFocus = True
@@ -240,9 +249,9 @@ inherited FrameSettings: TFrameSettings
           Max = 20.000000000000000000
           Orientation = Horizontal
           Size.Width = 360.000000000000000000
-          Size.Height = 20.000000000000000000
+          Size.Height = 19.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 7
+          TabOrder = 0
           OnTracking = TrackBarTempTracking
         end
         object LabelTemp: TLabel
@@ -259,17 +268,19 @@ inherited FrameSettings: TFrameSettings
           TextSettings.HorzAlign = Trailing
           TextSettings.WordWrap = False
           Text = '2.0'
-          TabOrder = 72
+          TabOrder = 1
+          TabStop = False
         end
       end
       object Layout4: TLayout
         Align = Top
         Margins.Top = 10.000000000000000000
-        Position.Y = 249.000000000000000000
+        Position.Y = 269.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 46.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 11
+        TabOrder = 5
+        TabStop = False
         object ButtonGetToken: TButton
           Align = Left
           Images = FormMain.SVGIconImageList
@@ -278,7 +289,7 @@ inherited FrameSettings: TFrameSettings
           Size.Height = 46.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_menu'
-          TabOrder = 2
+          TabOrder = 0
           Text = 'Obtain API token from your Open AI'
           TextSettings.HorzAlign = Leading
           ParentShowHint = False
@@ -295,7 +306,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 985.000000000000000000
+        Position.Y = 1005.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 29.000000000000000000
         Size.PlatformDefault = False
@@ -305,7 +316,8 @@ inherited FrameSettings: TFrameSettings
           'Communication with the neural network in English. The program wi' +
           'll translate from your language into English and from English in' +
           'to your'
-        TabOrder = 5
+        TabOrder = 23
+        TabStop = False
       end
       object Label8: TLabel
         Align = Top
@@ -313,21 +325,22 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 561.000000000000000000
+        Position.Y = 581.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
-        Text = 'Model (Default: gpt-3.5-turbo)'
-        TabOrder = 16
+        Text = 'Model (default: gpt-3.5-turbo)'
+        TabOrder = 12
+        TabStop = False
       end
       object ComboEditModel: TComboEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'combo_style'
-        TabOrder = 33
+        TabOrder = 13
         ItemHeight = 36.000000000000000000
         Items.Strings = (
           'gpt-3.5-turbo'
@@ -335,7 +348,7 @@ inherited FrameSettings: TFrameSettings
           'gpt-4-32k')
         ItemIndex = 0
         Text = 'gpt-3.5-turbo'
-        Position.Y = 583.000000000000000000
+        Position.Y = 603.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
@@ -346,24 +359,25 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 695.000000000000000000
+        Position.Y = 715.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
-        Text = 'Model max tokens'
-        TabOrder = 18
+        Text = 'Model max tokens (default: 4096)'
+        TabOrder = 15
+        TabStop = False
       end
       object EditMaxTokens: TEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'editstyle_clear'
-        TabOrder = 27
+        TabOrder = 16
         KeyboardType = DecimalNumberPad
         FilterChar = '0123456789'
-        Position.Y = 722.000000000000000000
+        Position.Y = 742.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 33.000000000000000000
@@ -402,11 +416,12 @@ inherited FrameSettings: TFrameSettings
       end
       object Layout1: TLayout
         Align = Top
-        Position.Y = 1153.000000000000000000
+        Position.Y = 1173.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 31
+        TabOrder = 28
+        TabStop = False
         object TrackBarPP: TTrackBar
           Align = Client
           CanParentFocus = True
@@ -415,9 +430,9 @@ inherited FrameSettings: TFrameSettings
           Min = -20.000000000000000000
           Orientation = Horizontal
           Size.Width = 360.000000000000000000
-          Size.Height = 20.000000000000000000
+          Size.Height = 19.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 7
+          TabOrder = 0
           OnTracking = TrackBarPPTracking
         end
         object LabelPP: TLabel
@@ -434,7 +449,8 @@ inherited FrameSettings: TFrameSettings
           TextSettings.HorzAlign = Trailing
           TextSettings.WordWrap = False
           Text = '0.0'
-          TabOrder = 72
+          TabOrder = 1
+          TabStop = False
         end
       end
       object Label11: TLabel
@@ -446,7 +462,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 1183.000000000000000000
+        Position.Y = 1203.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
@@ -456,7 +472,8 @@ inherited FrameSettings: TFrameSettings
           'Number between -2.0 and 2.0. Positive values penalize new tokens' +
           ' based on whether they appear in the text so far, increasing the' +
           ' model'#39's likelihood to talk about new topics.'
-        TabOrder = 7
+        TabOrder = 29
+        TabStop = False
       end
       object Label12: TLabel
         Align = Top
@@ -464,7 +481,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 1131.000000000000000000
+        Position.Y = 1151.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -473,7 +490,8 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Presence penalty'
-        TabOrder = 10
+        TabOrder = 27
+        TabStop = False
       end
       object Label13: TLabel
         Align = Top
@@ -484,7 +502,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 1304.000000000000000000
+        Position.Y = 1324.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
@@ -494,15 +512,17 @@ inherited FrameSettings: TFrameSettings
           'Number between -2.0 and 2.0. Positive values penalize new tokens' +
           ' based on their existing frequency in the text so far, decreasin' +
           'g the model'#39's likelihood to repeat the same line verbatim.'
-        TabOrder = 6
+        TabOrder = 32
+        TabStop = False
       end
       object Layout5: TLayout
         Align = Top
-        Position.Y = 1274.000000000000000000
+        Position.Y = 1294.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 29
+        TabOrder = 31
+        TabStop = False
         object TrackBarFP: TTrackBar
           Align = Client
           CanParentFocus = True
@@ -511,9 +531,9 @@ inherited FrameSettings: TFrameSettings
           Min = -20.000000000000000000
           Orientation = Horizontal
           Size.Width = 360.000000000000000000
-          Size.Height = 20.000000000000000000
+          Size.Height = 19.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 7
+          TabOrder = 0
           OnTracking = TrackBarFPTracking
         end
         object LabelFP: TLabel
@@ -530,7 +550,8 @@ inherited FrameSettings: TFrameSettings
           TextSettings.HorzAlign = Trailing
           TextSettings.WordWrap = False
           Text = '0.0'
-          TabOrder = 72
+          TabOrder = 1
+          TabStop = False
         end
       end
       object Label15: TLabel
@@ -539,7 +560,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 1252.000000000000000000
+        Position.Y = 1272.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -548,7 +569,8 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Frequency penalty'
-        TabOrder = 8
+        TabOrder = 30
+        TabStop = False
       end
       object Label16: TLabel
         Align = Top
@@ -556,24 +578,25 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 805.000000000000000000
+        Position.Y = 825.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
-        Text = 'Query max tokens'
-        TabOrder = 17
+        Text = 'Query max tokens (default: 1024)'
+        TabOrder = 18
+        TabStop = False
       end
       object EditQueryMaxToken: TEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'editstyle_clear'
-        TabOrder = 23
+        TabOrder = 19
         KeyboardType = DecimalNumberPad
         FilterChar = '0123456789'
-        Position.Y = 832.000000000000000000
+        Position.Y = 852.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 33.000000000000000000
@@ -584,7 +607,7 @@ inherited FrameSettings: TFrameSettings
           Cursor = crArrow
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
-          Size.Height = 50.000000000000000000
+          Size.Height = 29.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 0
@@ -619,14 +642,15 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 765.000000000000000000
+        Position.Y = 785.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
         TextSettings.FontColor = x78FFFFFF
         Text = 'Limit of the selected model'
-        TabOrder = 4
+        TabOrder = 17
+        TabStop = False
       end
       object Label18: TLabel
         Align = Top
@@ -637,14 +661,15 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 875.000000000000000000
+        Position.Y = 895.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
         TextSettings.FontColor = x78FFFFFF
         Text = 'Max number of tokens per request'
-        TabOrder = 1
+        TabOrder = 20
+        TabStop = False
       end
       object Label19: TLabel
         Align = Top
@@ -655,7 +680,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 626.000000000000000000
+        Position.Y = 646.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
@@ -665,7 +690,8 @@ inherited FrameSettings: TFrameSettings
           'GPT-4 is currently in a limited beta and only accessible to thos' +
           'e who have been granted access. Please join the waitlist to get ' +
           'access when capacity is available.'
-        TabOrder = 3
+        TabOrder = 14
+        TabStop = False
       end
       object LabelAppearance: TLabel
         Align = Top
@@ -673,7 +699,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 30.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 55.000000000000000000
+        Position.Y = 75.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
@@ -682,7 +708,8 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xFFE9E9E9
         TextSettings.WordWrap = False
         Text = 'Appearance'
-        TabOrder = 21
+        TabOrder = 0
+        TabStop = False
       end
       object Label14: TLabel
         Align = Top
@@ -690,7 +717,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 305.000000000000000000
+        Position.Y = 325.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -699,14 +726,15 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Organization'
-        TabOrder = 14
+        TabOrder = 6
+        TabStop = False
       end
       object EditOrg: TEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'editstyle_clear'
-        TabOrder = 26
-        Position.Y = 332.000000000000000000
+        TabOrder = 7
+        Position.Y = 352.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 33.000000000000000000
@@ -751,7 +779,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 375.000000000000000000
+        Position.Y = 395.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
@@ -762,15 +790,16 @@ inherited FrameSettings: TFrameSettings
           'which organization is used for an API request. Usage from these ' +
           'API requests will count against the specified organization'#39's sub' +
           'scription quota.'
-        TabOrder = 2
+        TabOrder = 8
+        TabStop = False
       end
       object EditBaseUrl: TEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'editstyle_clear'
-        TabOrder = 25
+        TabOrder = 10
         KeyboardType = URL
-        Position.Y = 461.000000000000000000
+        Position.Y = 481.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 33.000000000000000000
@@ -813,7 +842,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 434.000000000000000000
+        Position.Y = 454.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -822,7 +851,8 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Base url'
-        TabOrder = 13
+        TabOrder = 9
+        TabStop = False
       end
       object Label22: TLabel
         Align = Top
@@ -830,7 +860,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 30.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 142.000000000000000000
+        Position.Y = 162.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
@@ -839,17 +869,19 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xFFE9E9E9
         TextSettings.WordWrap = False
         Text = 'General settings'
-        TabOrder = 20
+        TabOrder = 2
+        TabStop = False
       end
       object LayoutOnTop: TLayout
         Align = Top
         Padding.Top = 4.000000000000000000
         Padding.Bottom = 4.000000000000000000
-        Position.Y = 82.000000000000000000
+        Position.Y = 102.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 34
+        TabOrder = 1
+        TabStop = False
         object SwitchOnTop: TSwitch
           Align = Right
           IsChecked = False
@@ -858,7 +890,7 @@ inherited FrameSettings: TFrameSettings
           Size.Width = 50.000000000000000000
           Size.Height = 22.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 34
+          TabOrder = 1
         end
         object Label23: TLabel
           Align = Client
@@ -872,8 +904,345 @@ inherited FrameSettings: TFrameSettings
           TextSettings.FontColor = xB4FFFFFF
           TextSettings.WordWrap = False
           Text = 'Show window on top'
-          TabOrder = 14
+          TabOrder = 0
+          TabStop = False
         end
+      end
+      object Label10: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 30.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 1553.000000000000000000
+        Size.Width = 394.000000000000000000
+        Size.Height = 22.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 18.000000000000000000
+        TextSettings.FontColor = xFFE9E9E9
+        TextSettings.WordWrap = False
+        Text = 'Proxy (default: System proxy)'
+        TabOrder = 36
+        TabStop = False
+      end
+      object Label24: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 1590.000000000000000000
+        Size.Width = 394.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xB4FFFFFF
+        TextSettings.WordWrap = False
+        Text = 'Server'
+        TabOrder = 37
+        TabStop = False
+      end
+      object EditProxyServer: TEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        Align = Top
+        StyleLookup = 'editstyle_clear'
+        TabOrder = 38
+        Position.Y = 1617.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Size.Width = 394.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        object ClearEditButton7: TClearEditButton
+          CanFocus = False
+          Cursor = crArrow
+          Hint = 'Clear'
+          Size.Width = 28.000000000000000000
+          Size.Height = 29.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyle_clearmini'
+          TabOrder = 0
+          Text = 'buttonstyle_clearmini'
+          object Path7: TPath
+            Align = Center
+            Data.Path = {
+              0E00000000000000000060413333B33F010000009A9949410000000001000000
+              0000E0403333B340010000003333B33F0000000001000000000000003333B33F
+              010000003333B3400000E04001000000000000009A994941010000003333B33F
+              00006041010000000000E04066660641010000009A9949410000604101000000
+              000060419A99494101000000666606410000E04001000000000060413333B33F
+              03000000000060413333B33F}
+            Fill.Color = xFFACACBE
+            Locked = True
+            HitTest = False
+            Margins.Left = 2.000000000000000000
+            Size.Width = 13.000000000000000000
+            Size.Height = 13.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+            WrapMode = Fit
+          end
+        end
+      end
+      object Label25: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 1660.000000000000000000
+        Size.Width = 394.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xB4FFFFFF
+        TextSettings.WordWrap = False
+        Text = 'Port'
+        TabOrder = 39
+        TabStop = False
+      end
+      object EditProxyPort: TEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        Align = Top
+        StyleLookup = 'editstyle_clear'
+        TabOrder = 40
+        KeyboardType = DecimalNumberPad
+        FilterChar = '0123456789'
+        Position.Y = 1687.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Size.Width = 394.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        object ClearEditButton8: TClearEditButton
+          CanFocus = False
+          Cursor = crArrow
+          Hint = 'Clear'
+          Size.Width = 28.000000000000000000
+          Size.Height = 29.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyle_clearmini'
+          TabOrder = 0
+          Text = 'buttonstyle_clearmini'
+          object Path8: TPath
+            Align = Center
+            Data.Path = {
+              0E00000000000000000060413333B33F010000009A9949410000000001000000
+              0000E0403333B340010000003333B33F0000000001000000000000003333B33F
+              010000003333B3400000E04001000000000000009A994941010000003333B33F
+              00006041010000000000E04066660641010000009A9949410000604101000000
+              000060419A99494101000000666606410000E04001000000000060413333B33F
+              03000000000060413333B33F}
+            Fill.Color = xFFACACBE
+            Locked = True
+            HitTest = False
+            Margins.Left = 2.000000000000000000
+            Size.Width = 13.000000000000000000
+            Size.Height = 13.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+            WrapMode = Fit
+          end
+        end
+      end
+      object EditProxyUsername: TEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        Align = Top
+        StyleLookup = 'editstyle_clear'
+        TabOrder = 42
+        Position.Y = 1757.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Size.Width = 394.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        object ClearEditButton9: TClearEditButton
+          CanFocus = False
+          Cursor = crArrow
+          Hint = 'Clear'
+          Size.Width = 28.000000000000000000
+          Size.Height = 29.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyle_clearmini'
+          TabOrder = 0
+          Text = 'buttonstyle_clearmini'
+          object Path9: TPath
+            Align = Center
+            Data.Path = {
+              0E00000000000000000060413333B33F010000009A9949410000000001000000
+              0000E0403333B340010000003333B33F0000000001000000000000003333B33F
+              010000003333B3400000E04001000000000000009A994941010000003333B33F
+              00006041010000000000E04066660641010000009A9949410000604101000000
+              000060419A99494101000000666606410000E04001000000000060413333B33F
+              03000000000060413333B33F}
+            Fill.Color = xFFACACBE
+            Locked = True
+            HitTest = False
+            Margins.Left = 2.000000000000000000
+            Size.Width = 13.000000000000000000
+            Size.Height = 13.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+            WrapMode = Fit
+          end
+        end
+      end
+      object Label26: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 1730.000000000000000000
+        Size.Width = 394.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xB4FFFFFF
+        TextSettings.WordWrap = False
+        Text = 'Username'
+        TabOrder = 41
+        TabStop = False
+      end
+      object EditProxyPassword: TEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        Align = Top
+        StyleLookup = 'editstyle_clear'
+        TabOrder = 44
+        Position.Y = 1827.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Size.Width = 394.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        object ClearEditButton10: TClearEditButton
+          CanFocus = False
+          Cursor = crArrow
+          Hint = 'Clear'
+          Size.Width = 28.000000000000000000
+          Size.Height = 29.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyle_clearmini'
+          TabOrder = 0
+          Text = 'buttonstyle_clearmini'
+          object Path10: TPath
+            Align = Center
+            Data.Path = {
+              0E00000000000000000060413333B33F010000009A9949410000000001000000
+              0000E0403333B340010000003333B33F0000000001000000000000003333B33F
+              010000003333B3400000E04001000000000000009A994941010000003333B33F
+              00006041010000000000E04066660641010000009A9949410000604101000000
+              000060419A99494101000000666606410000E04001000000000060413333B33F
+              03000000000060413333B33F}
+            Fill.Color = xFFACACBE
+            Locked = True
+            HitTest = False
+            Margins.Left = 2.000000000000000000
+            Size.Width = 13.000000000000000000
+            Size.Height = 13.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+            WrapMode = Fit
+          end
+        end
+      end
+      object Label27: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 1800.000000000000000000
+        Size.Width = 394.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xB4FFFFFF
+        TextSettings.WordWrap = False
+        Text = 'Password'
+        TabOrder = 43
+        TabStop = False
+      end
+      object Label28: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Left = 5.000000000000000000
+        Margins.Top = 10.000000000000000000
+        Margins.Right = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.X = 5.000000000000000000
+        Position.Y = 1445.000000000000000000
+        Size.Width = 384.000000000000000000
+        Size.Height = 73.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.FontColor = x78FFFFFF
+        Text = 
+          'An alternative to sampling with temperature, called nucleus samp' +
+          'ling, where the model considers the results of the tokens with t' +
+          'op_p probability mass. So 0.1 means only the tokens comprising t' +
+          'he top 10% probability mass are considered.'#13#10'We generally recomm' +
+          'end altering this or temperature but not both.'
+        TabOrder = 35
+        TabStop = False
+      end
+      object Layout6: TLayout
+        Align = Top
+        Position.Y = 1415.000000000000000000
+        Size.Width = 394.000000000000000000
+        Size.Height = 20.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 34
+        TabStop = False
+        object TrackBarTopP: TTrackBar
+          Align = Client
+          CanParentFocus = True
+          Frequency = 1.000000000000000000
+          Max = 10.000000000000000000
+          Orientation = Horizontal
+          Size.Width = 360.000000000000000000
+          Size.Height = 19.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          OnTracking = TrackBarFPTracking
+        end
+        object LabelTopP: TLabel
+          Align = Right
+          StyledSettings = [Style]
+          Margins.Left = 6.000000000000000000
+          Position.X = 366.000000000000000000
+          Size.Width = 28.000000000000000000
+          Size.Height = 20.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 14.000000000000000000
+          TextSettings.FontColor = xBEFFFFFF
+          TextSettings.HorzAlign = Trailing
+          TextSettings.WordWrap = False
+          Text = '0.0'
+          TabOrder = 1
+          TabStop = False
+        end
+      end
+      object Label30: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 20.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 1393.000000000000000000
+        Size.Width = 394.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Roboto'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xB4FFFFFF
+        TextSettings.WordWrap = False
+        Text = 'Top P'
+        TabOrder = 33
+        TabStop = False
       end
     end
     object Layout2: TLayout
