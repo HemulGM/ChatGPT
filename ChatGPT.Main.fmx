@@ -1865,7 +1865,7 @@ object FormMain: TFormMain
           Size.Width = 64.000000000000000000
           Size.Height = 32.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 1
+          TabOrder = 2
           object ButtonClearConfirm: TButton
             Align = Right
             Cursor = crHandPoint

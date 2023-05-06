@@ -131,6 +131,9 @@ const
   URL_DISCORD = 'https://discord.com/invite/openai';
   URL_FAQ = 'https://help.openai.com/en/collections/3742473-chatgpt';
 
+const
+  VersionName = '1.0.10';
+
 var
   FormMain: TFormMain;
   FAppFolder: string;
@@ -662,6 +665,7 @@ begin
       Frame.EditProxyPort.Text := OpenAI.API.Client.ProxySettings.Port.ToString;
       Frame.EditProxyUsername.Text := OpenAI.API.Client.ProxySettings.UserName;
       Frame.EditProxyPassword.Text := OpenAI.API.Client.ProxySettings.Password;
+      Frame.LabelVersion.Text := 'Version: ' + VersionName;
     end,
     procedure(Frame: TFrameSettings; Success: Boolean)
     begin

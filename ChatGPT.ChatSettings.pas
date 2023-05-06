@@ -62,6 +62,7 @@ type
     procedure RectangleBGClick(Sender: TObject);
     procedure TrackBarPPTracking(Sender: TObject);
     procedure TrackBarFPTracking(Sender: TObject);
+    procedure TrackBarTopPTracking(Sender: TObject);
   private
     FProcCallback: TProc<TFrameChatSettings, Boolean>;
     FLayoutClientWidth: Single;
@@ -105,6 +106,7 @@ begin
   FLayoutClientWidth := LayoutClient.Width;
   FLayoutClientHeight := LayoutClient.Height;
   VertScrollBox.AniCalculations.Animation := True;
+  VertScrollBox.ViewportPosition := TPoint.Zero;
   Name := '';
 end;
 
@@ -118,6 +120,9 @@ begin
   if Assigned(ProcSet) then
     ProcSet(Frame);
   Frame.TrackBarTempTracking(nil);
+  Frame.TrackBarPPTracking(nil);
+  Frame.TrackBarFPTracking(nil);
+  Frame.TrackBarTopPTracking(nil);
 end;
 
 procedure TFrameChatSettings.FrameResize(Sender: TObject);
@@ -165,6 +170,11 @@ end;
 procedure TFrameChatSettings.TrackBarTempTracking(Sender: TObject);
 begin
   LabelTemp.Text := FormatFloat('0.0', TrackBarTemp.Value / 10);
+end;
+
+procedure TFrameChatSettings.TrackBarTopPTracking(Sender: TObject);
+begin
+  LabelTopP.Text := FormatFloat('0.0', TrackBarTopP.Value / 10);
 end;
 
 end.

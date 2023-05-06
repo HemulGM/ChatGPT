@@ -97,6 +97,9 @@ type
     TrackBarTopP: TTrackBar;
     LabelTopP: TLabel;
     Label30: TLabel;
+    Label29: TLabel;
+    LabelVersion: TLabel;
+    Label31: TLabel;
     procedure TrackBarTempTracking(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);
@@ -105,6 +108,7 @@ type
     procedure RectangleBGClick(Sender: TObject);
     procedure TrackBarPPTracking(Sender: TObject);
     procedure TrackBarFPTracking(Sender: TObject);
+    procedure TrackBarTopPTracking(Sender: TObject);
   private
     FProcCallback: TProc<TFrameSettings, Boolean>;
     FLayoutClientWidth, FLayoutClientHeight: Single;
@@ -158,6 +162,7 @@ begin
   FLayoutClientWidth := LayoutClient.Width;
   FLayoutClientHeight := LayoutClient.Height;
   VertScrollBoxContent.AniCalculations.Animation := True;
+  VertScrollBoxContent.ViewportPosition := TPoint.Zero;
 end;
 
 class procedure TFrameSettings.Execute(AParent: TControl; ProcSet: TProc<TFrameSettings>; ProcExecuted: TProc<TFrameSettings, Boolean>);
@@ -170,6 +175,9 @@ begin
   if Assigned(ProcSet) then
     ProcSet(Frame);
   Frame.TrackBarTempTracking(nil);
+  Frame.TrackBarPPTracking(nil);
+  Frame.TrackBarFPTracking(nil);
+  Frame.TrackBarTopPTracking(nil);
 end;
 
 procedure TFrameSettings.FrameResize(Sender: TObject);
@@ -217,6 +225,11 @@ end;
 procedure TFrameSettings.TrackBarTempTracking(Sender: TObject);
 begin
   LabelTemp.Text := FormatFloat('0.0', TrackBarTemp.Value / 10);
+end;
+
+procedure TFrameSettings.TrackBarTopPTracking(Sender: TObject);
+begin
+  LabelTopP.Text := FormatFloat('0.0', TrackBarTopP.Value / 10);
 end;
 
 { TStyledComboEdit }
