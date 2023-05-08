@@ -1,5 +1,8 @@
-# ChatGPT
- Delphi Chat GPT with FMX
+<p align="center">
+  <img width="180" src="Res/chatgptfmx/154.png" alt="ChatGPT">
+  <h1 align="center">ChatGPT</h1>
+  <p align="center">ChatGPT Desktop Application (Windows, Mac, iOS, Android and Linux)</p>
+</p>
 
 ![Preview](https://github.com/HemulGM/ChatGPT/blob/main/preview.png?raw=true)
 
