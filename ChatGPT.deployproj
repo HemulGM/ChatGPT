@@ -19,7 +19,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(SKIADIR)\Binary\Shared\Win32\sk4d.dll" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'!=''">
+        <DeployFile Include="$(SKIADIR)\Binary\Shared\Win32\sk4d.dll" Condition="'$(Config)'=='Release' And '$(SKIADIR)'!=''">
             <RemoteDir>ChatGPT\</RemoteDir>
             <RemoteName>sk4d.dll</RemoteName>
             <DeployClass>Skia</DeployClass>
@@ -29,7 +29,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(SKIADIR)\Binary\Shared\Win32\sk4d.dll" Condition="'$(Config)'=='Release' And '$(SKIADIR)'!=''">
+        <DeployFile Include="$(SKIADIR)\Binary\Shared\Win32\sk4d.dll" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'!=''">
             <RemoteDir>ChatGPT\</RemoteDir>
             <RemoteName>sk4d.dll</RemoteName>
             <DeployClass>Skia</DeployClass>
@@ -58,7 +58,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\sk4d.dll" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'==''">
+        <DeployFile Include="$(BDS)\bin\sk4d.dll" Condition="'$(Config)'=='Release' And '$(SKIADIR)'==''">
             <RemoteDir>ChatGPT\</RemoteDir>
             <RemoteName>sk4d.dll</RemoteName>
             <DeployClass>Skia</DeployClass>
@@ -68,7 +68,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\sk4d.dll" Condition="'$(Config)'=='Release' And '$(SKIADIR)'==''">
+        <DeployFile Include="$(BDS)\bin\sk4d.dll" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'==''">
             <RemoteDir>ChatGPT\</RemoteDir>
             <RemoteName>sk4d.dll</RemoteName>
             <DeployClass>Skia</DeployClass>
@@ -98,15 +98,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Android64\Release\splash_image_def.xml" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ChatGPT\res\drawable\</RemoteDir>
-            <RemoteName>splash_image_def.xml</RemoteName>
-            <DeployClass>AndroidSplashImageDef</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Android64\Release\colors.xml" Condition="'$(Config)'=='Release'">
             <RemoteDir>ChatGPT\res\values\</RemoteDir>
             <RemoteName>colors.xml</RemoteName>
@@ -116,10 +107,10 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ChatGPT\res\drawable-mdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon48</DeployClass>
+        <DeployFile Include="Android64\Release\splash_image_def.xml" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\res\drawable\</RemoteDir>
+            <RemoteName>splash_image_def.xml</RemoteName>
+            <DeployClass>AndroidSplashImageDef</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -134,15 +125,23 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(SKIADIR)\Binary\Shared\Android64\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'!=''">
-            <RemoteDir>ChatGPT\library\lib\arm64-v8a\</RemoteDir>
-            <RemoteName>libsk4d.so</RemoteName>
-            <DeployClass>Skia</DeployClass>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\res\drawable-mdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon48</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
-            <Required>True</Required>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_640x480.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\res\drawable-large\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage640</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="$(SKIADIR)\Binary\Shared\Android64\libsk4d.so" Condition="'$(Config)'=='Release' And '$(SKIADIR)'!=''">
             <RemoteDir>ChatGPT\library\lib\arm64-v8a\</RemoteDir>
@@ -154,14 +153,15 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_640x480.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ChatGPT\res\drawable-large\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage640</DeployClass>
+        <DeployFile Include="$(SKIADIR)\Binary\Shared\Android64\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'!=''">
+            <RemoteDir>ChatGPT\library\lib\arm64-v8a\</RemoteDir>
+            <RemoteName>libsk4d.so</RemoteName>
+            <DeployClass>Skia</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
+            <Required>True</Required>
         </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_96x96.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>ChatGPT\res\drawable-xxxhdpi\</RemoteDir>
@@ -172,7 +172,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\binandroid64\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'==''">
+        <DeployFile Include="$(BDS)\binandroid64\libsk4d.so" Condition="'$(Config)'=='Release' And '$(SKIADIR)'==''">
             <RemoteDir>ChatGPT\library\lib\arm64-v8a\</RemoteDir>
             <RemoteName>libsk4d.so</RemoteName>
             <DeployClass>Skia</DeployClass>
@@ -182,7 +182,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(BDS)\binandroid64\libsk4d.so" Condition="'$(Config)'=='Release' And '$(SKIADIR)'==''">
+        <DeployFile Include="$(BDS)\binandroid64\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'==''">
             <RemoteDir>ChatGPT\library\lib\arm64-v8a\</RemoteDir>
             <RemoteName>libsk4d.so</RemoteName>
             <DeployClass>Skia</DeployClass>
@@ -228,7 +228,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(SKIADIR)\Binary\Shared\Android\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'!='' and '$(AndroidAppBundle)'=='true'">
+        <DeployFile Include="$(SKIADIR)\Binary\Shared\Android\libsk4d.so" Condition="'$(Config)'=='Release' And '$(SKIADIR)'!='' and '$(AndroidAppBundle)'=='true'">
             <RemoteDir>ChatGPT\library\lib\armeabi-v7a\</RemoteDir>
             <RemoteName>libsk4d.so</RemoteName>
             <DeployClass>Skia</DeployClass>
@@ -238,7 +238,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(SKIADIR)\Binary\Shared\Android\libsk4d.so" Condition="'$(Config)'=='Release' And '$(SKIADIR)'!='' and '$(AndroidAppBundle)'=='true'">
+        <DeployFile Include="$(SKIADIR)\Binary\Shared\Android\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'!='' and '$(AndroidAppBundle)'=='true'">
             <RemoteDir>ChatGPT\library\lib\armeabi-v7a\</RemoteDir>
             <RemoteName>libsk4d.so</RemoteName>
             <DeployClass>Skia</DeployClass>
@@ -329,20 +329,28 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Android64\Release\libChatGPT.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ChatGPT\library\lib\arm64-v8a\</RemoteDir>
-            <RemoteName>libChatGPT.so</RemoteName>
-            <DeployClass>ProjectOutput</DeployClass>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_426x320.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\res\drawable-small\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage426</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
-            <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(BDS)\binandroid32\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'=='' and '$(AndroidAppBundle)'=='true'">
-            <RemoteDir>ChatGPT\library\lib\armeabi-v7a\</RemoteDir>
-            <RemoteName>libsk4d.so</RemoteName>
-            <DeployClass>Skia</DeployClass>
+        <DeployFile Include="Android64\Release\ChatGPT.classes" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\classes\</RemoteDir>
+            <RemoteName>ChatGPT.classes</RemoteName>
+            <DeployClass>AndroidClasses</DeployClass>
+            <Operation>64</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android64\Release\libChatGPT.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\library\lib\arm64-v8a\</RemoteDir>
+            <RemoteName>libChatGPT.so</RemoteName>
+            <DeployClass>ProjectOutput</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -359,23 +367,15 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="Android64\Release\ChatGPT.classes" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ChatGPT\classes\</RemoteDir>
-            <RemoteName>ChatGPT.classes</RemoteName>
-            <DeployClass>AndroidClasses</DeployClass>
-            <Operation>64</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_426x320.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ChatGPT\res\drawable-small\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage426</DeployClass>
+        <DeployFile Include="$(BDS)\binandroid32\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'=='' and '$(AndroidAppBundle)'=='true'">
+            <RemoteDir>ChatGPT\library\lib\armeabi-v7a\</RemoteDir>
+            <RemoteName>libsk4d.so</RemoteName>
+            <DeployClass>Skia</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
+            <Required>True</Required>
         </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>ChatGPT\res\drawable-xxhdpi\</RemoteDir>
@@ -433,15 +433,14 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(SKIADIR)\Binary\Shared\Android\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'!=''">
-            <RemoteDir>ChatGPT\library\lib\armeabi-v7a\</RemoteDir>
-            <RemoteName>libsk4d.so</RemoteName>
-            <DeployClass>Skia</DeployClass>
+        <DeployFile Include="Android\Debug\splash_image_def.xml" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ChatGPT\res\drawable\</RemoteDir>
+            <RemoteName>splash_image_def.xml</RemoteName>
+            <DeployClass>AndroidSplashImageDef</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
-            <Required>True</Required>
         </DeployFile>
         <DeployFile Include="$(SKIADIR)\Binary\Shared\Android\libsk4d.so" Condition="'$(Config)'=='Release' And '$(SKIADIR)'!=''">
             <RemoteDir>ChatGPT\library\lib\armeabi-v7a\</RemoteDir>
@@ -453,15 +452,6 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="Android\Debug\splash_image_def.xml" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ChatGPT\res\drawable\</RemoteDir>
-            <RemoteName>splash_image_def.xml</RemoteName>
-            <DeployClass>AndroidSplashImageDef</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Android\Release\styles.xml" Condition="'$(Config)'=='Release'">
             <RemoteDir>ChatGPT\res\values\</RemoteDir>
             <RemoteName>styles.xml</RemoteName>
@@ -471,23 +461,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Res\chatgptfmx\res\mipmap-hdpi\chatgptfmx.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ChatGPT\res\drawable-hdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon72</DeployClass>
+        <DeployFile Include="$(SKIADIR)\Binary\Shared\Android\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'!=''">
+            <RemoteDir>ChatGPT\library\lib\armeabi-v7a\</RemoteDir>
+            <RemoteName>libsk4d.so</RemoteName>
+            <DeployClass>Skia</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Res\chatgptfmx\res\mipmap-mdpi\chatgptfmx.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ChatGPT\res\drawable-mdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon48</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
+            <Required>True</Required>
         </DeployFile>
         <DeployFile Include="Android\Release\strings.xml" Condition="'$(Config)'=='Release'">
             <RemoteDir>ChatGPT\res\values\</RemoteDir>
@@ -534,6 +516,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Res\chatgptfmx\res\mipmap-xxxhdpi\chatgptfmx.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\res\drawable-xxxhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon192</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_48x48.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ChatGPT\res\drawable-xhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
@@ -570,6 +561,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Res\chatgptfmx\res\mipmap-hdpi\chatgptfmx.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\res\drawable-hdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon72</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ChatGPT\library\lib\armeabi\</RemoteDir>
             <RemoteName>libChatGPT.so</RemoteName>
@@ -583,15 +583,6 @@
             <RemoteDir>ChatGPT\library\lib\armeabi\</RemoteDir>
             <RemoteName>libChatGPT.so</RemoteName>
             <DeployClass>AndroidLibnativeArmeabiFile</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Res\chatgptfmx\res\chatgptfmx36.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ChatGPT\res\drawable-ldpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon36</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -652,6 +643,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Res\chatgptfmx\res\mipmap-mdpi\chatgptfmx.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\res\drawable-mdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon48</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_96x96.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ChatGPT\res\drawable-xxxhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
@@ -679,7 +679,25 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Res\chatgptfmx\res\mipmap-xhdpi\chatgptfmx.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\res\drawable-xhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon96</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Res\chatgptfmx\res\mipmap-xxhdpi\chatgptfmx.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>ChatGPT\res\drawable-xxhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon144</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Res\chatgptfmx\res\mipmap-xxhdpi\chatgptfmx.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>ChatGPT\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <DeployClass>Android_LauncherIcon144</DeployClass>
@@ -692,6 +710,24 @@
             <RemoteDir>ChatGPT\res\drawable-ldpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <DeployClass>Android_LauncherIcon36</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Res\chatgptfmx\res\chatgptfmx36.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\res\drawable-ldpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon36</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\library\lib\armeabi-v7a\</RemoteDir>
+            <RemoteName>gdbserver</RemoteName>
+            <DeployClass>AndroidGDBServer</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -728,33 +764,6 @@
             <RemoteDir>ChatGPT\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon72</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Res\chatgptfmx\res\mipmap-xxhdpi\chatgptfmx.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ChatGPT\res\drawable-xxhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon144</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Res\chatgptfmx\res\mipmap-xxxhdpi\chatgptfmx.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ChatGPT\res\drawable-xxxhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon192</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Res\chatgptfmx\res\mipmap-xhdpi\chatgptfmx.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ChatGPT\res\drawable-xhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon96</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -860,7 +869,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(BDS)\binandroid32\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'==''">
+        <DeployFile Include="$(BDS)\binandroid32\libsk4d.so" Condition="'$(Config)'=='Release' And '$(SKIADIR)'==''">
             <RemoteDir>ChatGPT\library\lib\armeabi-v7a\</RemoteDir>
             <RemoteName>libsk4d.so</RemoteName>
             <DeployClass>Skia</DeployClass>
@@ -870,7 +879,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(BDS)\binandroid32\libsk4d.so" Condition="'$(Config)'=='Release' And '$(SKIADIR)'==''">
+        <DeployFile Include="$(BDS)\binandroid32\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'==''">
             <RemoteDir>ChatGPT\library\lib\armeabi-v7a\</RemoteDir>
             <RemoteName>libsk4d.so</RemoteName>
             <DeployClass>Skia</DeployClass>
@@ -909,7 +918,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(SKIADIR)\Binary\Shared\Win64\sk4d.dll" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'!=''">
+        <DeployFile Include="$(SKIADIR)\Binary\Shared\Win64\sk4d.dll" Condition="'$(Config)'=='Release' And '$(SKIADIR)'!=''">
             <RemoteDir>ChatGPT\</RemoteDir>
             <RemoteName>sk4d.dll</RemoteName>
             <DeployClass>Skia</DeployClass>
@@ -919,7 +928,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(SKIADIR)\Binary\Shared\Win64\sk4d.dll" Condition="'$(Config)'=='Release' And '$(SKIADIR)'!=''">
+        <DeployFile Include="$(SKIADIR)\Binary\Shared\Win64\sk4d.dll" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'!=''">
             <RemoteDir>ChatGPT\</RemoteDir>
             <RemoteName>sk4d.dll</RemoteName>
             <DeployClass>Skia</DeployClass>
@@ -950,7 +959,58 @@
             <Required>True</Required>
         </DeployFile>
     </ItemGroup>
-    <ItemGroup Condition="'$(Platform)'=='Linux64'"/>
+    <ItemGroup Condition="'$(Platform)'=='Linux64'">
+        <DeployFile Include="$(BDS)\binlinux64\libsk4d.so" Condition="'$(Config)'=='Release' And '$(SKIADIR)'==''">
+            <RemoteDir>ChatGPT\</RemoteDir>
+            <RemoteName>libsk4d.so</RemoteName>
+            <DeployClass>Skia</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\binlinux64\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'==''">
+            <RemoteDir>ChatGPT\</RemoteDir>
+            <RemoteName>libsk4d.so</RemoteName>
+            <DeployClass>Skia</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
+        </DeployFile>
+        <DeployFile Include="Linux64\Release\ChatGPT" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\</RemoteDir>
+            <RemoteName>ChatGPT</RemoteName>
+            <DeployClass>ProjectOutput</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
+        </DeployFile>
+        <DeployFile Include="$(SKIADIR)\Binary\Shared\Linux64\libsk4d.so" Condition="'$(Config)'=='Release' And '$(SKIADIR)'!=''">
+            <RemoteDir>ChatGPT\</RemoteDir>
+            <RemoteName>libsk4d.so</RemoteName>
+            <DeployClass>Skia</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
+        </DeployFile>
+        <DeployFile Include="$(SKIADIR)\Binary\Shared\Linux64\libsk4d.so" Condition="'$(Config)'=='Debug' And '$(SKIADIR)'!=''">
+            <RemoteDir>ChatGPT\</RemoteDir>
+            <RemoteName>libsk4d.so</RemoteName>
+            <DeployClass>Skia</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
+        </DeployFile>
+    </ItemGroup>
     <ItemGroup Condition="'$(Platform)'=='iOSDevice64'"/>
     <ItemGroup Condition="'$(Platform)'=='iOSSimARM64'"/>
 </Project>

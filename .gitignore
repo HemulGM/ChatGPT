@@ -72,3 +72,4 @@ Android64/
 # Boss dependency manager vendor folder https://github.com/HashLoad/boss
 modules/
 MY_TOKEN.txt
+/Linux64/Release/ChatGPT

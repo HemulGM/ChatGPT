@@ -55,8 +55,8 @@ type
     procedure ButtonClearCancelClick(Sender: TObject);
     procedure ButtonDiscordClick(Sender: TObject);
     procedure ButtonFAQClick(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure ButtonSettingsClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     FOpenAI: TOpenAIComponent;
     FMode: TWindowMode;
@@ -292,7 +292,7 @@ begin
   {$ENDIF}
   ItemList.Margins.Bottom := 8;
   ItemList.TextSettings.WordWrap := False;
-  ItemList.Text := Frame.Title;
+  ItemList.Text := Frame.Title.Replace(#13, ' ').Replace(#10, ' ').Replace('&', '');
   ItemList.TagString := Frame.ChatId;
   ItemList.ImageIndex := 1;
   ItemList.DisableDisappear := True;
@@ -545,16 +545,12 @@ begin
     begin
       var Frame := GetChatFrame(ListBoxChatList.ListItems[i].TagString);
       if Assigned(Frame) then
-      begin
         JSONChats.Add(Frame.SaveAsJson);
-      end;
-    end;            {
-    for var Control in LayoutChatsBox.Controls do
-      if Control is TFrameChat then
-        JSONChats.Add(TFrameChat(Control).SaveAsJson);  }
+    end;
     TFile.WriteAllText(GetChatsFileName, JSON.ToJSON, TEncoding.UTF8);
   except
-    //
+    on E: Exception do
+      ShowMessage(E.Message);
   end;
   JSON.Free;
 end;
@@ -637,6 +633,12 @@ begin
     LayoutChatsBox.Controls[0].Free;
 end;
 
+procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  SaveChats;
+  SaveSettings;
+end;
+
 procedure TFormMain.FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight, MaxWidth, MaxHeight: Single);
 begin
   FormResize(Sender);
@@ -697,12 +699,6 @@ begin
       {$ENDIF}
       SaveSettings;
     end);
-end;
-
-procedure TFormMain.FormDestroy(Sender: TObject);
-begin
-  SaveChats;
-  SaveSettings;
 end;
 
 procedure TFormMain.FormResize(Sender: TObject);
