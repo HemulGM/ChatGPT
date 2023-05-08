@@ -8,6 +8,15 @@
 [Windows 64](https://github.com/HemulGM/ChatGPT/releases)
 [Android 32](https://github.com/HemulGM/ChatGPT/releases)
 [Android 64](https://github.com/HemulGM/ChatGPT/releases)
+[Linux 64](https://github.com/HemulGM/ChatGPT/releases)
+[MacOS arm64](https://github.com/HemulGM/ChatGPT/releases)
+[MacOS Intel64](https://github.com/HemulGM/ChatGPT/releases)
+
+## List of planned features
+- Display of mathematical formulas
+- Support MarkDown
+- Syntax highlighting for Linux
+- Additional functions OpenAI (such as: text correction, customizing your model via Fine-tunes, quick commands)
 
 ## Dependencies
 
