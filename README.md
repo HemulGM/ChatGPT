@@ -6,7 +6,7 @@
 
 ![Preview](https://github.com/HemulGM/ChatGPT/blob/main/preview.png?raw=true)
 
-## Builds
+## ⚒️ Builds
 [Windows 32](https://github.com/HemulGM/ChatGPT/releases)
 [Windows 64](https://github.com/HemulGM/ChatGPT/releases)
 [Android 32](https://github.com/HemulGM/ChatGPT/releases)
@@ -15,7 +15,15 @@
 [MacOS arm64](https://github.com/HemulGM/ChatGPT/releases)
 [MacOS Intel64](https://github.com/HemulGM/ChatGPT/releases)
 
-## List of planned features
+## ⚡ Features
+- Access to gpt-3 and gpt-4
+- Image generation with DALL-E
+- Sound recognition and use of this context with GPT
+- Separate settings for each chat
+- SVG display
+- Ability to edit chat
+
+## 🙌 List of planned features
 - Display of mathematical formulas
 - Support MarkDown
 - Syntax highlighting for Linux
