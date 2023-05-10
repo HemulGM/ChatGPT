@@ -31,6 +31,14 @@ type
     property ViewPositionY: Single read FViewPositionY write SetViewPositionY;
   end;
 
+  TMemo = class(FMX.Memo.TMemo)
+  private
+    FViewPos: Single;
+    procedure SetViewPos(const Value: Single);
+  public
+    property ViewPos: Single read FViewPos write SetViewPos;
+  end;
+
   TFrameChat = class(TFrame)
     VertScrollBoxChat: TVertScrollBox;
     LayoutSend: TLayout;
@@ -141,8 +149,8 @@ type
     FMaxTokensQuery: Integer;
     FFrequencyPenalty: Single;
     FTopP: Single;
-    function NewMessage(const Text: string; IsUser: Boolean; UseBuffer: Boolean = True; IsAudio: Boolean = False): TFrameMessage;
-    function NewMessageImage(IsUser: Boolean; Images: TArray<string>): TFrameMessage;
+    function NewMessage(const Text: string; Role: TMessageKind; UseBuffer: Boolean = True; IsAudio: Boolean = False): TFrameMessage;
+    function NewMessageImage(Role: TMessageKind; Images: TArray<string>): TFrameMessage;
     procedure ClearChat;
     procedure SetTyping(const Value: Boolean);
     procedure SetAPI(const Value: IOpenAI);
@@ -206,7 +214,7 @@ implementation
 
 uses
   FMX.Ani, System.Math, OpenAI.API, ChatGPT.Translate, System.IOUtils,
-  ChatGPT.Overlay, FMX.BehaviorManager;
+  ChatGPT.Overlay, FMX.BehaviorManager, HGM.FMX.Ani;
 
 {$R *.fmx}
 
@@ -215,7 +223,7 @@ begin
   TThread.Queue(nil,
     procedure
     begin
-      var Frame := NewMessage(Text, False, False);
+      var Frame := NewMessage(Text, TMessageKind.Error, False);
       Frame.IsError := True;
     end);
 end;
@@ -227,13 +235,13 @@ begin
     SetLength(Images, Length(Response.Data));
     for var i := 0 to High(Response.Data) do
       Images[i] := Response.Data[i].Url;
-    NewMessageImage(False, Images);
+    NewMessageImage(TMessageKind.Bot, Images);
   finally
     Response.Free;
   end;
 end;
 
-function TFrameChat.NewMessageImage(IsUser: Boolean; Images: TArray<string>): TFrameMessage;
+function TFrameChat.NewMessageImage(Role: TMessageKind; Images: TArray<string>): TFrameMessage;
 begin
   ChatToUp;
   LayoutWelcome.Visible := False;
@@ -242,7 +250,7 @@ begin
   Result.Position.Y := VertScrollBoxChat.ContentBounds.Height;
   Result.Parent := VertScrollBoxChat;
   Result.Align := TAlignLayout.MostTop;
-  TFrameMessage(Result).IsUser := IsUser;
+  TFrameMessage(Result).MessageRole := Role;
   TFrameMessage(Result).Images := Images;
   Result.StartAnimate;
 end;
@@ -251,7 +259,7 @@ procedure TFrameChat.AppendMessages(Response: TChat);
 begin
   try
     for var Item in Response.Choices do
-      NewMessage(Item.Message.Content, False);
+      NewMessage(Item.Message.Content, TMessageKind.Bot);
   finally
     Response.Free;
   end;
@@ -260,7 +268,7 @@ end;
 procedure TFrameChat.AppendAudio(Response: TAudioText);
 begin
   try
-    NewMessage(Response.Text, False, True, True);
+    NewMessage(Response.Text, TMessageKind.Bot, True, True);
   finally
     Response.Free;
   end;
@@ -324,8 +332,14 @@ begin
       Frame.Position.Y := VertScrollBoxChat.ContentBounds.Height;
       VertScrollBoxChat.AddObject(Frame);
       Frame.Align := TAlignLayout.MostTop;
-      Frame.IsUser := Item.Role = TMessageRole.User;
-      LastRoleIsUser := Frame.IsUser;
+      case Item.Role of
+        TMessageRole.System:
+          Frame.MessageRole := TMessageKind.System;
+        TMessageRole.User:
+          Frame.MessageRole := TMessageKind.User;
+        TMessageRole.Assistant:
+          Frame.MessageRole := TMessageKind.Bot;
+      end;
       Frame.IsAudio := False;
       Frame.Text := Item.Content;
       Frame.SetMode(FMode);
@@ -425,7 +439,7 @@ begin
     Exit;
   var AudioFile := OpenDialogAudio.FileName;
   MemoQuery.Text := '';
-  NewMessage(TPath.GetFileName(AudioFile), True, False, True);
+  NewMessage(TPath.GetFileName(AudioFile), TMessageKind.User, False, True);
   RequestAudio(AudioFile);
 end;
 
@@ -512,7 +526,7 @@ begin
   if Prompt.IsEmpty then
     Exit;
   MemoQuery.Text := '';
-  NewMessage(Prompt, True, False);
+  NewMessage(Prompt, TMessageKind.User, False);
   RequestImage(Prompt);
 end;
 
@@ -575,7 +589,7 @@ begin
   if Prompt.IsEmpty then
     Exit;
   MemoQuery.Text := '';
-  NewMessage(Prompt, True);
+  NewMessage(Prompt, TMessageKind.User);
   if (not Prompt.StartsWith('/system ')) and (not Prompt.StartsWith('/assistant ')) and (not Prompt.StartsWith('/user ')) then
     RequestPrompt;
 end;
@@ -735,7 +749,7 @@ end;
 
 procedure TFrameChat.LayoutTypingResize(Sender: TObject);
 begin
-  LayoutTypingContent.Width := Min(LayoutTyping.Width - (LayoutTyping.Padding.Left + LayoutTyping.Padding.Right), 650);
+  LayoutTypingContent.Width := Min(LayoutTyping.Width - (LayoutTyping.Padding.Left + LayoutTyping.Padding.Right), MaxMessageWidth);
 end;
 
 procedure TFrameChat.LayoutWelcomeResize(Sender: TObject);
@@ -746,13 +760,24 @@ end;
 procedure TFrameChat.MemoQueryChange(Sender: TObject);
 begin
   LabelSendTip.Visible := MemoQuery.Text.IsEmpty;
-  TimerUpdateTextSize.Enabled := False;
-  TimerUpdateTextSize.Enabled := True;
+  //TimerUpdateTextSize.Enabled := False;
+  //TimerUpdateTextSize.Enabled := True;
+
+  var H: Single := LayoutSend.Padding.Top + LayoutSend.Padding.Bottom + LayoutQuery.Padding.Top + LayoutQuery.Padding.Bottom;
+  if not LabelSendTip.Visible then
+    H := H + MemoQuery.ContentBounds.Height;
+  //LayoutSend.Height := Max(LayoutSend.TagFloat, Min(H, 400));
+  TAnimator.DetachPropertyAnimation(LayoutSend, 'Height');
+  TAnimator.AnimateFloat(LayoutSend, 'Height', Max(LayoutSend.TagFloat, Min(H, 400)));
+  if not LabelSendTip.Visible then
+    MemoQuery.ViewportPosition := TPointF.Create(0, MemoQuery.ContentBounds.Height)
+  else
+    MemoQuery.ViewportPosition := TPointF.Zero;
 end;
 
 procedure TFrameChat.MemoQueryKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
-  if (Key = vkReturn) and not (ssCtrl in Shift) then
+  if (Key = vkReturn) and not ((ssCtrl in Shift) or (ssShift in Shift)) then
   begin
     Key := 0;
     KeyChar := #0;
@@ -762,7 +787,7 @@ end;
 
 procedure TFrameChat.MemoQueryResize(Sender: TObject);
 begin
-  MemoQueryChange(Sender);
+  //MemoQueryChange(Sender);
 end;
 
 procedure TFrameChat.UpdateMenuTitle(const Text: string);
@@ -790,10 +815,10 @@ begin
   FMenuItem.IsSelected := True;
 end;
 
-function TFrameChat.NewMessage(const Text: string; IsUser: Boolean; UseBuffer: Boolean; IsAudio: Boolean): TFrameMessage;
+function TFrameChat.NewMessage(const Text: string; Role: TMessageKind; UseBuffer: Boolean; IsAudio: Boolean): TFrameMessage;
 begin
   ChatToUp;
-  if IsUser and IsFirstMessage then
+  if (Role = TMessageKind.User) and IsFirstMessage then
   begin
     IsFirstMessage := False;
     UpdateMenuTitle(Text);
@@ -803,35 +828,35 @@ begin
   if UseBuffer then
   begin
     var MessageTag := TGUID.NewGuid.ToString;
-    if IsUser then
+    if Role = TMessageKind.User then
     begin
       if AppendText.StartsWith('/system ') then
       begin
         AppendText := AppendText.Replace('/system ', '', []);
-        AppendText := ProcText(AppendText, IsUser);
+        AppendText := ProcText(AppendText, True);
         FBuffer.New(TMessageRole.System, AppendText, MessageTag);
       end
       else if AppendText.StartsWith('/user ') then
       begin
         AppendText := AppendText.Replace('/user ', '', []);
-        AppendText := ProcText(AppendText, IsUser);
+        AppendText := ProcText(AppendText, True);
         FBuffer.New(TMessageRole.User, AppendText, MessageTag);
       end
       else if AppendText.StartsWith('/assistant ') then
       begin
         AppendText := AppendText.Replace('/assistant ', '', []);
-        AppendText := ProcText(AppendText, IsUser);
+        AppendText := ProcText(AppendText, True);
         FBuffer.New(TMessageRole.Assistant, AppendText, MessageTag);
       end
       else
       begin
-        AppendText := ProcText(AppendText, IsUser);
+        AppendText := ProcText(AppendText, True);
         FBuffer.New(TMessageRole.User, AppendText, MessageTag);
       end;
     end
     else
     begin
-      AppendText := ProcText(AppendText, IsUser);
+      AppendText := ProcText(AppendText, False);
       FBuffer.New(TMessageRole.Assistant, AppendText, MessageTag);
     end;
   end;
@@ -840,7 +865,7 @@ begin
   Result.Position.Y := VertScrollBoxChat.ContentBounds.Height;
   Result.Parent := VertScrollBoxChat;
   Result.Align := TAlignLayout.MostTop;
-  Result.IsUser := IsUser;
+  Result.MessageRole := Role;
   Result.IsAudio := IsAudio;
   Result.Text := AppendText;
   Result.SetMode(FMode);
@@ -1032,12 +1057,12 @@ end;
 
 procedure TFrameChat.TimerUpdateTextSizeTimer(Sender: TObject);
 begin
-  TimerUpdateTextSize.Enabled := False;
+  TimerUpdateTextSize.Enabled := False;  {
   var H: Single :=
     LayoutSend.Padding.Top + LayoutSend.Padding.Bottom +
     MemoQuery.ContentBounds.Height +
     LayoutQuery.Padding.Top + LayoutQuery.Padding.Bottom;
-  LayoutSend.Height := Max(LayoutSend.TagFloat, Min(H, 400));
+  LayoutSend.Height := Max(LayoutSend.TagFloat, Min(H, 400));    }
 end;
 
 { TButton }
@@ -1076,6 +1101,14 @@ procedure TVertScrollBox.SetViewPositionY(const Value: Single);
 begin
   FViewPositionY := Value;
   ViewportPosition := TPointF.Create(ViewportPosition.X, FViewPositionY);
+end;
+
+{ TMemo }
+
+procedure TMemo.SetViewPos(const Value: Single);
+begin
+  FViewPos := Value;
+  ViewportPosition := TPointF.Create(ViewportPosition.X, Value);
 end;
 
 end.

@@ -7,9 +7,13 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Memo.Types, FMX.Layouts, FMX.Controls.Presentation,
   FMX.ScrollBox, FMX.Memo, System.Generics.Collections, FMX.BehaviorManager,
-  ChatGPT.FrameImage, ChatGPT.Classes;
+  ChatGPT.FrameImage, ChatGPT.Classes, FMX.Menus, OpenAI.Chat;
+
+{$SCOPEDENUMS ON}
 
 type
+  TMessageKind = (User, Bot, System, Error);
+
   TFrameMessage = class(TFrame)
     RectangleBG: TRectangle;
     LayoutInfo: TLayout;
@@ -27,26 +31,35 @@ type
     LayoutActions: TLayout;
     ButtonCopy: TButton;
     PathCopy: TPath;
-    TimerRestoreCopy: TTimer;
     Line1: TLine;
     LayoutCompact: TLayout;
     ButtonCopyCompact: TButton;
     Path5: TPath;
     RectangleAudioCompact: TRectangle;
     Path6: TPath;
+    ButtonActions: TButton;
+    Path4: TPath;
+    RectangleSystem: TRectangle;
+    Path7: TPath;
+    ButtonDeleteCompact: TButton;
+    Path8: TPath;
+    PopupMenuActions: TPopupMenu;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
     procedure MemoTextChange(Sender: TObject);
     procedure FrameResize(Sender: TObject);
     procedure ButtonCopyClick(Sender: TObject);
-    procedure TimerRestoreCopyTimer(Sender: TObject);
+    procedure ButtonDeleteClick(Sender: TObject);
+    procedure ButtonActionsClick(Sender: TObject);
   private
-    FIsUser: Boolean;
     FText: string;
     FIsError: Boolean;
     FIsAudio: Boolean;
     FImages: TArray<string>;
     FId: string;
     FMode: TWindowMode;
-    procedure SetIsUser(const Value: Boolean);
+    FOnDelete: TNotifyEvent;
+    FMessageRole: TMessageKind;
     procedure SetText(const Value: string);
     procedure SetIsError(const Value: Boolean);
     procedure ParseText(const Value: string);
@@ -56,21 +69,32 @@ type
     procedure SetId(const Value: string);
     procedure FOnTextWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
     procedure UpdateMode;
+    procedure CreateCodePart(Part: TPart);
+    procedure CreatePartText(Part: TPart);
+    procedure CreatePartSVG(Part: TPart);
+    procedure SetOnDelete(const Value: TNotifyEvent);
+    procedure UpdateMessageRole;
+    procedure SetMessageRole(const Value: TMessageKind);
   public
     procedure UpdateContentSize;
     property Id: string read FId write SetId;
     property Text: string read FText write SetText;
     property Images: TArray<string> read FImages write SetImages;
-    property IsUser: Boolean read FIsUser write SetIsUser;
     property IsAudio: Boolean read FIsAudio write SetIsAudio;
     property IsError: Boolean read FIsError write SetIsError;
+    property MessageRole: TMessageKind read FMessageRole write SetMessageRole;
     procedure SetMode(const Value: TWindowMode);
     procedure StartAnimate;
     constructor Create(AOwner: TComponent); override;
+    property OnDelete: TNotifyEvent read FOnDelete write SetOnDelete;
   end;
 
-//const
-//  PathCopy: string = {$INCLUDE PathCopy.txt};   }
+const
+  ColorError = $FFEF4444;
+  ColorUser = $FFECECF1;
+  ColorBot = $FFD1D5E3;
+  BGColorUser = $00FFFFFF;
+  BGColorBot = $14FFFFFF;
 
 implementation
 
@@ -105,7 +129,7 @@ begin
       H := H + Control.Height + Control.Margins.Top + Control.Margins.Bottom;
 
   if LayoutCompact.Visible then
-    H := H + LayoutCompact.Height;
+    H := Ceil(H + LayoutCompact.Height);
   if Height <> H then
     Height := H;
 end;
@@ -128,6 +152,13 @@ begin
   end;
 end;
 
+procedure TFrameMessage.ButtonActionsClick(Sender: TObject);
+begin
+  PopupMenuActions.PopupComponent := ButtonActions;
+  var Pt := Application.MainForm.ClientToScreen(ButtonActions.AbsoluteRect.TopLeft);
+  PopupMenuActions.Popup(Pt.X, Pt.Y + ButtonActions.Height);
+end;
+
 procedure TFrameMessage.ButtonCopyClick(Sender: TObject);
 begin
   var ClipBoard: IFMXClipboardService;
@@ -138,6 +169,13 @@ begin
   end
   else
     ShowUIMessage('Clipboard error');
+end;
+
+procedure TFrameMessage.ButtonDeleteClick(Sender: TObject);
+begin
+  if Assigned(FOnDelete) then
+    FOnDelete(Self);
+  Release;
 end;
 
 constructor TFrameMessage.Create(AOwner: TComponent);
@@ -157,11 +195,6 @@ begin
   TAnimator.AnimateFloat(LayoutClient, 'Opacity', 1);
 end;
 
-procedure TFrameMessage.TimerRestoreCopyTimer(Sender: TObject);
-begin
-  TimerRestoreCopy.Enabled := False;
-end;
-
 procedure TFrameMessage.FOnTextWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
 begin
   if ssTouch in Shift then
@@ -177,7 +210,7 @@ end;
 
 procedure TFrameMessage.FrameResize(Sender: TObject);
 begin
-  LayoutContent.Width := Min(Width - (LayoutClient.Padding.Left + LayoutClient.Padding.Right), 650);
+  LayoutContent.Width := Min(Width - (LayoutClient.Padding.Left + LayoutClient.Padding.Right), MaxMessageWidth);
   UpdateContentSize;
 end;
 
@@ -221,22 +254,21 @@ begin
       (Control as TFrameText).MemoText.FontColor := $FFEF4444;
 end;
 
-procedure TFrameMessage.SetIsUser(const Value: Boolean);
+procedure TFrameMessage.SetMessageRole(const Value: TMessageKind);
 begin
-  FIsUser := Value;
-  RectangleUser.Visible := FIsUser;
-  RectangleBot.Visible := not FIsUser;
-
-  if FIsUser then
-    RectangleBG.Fill.Color := $00FFFFFF
-  else
-    RectangleBG.Fill.Color := $14FFFFFF;
+  FMessageRole := Value;
+  UpdateMessageRole;
 end;
 
 procedure TFrameMessage.SetMode(const Value: TWindowMode);
 begin
   FMode := Value;
   UpdateMode;
+end;
+
+procedure TFrameMessage.SetOnDelete(const Value: TNotifyEvent);
+begin
+  FOnDelete := Value;
 end;
 
 procedure TFrameMessage.ParseText(const Value: string);
@@ -267,6 +299,7 @@ var
 begin
   Parts := TList<TPart>.Create;
   try
+    if Value.StartsWith('{') then
     try
       var JSON := TJSONObject.ParseJSONValue(Value);
       if Assigned(JSON) then
@@ -286,12 +319,12 @@ begin
     CodePairs := 0;
     Buf := '';
     IsCodeParse := False;
-    for var C in Value do
+    for var i := 1 to Value.Length do
     begin
-      if C = '`' then
+      if Value[i] = '`' then
       begin
         Inc(CodePairs);
-        Buf := Buf + C;
+        Buf := Buf + Value[i];
         if CodePairs = 3 then
         begin
           if IsCodeParse then
@@ -313,7 +346,7 @@ begin
       else
       begin
         CodePairs := 0;
-        Buf := Buf + C;
+        Buf := Buf + Value[i];
       end;
     end;
     if IsCodeParse then
@@ -331,6 +364,55 @@ begin
     Parts.Free;
   end;
   UpdateContentSize;
+end;
+
+procedure TFrameMessage.CreateCodePart(Part: TPart);
+begin
+  var Frame := TFrameCode.Create(LayoutContentText);
+  Frame.Parent := LayoutContentText;
+  Frame.Fill(Part);
+  Frame.Align := TAlignLayout.None;
+  Frame.Position.Y := 10000;
+  Frame.Align := TAlignLayout.Top;
+  Frame.OnWheel := FOnTextWheel;
+end;
+
+procedure TFrameMessage.UpdateMessageRole;
+begin
+  RectangleUser.Visible := FMessageRole = TMessageKind.User;
+  RectangleBot.Visible := FMessageRole = TMessageKind.Bot;
+  RectangleSystem.Visible := FMessageRole = TMessageKind.System;
+
+  if FMessageRole = TMessageKind.Bot then
+    RectangleBG.Fill.Color := BGColorBot
+  else
+    RectangleBG.Fill.Color := BGColorUser;
+end;
+
+procedure TFrameMessage.CreatePartText(Part: TPart);
+begin
+  var Frame := TFrameText.Create(LayoutContentText);
+  Frame.Parent := LayoutContentText;
+  Frame.Fill(Part);
+  Frame.Align := TAlignLayout.None;
+  Frame.Position.Y := 10000;
+  Frame.Align := TAlignLayout.Top;
+  Frame.OnWheel := FOnTextWheel;
+  if IsError then
+    Frame.MemoText.FontColor := ColorError
+  else if FMessageRole = TMessageKind.Bot then
+    Frame.MemoText.FontColor := ColorBot
+  else
+    Frame.MemoText.FontColor := ColorUser;
+end;
+
+procedure TFrameMessage.CreatePartSVG(Part: TPart);
+begin
+  var Frame := TFrameSVG.Create(LayoutContentText, Part.Content);
+  Frame.Parent := LayoutContentText;
+  Frame.Align := TAlignLayout.None;
+  Frame.Position.Y := 10000;
+  Frame.Align := TAlignLayout.Top;
 end;
 
 procedure TFrameMessage.BuildContent(Parts: TList<TPart>);
@@ -361,32 +443,21 @@ begin
     // Code
     if Part.PartType = ptCode then
     begin
-      var Frame := TFrameCode.Create(LayoutContentText);
-      Frame.Parent := LayoutContentText;
-      Frame.Fill(Part);
-      Frame.Align := TAlignLayout.None;
-      Frame.Position.Y := 10000;
-      Frame.Align := TAlignLayout.Top;
-      Frame.OnWheel := FOnTextWheel;
+      CreateCodePart(Part);
       Continue;
     end;
 
     // Text
     if Part.PartType = ptText then
     begin
-      var Frame := TFrameText.Create(LayoutContentText);
-      Frame.Parent := LayoutContentText;
-      Frame.Fill(Part);
-      Frame.Align := TAlignLayout.None;
-      Frame.Position.Y := 10000;
-      Frame.Align := TAlignLayout.Top;
-      Frame.OnWheel := FOnTextWheel;
-      if IsError then
-        Frame.MemoText.FontColor := $FFEF4444
-      else if FIsUser then
-        Frame.MemoText.FontColor := $FFECECF1
-      else
-        Frame.MemoText.FontColor := $FFD1D5E3;
+      CreatePartText(Part);
+      Continue;
+    end;
+
+    // Text
+    if Part.PartType = ptSVG then
+    begin
+      CreatePartSVG(Part);
       Continue;
     end;
   end;

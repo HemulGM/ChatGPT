@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Objects, FMX.Memo.Types, FMX.Controls.Presentation, FMX.ScrollBox,
+  FMX.Objects, FMX.Memo.Types, FMX.Controls.Presentation, FMX.ScrollBox, FMX.Edit.Style,
   FMX.Memo, FMX.Layouts, FMX.Memo.Style, ChatGPT.Classes, FMX.TextLayout,
   ChatGPT.Code;
 
@@ -66,6 +66,7 @@ begin
   MemoCode.OnApplyStyleLookup := FOnStyleLookup;
   {$IFDEF NEW_MEMO}
   (MemoCode.Presentation as TStyledMemo).OnUpdateLayoutParams := UpdateLayout;
+  (MemoCode.Presentation as TStyledMemo).ScrollToCaret := False;
   {$IFDEF ANDROID OR IOS OR IOS64}
   (MemoCode.Presentation as TStyledMemo).NeedSelectorPoints := True;
   {$ENDIF}
@@ -202,8 +203,12 @@ begin
   Layout.Padding.Top := 1;
   Layout.Padding.Bottom := 1;
   if Assigned(FCodeSyntax) then
+  try
     for var Attr in FCodeSyntax.GetAttributesForLine(MemoCode.Lines[Index]) do
       Layout.AddAttribute(Attr.Range, Attr.Attribute);
+  except
+    //
+  end;
 end;
 {$ENDIF}
 

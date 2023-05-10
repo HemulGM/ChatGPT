@@ -108,7 +108,7 @@ class function TCodeSyntax.FindSyntax(const Language: string; DefaultFont: TFont
 begin
   for var Item in FRegitered do
     for var Lang in Item.Languages do
-      if Lang = Language then
+      if Lang = Language.ToLower then
         Exit(Item.SyntaxClass.Create(DefaultFont, DefaultColor));
   Result := nil;
 end;

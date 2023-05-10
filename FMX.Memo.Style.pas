@@ -194,6 +194,7 @@ type
     FSpellingWords: TObjectList<TSpellingWord>;
     FOnUpdateLayoutParams: TOnUpdateLayoutParams;
     FNeedSelectorPoints: Boolean;
+    FScrollToCaret: Boolean;
     function GetModel: TCustomMemoModel;
     function GetMemo: TCustomMemo;
     function GetPageSize: Single;
@@ -231,6 +232,7 @@ type
     procedure SpellFixContextMenuHandler(Sender: TObject);
     procedure SetOnUpdateLayoutParams(const Value: TOnUpdateLayoutParams);
     procedure SetNeedSelectorPoints(const Value: Boolean);
+    procedure SetScrollToCaret(const Value: Boolean);
   protected
     FDisableCaretInsideWords: Boolean;
     { Messages from model }
@@ -382,6 +384,7 @@ type
     property LineObjects: TLines read FLineObjects;
     property OnUpdateLayoutParams: TOnUpdateLayoutParams read FOnUpdateLayoutParams write SetOnUpdateLayoutParams;
     property NeedSelectorPoints: Boolean read FNeedSelectorPoints write SetNeedSelectorPoints;
+    property ScrollToCaret: Boolean read FScrollToCaret write SetScrollToCaret;
   end;
 
 implementation
@@ -487,6 +490,7 @@ begin
   FSelStart := TCaretPosition.Zero;
   FSelEnd := TCaretPosition.Zero;
   FSelected := False;
+  FScrollToCaret := True;
 
   CanFocus := False;
   AutoCapture := True;
@@ -2318,6 +2322,11 @@ begin
   FLineObjects.FOnUpdateLayoutParams := FOnUpdateLayoutParams;
 end;
 
+procedure TStyledMemo.SetScrollToCaret(const Value: Boolean);
+begin
+  FScrollToCaret := Value;
+end;
+
 procedure TStyledMemo.RecalcOpacity;
 begin
   inherited;
@@ -2459,12 +2468,13 @@ begin
 end;
 
 procedure TStyledMemo.UpdateCaretPosition(const UpdateScrllBars: Boolean);
-begin      {
-  if UpdateScrllBars and not (csLoading in ComponentState) then
-  begin
-    UpdateVScrlBarByCaretPos;
-    UpdateHScrlBarByCaretPos;
-  end;   }
+begin
+  if FScrollToCaret then
+    if UpdateScrllBars and not (csLoading in ComponentState) then
+    begin
+      UpdateVScrlBarByCaretPos;
+      UpdateHScrlBarByCaretPos;
+    end;
   Model.Caret.BeginUpdate;
   try
     Model.Caret.TemporarilyHidden := FSelected and (Model.SelLength > 0) and IsFocused;
@@ -3671,7 +3681,7 @@ begin
   end;
 
   Content := FMemo.Model.ContentBounds;
-  Content.Height := Content.Height + Line.Size.Height;
+  Content.Height := Content.Height - OldSize.Height + Line.Size.Height;
   Content.Width := Max(Content.Width, Line.Size.Width);
   if IsUpdating then
   begin

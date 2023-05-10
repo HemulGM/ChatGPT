@@ -160,7 +160,7 @@ uses
   {$ENDIF POSIX}
   FMX.Ani, System.Math, System.Rtti, FMX.Utils, FMX.DialogService,
   System.Net.URLClient, System.IOUtils, ChatGPT.Settings, ChatGPT.Overlay,
-  FMX.Styles, HGM.FMX.Ani, HGM.FMX.Image;
+  FMX.Styles, HGM.FMX.Ani, HGM.FMX.Image, OpenAI.API;
 
 {$R *.fmx}
 
@@ -463,6 +463,8 @@ begin
         JSON.GetValue('proxy_username', ''),
         JSON.GetValue('proxy_password', ''));
       TBitmap.Client.ProxySettings := OpenAI.API.Client.ProxySettings;
+
+      OpenAI.BaseURL := JSON.GetValue('base_url', OpenAI.BaseURL);
     finally
       JSON.Free;
     end;
@@ -494,6 +496,8 @@ begin
     JSON.AddPair('proxy_port', OpenAI.API.Client.ProxySettings.Port);
     JSON.AddPair('proxy_username', OpenAI.API.Client.ProxySettings.UserName);
     JSON.AddPair('proxy_password', OpenAI.API.Client.ProxySettings.Password);
+
+    JSON.AddPair('base_url', OpenAI.BaseURL);
 
     TFile.WriteAllText(GetSettingsFileName, JSON.ToJSON, TEncoding.UTF8);
   except
@@ -668,6 +672,7 @@ begin
       Frame.EditProxyUsername.Text := OpenAI.API.Client.ProxySettings.UserName;
       Frame.EditProxyPassword.Text := OpenAI.API.Client.ProxySettings.Password;
       Frame.LabelVersion.Text := 'Version: ' + VersionName;
+      Frame.EditBaseUrl.Text := OpenAI.BaseURL;
     end,
     procedure(Frame: TFrameSettings; Success: Boolean)
     begin
@@ -694,6 +699,9 @@ begin
         Frame.EditProxyUsername.Text,
         Frame.EditProxyPassword.Text);
       TBitmap.Client.ProxySettings := OpenAI.API.Client.ProxySettings;
+      OpenAI.BaseURL := Frame.EditBaseUrl.Text;
+      if OpenAI.BaseURL.IsEmpty then
+        OpenAI.BaseURL := TOpenAIAPI.URL_BASE;
       {$IFDEF MSWINDOWS}
       SetWindowColorModeAsSystem;
       {$ENDIF}
