@@ -22,6 +22,7 @@
 - Separate settings for each chat
 - SVG display
 - Ability to edit chat
+- All model settings
 
 ## 🙌 List of planned features
 - Display of mathematical formulas
