@@ -118,7 +118,6 @@ type
     procedure ButtonExample1Click(Sender: TObject);
     procedure ButtonExample2Click(Sender: TObject);
     procedure ButtonExample3Click(Sender: TObject);
-    procedure MemoQueryResize(Sender: TObject);
     procedure ButtonAudioClick(Sender: TObject);
     procedure ButtonImageClick(Sender: TObject);
     procedure ButtonSettingsClick(Sender: TObject);
@@ -236,7 +235,7 @@ begin
     SetLength(Images, Length(Response.Data));
     for var i := 0 to High(Response.Data) do
       Images[i] := Response.Data[i].Url;
-    NewMessageImage(TMessageKind.Bot, Images);
+    NewMessageImage(TMessageKind.Assistant, Images);
   finally
     Response.Free;
   end;
@@ -262,7 +261,7 @@ procedure TFrameChat.AppendMessages(Response: TChat);
 begin
   try
     for var Item in Response.Choices do
-      NewMessage(Item.Message.Content, TMessageKind.Bot);
+      NewMessage(Item.Message.Content, TMessageKind.Assistant);
   finally
     Response.Free;
   end;
@@ -271,7 +270,7 @@ end;
 procedure TFrameChat.AppendAudio(Response: TAudioText);
 begin
   try
-    NewMessage(Response.Text, TMessageKind.Bot, True, True);
+    NewMessage(Response.Text, TMessageKind.Assistant, True, True);
   finally
     Response.Free;
   end;
@@ -295,6 +294,11 @@ begin
     Result.AddPair('top_p', TJSONNumber.Create(TopP));
     Result.AddPair('model', Model);
 
+    for var Control in VertScrollBoxChat.Content.Controls do
+      if Control is TFrameMessage then
+        if not TFrameMessage(Control).IsError then
+          JArray.Add(TFrameMessage(Control).ToJsonObject);
+             {
     for var Item in FBuffer do
     begin
       var JItem := TJSONObject.Create;
@@ -302,7 +306,7 @@ begin
       JItem.AddPair('role', Item.Role.ToString);
       JItem.AddPair('content', Item.Content);
       JArray.Add(JItem);
-    end;
+    end; }
   except
     //
   end;
@@ -338,9 +342,11 @@ begin
     for var JItem in JArray do
     begin
       var Item: TChatMessageBuild;
+
       Item.Role := TMessageRole.FromString(JItem.GetValue('role', 'user'));
       Item.Content := JItem.GetValue('content', '');
       Item.Tag := JItem.GetValue('id', TGUID.NewGuid.ToString);
+
       FBuffer.Add(Item);
       var Frame := TFrameMessage.Create(VertScrollBoxChat);
       Frame.Position.Y := VertScrollBoxChat.ContentBounds.Height;
@@ -352,12 +358,14 @@ begin
         TMessageRole.User:
           Frame.MessageRole := TMessageKind.User;
         TMessageRole.Assistant:
-          Frame.MessageRole := TMessageKind.Bot;
+          Frame.MessageRole := TMessageKind.Assistant;
       end;
-      Frame.IsAudio := False;
+      //Frame.IsAudio := False;
       Frame.OnDelete := FOnMessageDelete;
       Frame.Id := Item.Tag;
       Frame.Text := Item.Content;
+      Frame.IsAudio := JItem.GetValue('is_audio', False);
+      Frame.Images := JItem.GetValue<TArray<string>>('images', []);
       Frame.SetMode(FMode);
       Frame.UpdateContentSize;
       Inc(ItemCount);
@@ -801,11 +809,6 @@ begin
   end;
 end;
 
-procedure TFrameChat.MemoQueryResize(Sender: TObject);
-begin
-  //MemoQueryChange(Sender);
-end;
-
 procedure TFrameChat.UpdateMenuTitle(const Text: string);
 begin
   if not Assigned(FMenuItem) then
@@ -865,7 +868,7 @@ begin
         AppendText := AppendText.Replace('/assistant ', '', []);
         AppendText := ProcText(AppendText, True);
         FBuffer.New(TMessageRole.Assistant, AppendText, MessageTag);
-        Role := TMessageKind.Bot;
+        Role := TMessageKind.Assistant;
       end
       else
       begin

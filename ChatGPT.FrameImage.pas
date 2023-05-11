@@ -17,9 +17,10 @@ type
     procedure RectangleImageClick(Sender: TObject);
     procedure MenuItemCopyClick(Sender: TObject);
   private
+    FImage: string;
     procedure SetImage(const Value: string);
   public
-    property Image: string write SetImage;
+    property Image: string read FImage write SetImage;
     constructor Create(AOwner: TComponent); override;
   end;
 
@@ -62,7 +63,8 @@ end;
 
 procedure TFrameImage.SetImage(const Value: string);
 begin
-  RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(RectangleImage, Value, False,
+  FImage := Value;
+  RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(RectangleImage, FImage, False,
     procedure(Bitmap: TBitmap)
     begin
       AniIndicator.Visible := False;

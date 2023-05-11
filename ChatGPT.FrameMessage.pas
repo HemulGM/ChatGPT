@@ -7,13 +7,11 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Memo.Types, FMX.Layouts, FMX.Controls.Presentation,
   FMX.ScrollBox, FMX.Memo, System.Generics.Collections, FMX.BehaviorManager,
-  ChatGPT.FrameImage, ChatGPT.Classes, FMX.Menus, OpenAI.Chat;
+  ChatGPT.FrameImage, ChatGPT.Classes, FMX.Menus, OpenAI.Chat, System.JSON;
 
 {$SCOPEDENUMS ON}
 
 type
-  TMessageKind = (User, Bot, System, Error);
-
   TFrameMessage = class(TFrame)
     RectangleBG: TRectangle;
     LayoutInfo: TLayout;
@@ -87,6 +85,7 @@ type
     procedure StartAnimate;
     constructor Create(AOwner: TComponent); override;
     property OnDelete: TNotifyEvent read FOnDelete write SetOnDelete;
+    function ToJsonObject: TJSONObject;
   end;
 
 const
@@ -100,7 +99,7 @@ implementation
 
 uses
   System.Math, FMX.Platform, FMX.Memo.Style, FMX.Ani, ChatGPT.FrameCode,
-  ChatGPT.FrameSVG, ChatGPT.FramePlainText, ChatGPT.FrameUIMessage, System.JSON;
+  ChatGPT.FrameSVG, ChatGPT.FramePlainText, ChatGPT.FrameUIMessage;
 
 {$R *.fmx}
 
@@ -193,6 +192,26 @@ begin
   LayoutClient.Opacity := 0;
   TAnimator.AnimateFloat(LayoutClient, 'Margins.Top', 0);
   TAnimator.AnimateFloat(LayoutClient, 'Opacity', 1);
+end;
+
+function TFrameMessage.ToJsonObject: TJSONObject;
+begin
+  Result := TJSONObject.Create;
+  try
+    Result.AddPair('id', FId);
+    Result.AddPair('role', FMessageRole.ToString);
+    Result.AddPair('content', FText);
+    if Length(FImages) > 0 then
+    begin
+      var JImages := TJSONArray.Create;
+      for var Img in FImages do
+        JImages.Add(Img);
+      Result.AddPair('images', JImages);
+    end;
+    Result.AddPair('is_audio', FIsAudio);
+  except
+    //
+  end;
 end;
 
 procedure TFrameMessage.FOnTextWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
@@ -297,73 +316,78 @@ var
   IsCodeParse: Boolean;
   Buf: string;
 begin
-  Parts := TList<TPart>.Create;
   try
-    if Value.StartsWith('{') then
+    if Value.IsEmpty then
+      Exit;
+    Parts := TList<TPart>.Create;
     try
-      var JSON := TJSONObject.ParseJSONValue(Value);
-      if Assigned(JSON) then
+      if Value.StartsWith('{') then
       try
-        var Part: TPart;
-        Part.PartType := ptCode;
-        Part.Content := Value;
-        Part.Language := 'json';
-        Parts.Add(Part);
-        Exit;
-      finally
-        JSON.Free;
-      end;
-    except
-      //
-    end;
-    CodePairs := 0;
-    Buf := '';
-    IsCodeParse := False;
-    for var i := 1 to Value.Length do
-    begin
-      if Value[i] = '`' then
-      begin
-        Inc(CodePairs);
-        Buf := Buf + Value[i];
-        if CodePairs = 3 then
-        begin
-          if IsCodeParse then
-          begin
-            if not Buf.Trim([' ', '`']).IsEmpty then
-              Parts.Add(CreatePart(ptCode, Buf.Trim(['`'])));
-            IsCodeParse := False;
-          end
-          else
-          begin
-            if not Buf.Trim([' ', '`']).IsEmpty then
-              Parts.Add(CreatePart(ptText, Buf.Trim([' ', '`'])));
-            IsCodeParse := True;
-          end;
-          CodePairs := 0;
-          Buf := '';
+        var JSON := TJSONObject.ParseJSONValue(Value);
+        if Assigned(JSON) then
+        try
+          var Part: TPart;
+          Part.PartType := ptCode;
+          Part.Content := Value;
+          Part.Language := 'json';
+          Parts.Add(Part);
+          Exit;
+        finally
+          JSON.Free;
         end;
+      except
+      //
+      end;
+      CodePairs := 0;
+      Buf := '';
+      IsCodeParse := False;
+      for var i := 1 to Value.Length do
+      begin
+        if Value[i] = '`' then
+        begin
+          Inc(CodePairs);
+          Buf := Buf + Value[i];
+          if CodePairs = 3 then
+          begin
+            if IsCodeParse then
+            begin
+              if not Buf.Trim([' ', '`']).IsEmpty then
+                Parts.Add(CreatePart(ptCode, Buf.Trim(['`'])));
+              IsCodeParse := False;
+            end
+            else
+            begin
+              if not Buf.Trim([' ', '`']).IsEmpty then
+                Parts.Add(CreatePart(ptText, Buf.Trim([' ', '`'])));
+              IsCodeParse := True;
+            end;
+            CodePairs := 0;
+            Buf := '';
+          end;
+        end
+        else
+        begin
+          CodePairs := 0;
+          Buf := Buf + Value[i];
+        end;
+      end;
+      if IsCodeParse then
+      begin
+        if not Buf.Trim([' ', '`']).IsEmpty then
+          Parts.Add(CreatePart(ptCode, Buf.Trim(['`'])));
       end
       else
       begin
-        CodePairs := 0;
-        Buf := Buf + Value[i];
+        if not Buf.Trim([' ']).IsEmpty then
+          Parts.Add(CreatePart(ptText, Buf));
       end;
-    end;
-    if IsCodeParse then
-    begin
-      if not Buf.Trim([' ', '`']).IsEmpty then
-        Parts.Add(CreatePart(ptCode, Buf.Trim(['`'])));
-    end
-    else
-    begin
-      if not Buf.Trim([' ']).IsEmpty then
-        Parts.Add(CreatePart(ptText, Buf));
+    finally
+      BuildContent(Parts);
+      Parts.Free;
     end;
   finally
-    BuildContent(Parts);
-    Parts.Free;
+    UpdateContentSize;
   end;
-  UpdateContentSize;
 end;
 
 procedure TFrameMessage.CreateCodePart(Part: TPart);
@@ -380,10 +404,10 @@ end;
 procedure TFrameMessage.UpdateMessageRole;
 begin
   RectangleUser.Visible := FMessageRole = TMessageKind.User;
-  RectangleBot.Visible := FMessageRole = TMessageKind.Bot;
+  RectangleBot.Visible := FMessageRole = TMessageKind.Assistant;
   RectangleSystem.Visible := FMessageRole = TMessageKind.System;
 
-  if FMessageRole = TMessageKind.Bot then
+  if FMessageRole = TMessageKind.Assistant then
     RectangleBG.Fill.Color := BGColorBot
   else
     RectangleBG.Fill.Color := BGColorUser;
@@ -400,7 +424,7 @@ begin
   Frame.OnWheel := FOnTextWheel;
   if IsError then
     Frame.MemoText.FontColor := ColorError
-  else if FMessageRole = TMessageKind.Bot then
+  else if FMessageRole = TMessageKind.Assistant then
     Frame.MemoText.FontColor := ColorBot
   else
     Frame.MemoText.FontColor := ColorUser;
@@ -468,7 +492,7 @@ begin
   if not Value.IsEmpty then
     FText := Value
   else
-    FText := 'empty';
+    FText := '';
   FText := FText.Trim([' ', #13, #10]);
   UpdateMode;
   ParseText(FText);

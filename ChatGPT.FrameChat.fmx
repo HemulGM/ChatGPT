@@ -907,8 +907,6 @@ object FrameChat: TFrameChat
         Size.PlatformDefault = False
         StyleLookup = 'memostyle_clear'
         TabOrder = 0
-        OnResize = MemoQueryResize
-        OnResized = MemoQueryResize
         OnKeyDown = MemoQueryKeyDown
         Viewport.Width = 620.000000000000000000
         Viewport.Height = 26.000000000000000000
