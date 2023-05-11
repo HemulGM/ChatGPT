@@ -293,6 +293,8 @@ begin
     Result.AddPair('max_tokens_query', TJSONNumber.Create(MaxTokensQuery));
     Result.AddPair('top_p', TJSONNumber.Create(TopP));
     Result.AddPair('model', Model);
+    Result.AddPair('is_image_mode', IsImageMode);
+    Result.AddPair('draft', MemoQuery.Text);
 
     for var Control in VertScrollBoxChat.Content.Controls do
       if Control is TFrameMessage then
@@ -337,17 +339,23 @@ begin
   Model := JSON.GetValue('model', '');
   MaxTokens := JSON.GetValue<Integer>('max_tokens', 0);
   MaxTokensQuery := JSON.GetValue<Integer>('max_tokens_query', 0);
+  IsImageMode := JSON.GetValue('is_image_mode', False);
+  MemoQuery.Text := JSON.GetValue('draft', '');
+
   var JArray: TJSONArray;
   if JSON.TryGetValue<TJSONArray>('items', JArray) then
     for var JItem in JArray do
     begin
       var Item: TChatMessageBuild;
+      var IsAudio := JItem.GetValue('is_audio', False);
 
       Item.Role := TMessageRole.FromString(JItem.GetValue('role', 'user'));
       Item.Content := JItem.GetValue('content', '');
       Item.Tag := JItem.GetValue('id', TGUID.NewGuid.ToString);
 
-      FBuffer.Add(Item);
+      if not (IsAudio and (Item.Role <> TMessageRole.User)) then
+        FBuffer.Add(Item);
+
       var Frame := TFrameMessage.Create(VertScrollBoxChat);
       Frame.Position.Y := VertScrollBoxChat.ContentBounds.Height;
       VertScrollBoxChat.AddObject(Frame);
@@ -360,11 +368,10 @@ begin
         TMessageRole.Assistant:
           Frame.MessageRole := TMessageKind.Assistant;
       end;
-      //Frame.IsAudio := False;
       Frame.OnDelete := FOnMessageDelete;
       Frame.Id := Item.Tag;
       Frame.Text := Item.Content;
-      Frame.IsAudio := JItem.GetValue('is_audio', False);
+      Frame.IsAudio := IsAudio;
       Frame.Images := JItem.GetValue<TArray<string>>('images', []);
       Frame.SetMode(FMode);
       Frame.UpdateContentSize;
@@ -1067,6 +1074,13 @@ begin
   ButtonSend.Enabled := not Value;
   TimerTyping.Enabled := Value;
   LayoutTyping.Visible := Value;
+  if LayoutTyping.Visible then
+  begin
+    LayoutTyping.Margins.Top := 40;
+    LayoutTyping.Opacity := 0;
+    TAnimator.AnimateFloat(LayoutTyping, 'Margins.Top', 0);
+    TAnimator.AnimateFloat(LayoutTyping, 'Opacity', 1);
+  end;
   LabelTyping.Visible := Value;
 end;
 

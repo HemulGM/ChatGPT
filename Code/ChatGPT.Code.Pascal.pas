@@ -44,7 +44,7 @@ begin
 
   KeyWord := TKeyWord.Create;
   KeyWord.Word := ['begin', 'end', 'asm', 'end.', 'class', 'record', 'try', 'finally', 'except'];
-  KeyWord.Color := TAlphaColorRec.Red;
+  KeyWord.Color := $FFC22700;
   KeyWord.Font.Assign(FDefaultFont);
   KeyWord.Font.Style := [TFontStyle.fsBold];
   FKeyWords.Add(KeyWord);

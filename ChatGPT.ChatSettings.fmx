@@ -253,7 +253,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
         Text = 'Query max tokens (default: 1024)'
-        TabOrder = 28
+        TabOrder = 26
         TabStop = False
       end
       object Label17: TLabel
@@ -384,7 +384,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
         Text = 'Model (default: gpt-3.5-turbo)'
-        TabOrder = 29
+        TabOrder = 27
         TabStop = False
       end
       object Label9: TLabel
@@ -401,7 +401,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
         Text = 'Model max tokens (default: 4096)'
-        TabOrder = 31
+        TabOrder = 30
         TabStop = False
       end
       object Layout3: TLayout

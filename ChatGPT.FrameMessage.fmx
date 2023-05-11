@@ -379,6 +379,8 @@ object FrameMessage: TFrameMessage
               010000000000D8410000E040010000000000D8410000C841010000000000E841
               0000C841030000000000E8410000E040}
             Fill.Color = xFFACACBE
+            Hint = 'Is audio'
+            HitTest = False
             Size.Width = 20.000000000000000000
             Size.Height = 20.000000000000000000
             Size.PlatformDefault = False
@@ -619,6 +621,8 @@ object FrameMessage: TFrameMessage
               010000000000D8410000E040010000000000D8410000C841010000000000E841
               0000C841030000000000E8410000E040}
             Fill.Color = xFFACACBE
+            Hint = 'Is audio'
+            HitTest = False
             Size.Width = 20.000000000000000000
             Size.Height = 20.000000000000000000
             Size.PlatformDefault = False
@@ -628,7 +632,7 @@ object FrameMessage: TFrameMessage
         end
         object ButtonDeleteCompact: TButton
           Align = Right
-          Hint = 'Copy'
+          Hint = 'Delete'
           Position.X = 521.000000000000000000
           Size.Width = 30.000000000000000000
           Size.Height = 30.000000000000000000

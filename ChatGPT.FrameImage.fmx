@@ -16,6 +16,7 @@ object FrameImage: TFrameImage
     XRadius = 4.000000000000000000
     YRadius = 4.000000000000000000
     OnClick = RectangleImageClick
+    OnPaint = RectangleImagePaint
     object AniIndicator: TAniIndicator
       Align = Center
       Enabled = True

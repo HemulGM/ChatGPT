@@ -16,8 +16,10 @@ type
     MenuItemCopy: TMenuItem;
     procedure RectangleImageClick(Sender: TObject);
     procedure MenuItemCopyClick(Sender: TObject);
+    procedure RectangleImagePaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
   private
     FImage: string;
+    FIsLoaded: Boolean;
     procedure SetImage(const Value: string);
   public
     property Image: string read FImage write SetImage;
@@ -36,6 +38,7 @@ uses
 constructor TFrameImage.Create(AOwner: TComponent);
 begin
   inherited;
+  FIsLoaded := False;
   Name := '';
 end;
 
@@ -61,16 +64,24 @@ begin
     end);
 end;
 
+procedure TFrameImage.RectangleImagePaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
+begin
+  if not FIsLoaded then
+  begin
+    FIsLoaded := True;
+    RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(RectangleImage, FImage, False,
+      procedure(Bitmap: TBitmap)
+      begin
+        AniIndicator.Visible := False;
+        RectangleImage.Fill.Kind := TBrushKind.Bitmap;
+        RectangleImage.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
+      end);
+  end;
+end;
+
 procedure TFrameImage.SetImage(const Value: string);
 begin
   FImage := Value;
-  RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(RectangleImage, FImage, False,
-    procedure(Bitmap: TBitmap)
-    begin
-      AniIndicator.Visible := False;
-      RectangleImage.Fill.Kind := TBrushKind.Bitmap;
-      RectangleImage.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
-    end);
 end;
 
 end.
