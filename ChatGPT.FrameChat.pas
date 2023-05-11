@@ -812,7 +812,7 @@ begin
     Exit;
   if not FMenuItem.StylesData['changed_title'].AsBoolean then
   begin
-    FTitle := Text.Replace(#10, '').Replace(#13, '').Substring(0, 50);
+    FTitle := Text.Replace(#10, '').Replace(#13, '').Replace('&', '').Substring(0, 50);
     FMenuItem.Text := FTitle;
   end;
 end;
