@@ -42,3 +42,11 @@ SVGImageList - https://github.com/EtheaDev/SVGIconImageList
 For the program to work, you need to place sk4d.dll of the desired architecture next to the executable file
 
 Default path: C:\Users\USERNAME\Documents\Skia4Delphi\Binary\Shared
+
+<hr>
+<p align="center">
+<img src="https://dtffvb2501i0o.cloudfront.net/images/logos/delphi-logo-128.webp" alt="Delphi">
+</p>
+<h5 align="center">
+Made with :heart: on Delphi
+</h5>
