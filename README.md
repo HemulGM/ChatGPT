@@ -23,6 +23,8 @@
 - SVG display
 - Ability to edit chat
 - All model settings
+- Custom headers for third party APIs
+- Send message as assistant, user or system
 
 ## 🙌 List of planned features
 - Display of mathematical formulas
