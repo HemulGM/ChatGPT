@@ -474,7 +474,6 @@ object FrameMessage: TFrameMessage
           end
           object ButtonActions: TButton
             Align = Right
-            Enabled = False
             Hint = 'Copy'
             Margins.Right = -16.000000000000000000
             Position.X = 30.000000000000000000
@@ -629,7 +628,6 @@ object FrameMessage: TFrameMessage
         end
         object ButtonDeleteCompact: TButton
           Align = Right
-          Enabled = False
           Hint = 'Copy'
           Position.X = 521.000000000000000000
           Size.Width = 30.000000000000000000
@@ -696,12 +694,13 @@ object FrameMessage: TFrameMessage
     end
   end
   object PopupMenuActions: TPopupMenu
-    Left = 352
-    Top = 232
-    object MenuItem1: TMenuItem
+    Left = 528
+    Top = 48
+    object MenuItemDelete: TMenuItem
       Text = 'Delete'
+      OnClick = ButtonDeleteClick
     end
-    object MenuItem2: TMenuItem
+    object MenuItemEdit: TMenuItem
       Text = 'Edit'
     end
   end

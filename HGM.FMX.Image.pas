@@ -12,6 +12,7 @@ type
     Owner: TComponent;
     Bitmap: TBitmap;
     Url: string;
+    Task: ITask;
     OnSuccess: TProc<TBitmap>;
   end;
 
@@ -130,8 +131,7 @@ begin
   Callback.Bitmap := Self;
   Callback.Url := Url;
   Callback.OnSuccess := OnSuccess;
-  AddCallback(Callback);
-  TTask.Run(
+  Callback.Task := TTask.Run(
     procedure
     begin
       try
@@ -151,6 +151,7 @@ begin
           end);
       end;
     end, Pool);
+  AddCallback(Callback);
 end;
 
 class procedure TBitmapHelper.Ready(const Url: string; Stream: TStream);
@@ -204,7 +205,10 @@ begin
   try
     for var i := List.Count - 1 downto 0 do
       if List[i].Owner = AOwner then
+      begin
+        List[i].Task.Cancel;
         List.Delete(i);
+      end;
   finally
     FCallbackList.UnlockList;
   end;
@@ -252,7 +256,10 @@ begin
   try
     for var i := List.Count - 1 downto 0 do
       if List[i].Owner = AComponent then
+      begin
+        List[i].Task.Cancel;
         List.Delete(i);
+      end;
   finally
     TBitmap.FCallbackList.UnlockList;
   end;

@@ -6,7 +6,8 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   ChatGPT.Overlay, FMX.Edit, FMX.Objects, FMX.Layouts, ChatGPT.Classes,
-  FMX.ComboEdit, FMX.ListBox, FMX.Controls.Presentation, FMX.ComboEdit.Style;
+  FMX.ComboEdit, FMX.ListBox, FMX.Controls.Presentation, FMX.ComboEdit.Style,
+  FMX.Memo.Types, FMX.ScrollBox, FMX.Memo;
 
 type
   TStyledComboEdit = class(FMX.ComboEdit.Style.TStyledComboEdit)
@@ -100,6 +101,9 @@ type
     Label29: TLabel;
     LabelVersion: TLabel;
     Label31: TLabel;
+    Label32: TLabel;
+    MemoCustomHeaders: TMemo;
+    Label33: TLabel;
     procedure TrackBarTempTracking(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);
@@ -159,6 +163,8 @@ begin
   LayoutOnTop.Visible := False;
   {$ENDIF}
   Name := '';
+  MemoCustomHeaders.Text := '';
+  MemoCustomHeaders.Lines.NameValueSeparator := ':';
   FLayoutClientWidth := LayoutClient.Width;
   FLayoutClientHeight := LayoutClient.Height;
   VertScrollBoxContent.AniCalculations.Animation := True;

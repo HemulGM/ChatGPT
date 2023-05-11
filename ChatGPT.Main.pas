@@ -31,7 +31,6 @@ type
     ButtonCloseMenu: TButton;
     LayoutMenuContainer: TLayout;
     Layout1: TLayout;
-    ButtonDiscord: TButton;
     Line1: TLine;
     ButtonClear: TButton;
     ButtonFAQ: TButton;
@@ -42,6 +41,7 @@ type
     LayoutOverlay: TLayout;
     ButtonSettings: TButton;
     Line2: TLine;
+    ButtonAbout: TButton;
     procedure ButtonNewChatClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure ButtonMenuClick(Sender: TObject);
@@ -53,10 +53,10 @@ type
     procedure ButtonClearClick(Sender: TObject);
     procedure ButtonClearConfirmClick(Sender: TObject);
     procedure ButtonClearCancelClick(Sender: TObject);
-    procedure ButtonDiscordClick(Sender: TObject);
     procedure ButtonFAQClick(Sender: TObject);
     procedure ButtonSettingsClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure ButtonAboutClick(Sender: TObject);
   private
     FOpenAI: TOpenAIComponent;
     FMode: TWindowMode;
@@ -159,8 +159,9 @@ uses
   Posix.Stdlib,
   {$ENDIF POSIX}
   FMX.Ani, System.Math, System.Rtti, FMX.Utils, FMX.DialogService,
-  System.Net.URLClient, System.IOUtils, ChatGPT.Settings, ChatGPT.Overlay,
-  FMX.Styles, HGM.FMX.Ani, HGM.FMX.Image, OpenAI.API;
+  System.Threading, System.Net.URLClient, System.IOUtils, ChatGPT.Settings,
+  ChatGPT.Overlay, FMX.Styles, HGM.FMX.Ani, HGM.FMX.Image, OpenAI.API,
+  ChatGPT.About;
 
 {$R *.fmx}
 
@@ -181,7 +182,7 @@ begin
   _system(PAnsiChar('open ' + AnsiString(URL)));
   {$ENDIF POSIX}
   {$IFDEF MSWINDOWS}
-  ShellExecute(0, 'open', PChar(URL), nil, nil, 0);
+  ShellExecute(0, 'open', PChar(URL), nil, nil, 1);
   {$ENDIF}
 end;
 
@@ -199,6 +200,21 @@ begin
   ButtonClear.Text := 'Clear conversations';
   ButtonClearConfirm.Visible := False;
   ButtonClearCancel.Visible := False;
+end;
+
+procedure TFormMain.ButtonAboutClick(Sender: TObject);
+begin
+  LayoutOverlay.Visible := True;
+  LayoutOverlay.BringToFront;
+  TFrameAbout.Execute(LayoutOverlay,
+    procedure(Frame: TFrameAbout)
+    begin
+      Frame.Mode := Mode;
+    end,
+    procedure(Frame: TFrameAbout; Success: Boolean)
+    begin
+      LayoutOverlay.Visible := False;
+    end);
 end;
 
 procedure TFormMain.ButtonClearCancelClick(Sender: TObject);
@@ -220,11 +236,6 @@ end;
 procedure TFormMain.ButtonCloseMenuClick(Sender: TObject);
 begin
   CloseMenu;
-end;
-
-procedure TFormMain.ButtonDiscordClick(Sender: TObject);
-begin
-  OpenUrl(URL_DISCORD);
 end;
 
 procedure TFormMain.ButtonFAQClick(Sender: TObject);
@@ -465,6 +476,27 @@ begin
       TBitmap.Client.ProxySettings := OpenAI.API.Client.ProxySettings;
 
       OpenAI.BaseURL := JSON.GetValue('base_url', OpenAI.BaseURL);
+
+      var Headers: TNetHeaders;
+      try
+        var JHeaders: TJSONArray;
+        if JSON.TryGetValue<TJSONArray>('custom_headers', JHeaders) then
+          for var JHead in JHeaders do
+            if JHead is TJSONObject then
+            begin
+              var HName: string;
+              var HValue: string;
+              if JHead.TryGetValue('name', HName) and JHead.TryGetValue('value', HValue) then
+              begin
+                SetLength(Headers, Length(Headers) + 1);
+                Headers[High(Headers)] := TNetHeader.Create(HName, HValue);
+              end;
+            end;
+      except
+        //
+      end;
+
+      OpenAI.API.CustomHeaders := Headers;
     finally
       JSON.Free;
     end;
@@ -498,6 +530,19 @@ begin
     JSON.AddPair('proxy_password', OpenAI.API.Client.ProxySettings.Password);
 
     JSON.AddPair('base_url', OpenAI.BaseURL);
+
+    if Length(OpenAI.API.CustomHeaders) > 0 then
+    begin
+      var JHeaders := TJSONArray.Create;
+      JSON.AddPair('custom_headers', JHeaders);
+      for var Header in OpenAI.API.CustomHeaders do
+      begin
+        var JHead := TJSONObject.Create;
+        JHead.AddPair('name', Header.Name);
+        JHead.AddPair('value', Header.Value);
+        JHeaders.Add(JHead);
+      end;
+    end;
 
     TFile.WriteAllText(GetSettingsFileName, JSON.ToJSON, TEncoding.UTF8);
   except
@@ -596,6 +641,7 @@ end;
 constructor TFormMain.Create(AOwner: TComponent);
 begin
   inherited;
+  Visible := True;
   {$IFDEF NEW_MEMO}
   var Style := StyleBook.Style;
   if Assigned(Style) then
@@ -619,6 +665,7 @@ begin
   {$ENDIF}
   FOpenAI := TOpenAIComponent.Create(Self);
   ListBoxChatList.AniCalculations.Animation := True;
+
   Clear;
   FMode := wmFull;
   UpdateMode;
@@ -673,6 +720,8 @@ begin
       Frame.EditProxyPassword.Text := OpenAI.API.Client.ProxySettings.Password;
       Frame.LabelVersion.Text := 'Version: ' + VersionName;
       Frame.EditBaseUrl.Text := OpenAI.BaseURL;
+      for var Head in OpenAI.API.CustomHeaders do
+        Frame.MemoCustomHeaders.Lines.AddPair(Head.Name, Head.Value);
     end,
     procedure(Frame: TFrameSettings; Success: Boolean)
     begin
@@ -700,6 +749,23 @@ begin
         Frame.EditProxyPassword.Text);
       TBitmap.Client.ProxySettings := OpenAI.API.Client.ProxySettings;
       OpenAI.BaseURL := Frame.EditBaseUrl.Text;
+
+      var FHeaders: TNetHeaders;
+      try
+        for var Line in Frame.MemoCustomHeaders.Lines do
+        begin
+          var Pair := Line.Split([':']);
+          if Length(Pair) = 2 then
+          begin
+            SetLength(FHeaders, Length(FHeaders) + 1);
+            FHeaders[High(FHeaders)] := TNetHeader.Create(Pair[0], Pair[1]);
+          end;
+        end;
+      except
+        //
+      end;
+      OpenAI.API.CustomHeaders := FHeaders;
+
       if OpenAI.BaseURL.IsEmpty then
         OpenAI.BaseURL := TOpenAIAPI.URL_BASE;
       {$IFDEF MSWINDOWS}

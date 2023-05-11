@@ -4,7 +4,7 @@
         <ProjectVersion>19.5</ProjectVersion>
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>32915</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -350,6 +350,11 @@
         <DCCReference Include="HGM.FMX.Image.pas"/>
         <DCCReference Include="HGM.FMX.Ani.pas"/>
         <DCCReference Include="Code\ChatGPT.Code.JSON.pas"/>
+        <DCCReference Include="ChatGPT.About.pas">
+            <Form>FrameAbout</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

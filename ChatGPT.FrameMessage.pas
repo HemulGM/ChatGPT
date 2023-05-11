@@ -44,8 +44,8 @@ type
     ButtonDeleteCompact: TButton;
     Path8: TPath;
     PopupMenuActions: TPopupMenu;
-    MenuItem1: TMenuItem;
-    MenuItem2: TMenuItem;
+    MenuItemDelete: TMenuItem;
+    MenuItemEdit: TMenuItem;
     procedure MemoTextChange(Sender: TObject);
     procedure FrameResize(Sender: TObject);
     procedure ButtonCopyClick(Sender: TObject);

@@ -44,7 +44,8 @@ uses
   ChatGPT.Code.MarkDown in 'Code\ChatGPT.Code.MarkDown.pas',
   HGM.FMX.Image in 'HGM.FMX.Image.pas',
   HGM.FMX.Ani in 'HGM.FMX.Ani.pas',
-  ChatGPT.Code.JSON in 'Code\ChatGPT.Code.JSON.pas';
+  ChatGPT.Code.JSON in 'Code\ChatGPT.Code.JSON.pas',
+  ChatGPT.About in 'ChatGPT.About.pas' {FrameAbout: TFrame};
 
 {$R *.res}
 

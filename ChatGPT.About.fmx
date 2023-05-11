@@ -1,0 +1,293 @@
+inherited FrameAbout: TFrameAbout
+  Size.Width = 944.000000000000000000
+  Size.Height = 703.000000000000000000
+  OnResize = FrameResize
+  OnResized = FrameResize
+  inherited RectangleBG: TRectangle
+    Size.Width = 944.000000000000000000
+    Size.Height = 703.000000000000000000
+    OnClick = ButtonOkClick
+  end
+  object LayoutClient: TLayout
+    Align = Center
+    Padding.Left = 20.000000000000000000
+    Padding.Top = 20.000000000000000000
+    Padding.Right = 20.000000000000000000
+    Padding.Bottom = 20.000000000000000000
+    Size.Width = 635.000000000000000000
+    Size.Height = 641.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object RectangleFrame: TRectangle
+      Align = Contents
+      Fill.Color = xFF202123
+      Locked = True
+      Size.Width = 635.000000000000000000
+      Size.Height = 641.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      XRadius = 6.000000000000000000
+      YRadius = 6.000000000000000000
+    end
+    object VertScrollBoxContent: TVertScrollBox
+      Align = Client
+      Padding.Right = 10.000000000000000000
+      Padding.Bottom = 10.000000000000000000
+      Size.Width = 595.000000000000000000
+      Size.Height = 555.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Viewport.Width = 579.000000000000000000
+      Viewport.Height = 555.000000000000000000
+      object Label1: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = []
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 10.000000000000000000
+        Position.Y = 10.000000000000000000
+        Size.Width = 569.000000000000000000
+        Size.Height = 27.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Size = 20.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = xFFE9E9E9
+        TextSettings.WordWrap = False
+        Text = 'About'
+        TabOrder = 10
+      end
+      object Label5: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 57.000000000000000000
+        Size.Width = 569.000000000000000000
+        Size.Height = 38.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Segoe UI Emoji'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xB4FFFFFF
+        Text = 
+          'The ChatGPT client is an amazing open source cross-platform appl' +
+          'ication that allows you to play with the OpenAI ChatGPT API for ' +
+          'free!'
+        TabOrder = 8
+        TabStop = False
+      end
+      object LabelAppearance: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = []
+        Margins.Top = 30.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 220.000000000000000000
+        Size.Width = 569.000000000000000000
+        Size.Height = 24.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Segoe UI Emoji'
+        TextSettings.Font.Size = 18.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = xFFE9E9E9
+        TextSettings.WordWrap = False
+        Text = 'Support'
+        TabOrder = 2
+        TabStop = False
+      end
+      object LabelVersion: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 780.000000000000000000
+        Size.Width = 569.000000000000000000
+        Size.Height = 19.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xB4FFFFFF
+        TextSettings.WordWrap = False
+        Text = 'HemulGM'
+        TabOrder = 9
+        TabStop = False
+      end
+      object Label34: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 110.000000000000000000
+        Size.Width = 569.000000000000000000
+        Size.Height = 19.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Segoe UI Emoji'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xB4FFFFFF
+        Text = 'Check out the source code on GitHub and give it a '#11088'!'
+        TabOrder = 4
+        TabStop = False
+      end
+      object Label2: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 259.000000000000000000
+        Size.Width = 569.000000000000000000
+        Size.Height = 149.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Segoe UI Emoji'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xB4FFFFFF
+        Text = 
+          'At ChatGPT, we strive to bring you useful and amazing features e' +
+          'very time. And just like any other project, your support and mot' +
+          'ivation will help us move forward!'#13#10#13#10'If you liked our applicati' +
+          'on, we ask you to give this project a '#11088#65039'. Your approval means a ' +
+          'lot to us and encourages us to work harder to deliver the best p' +
+          'ossible experience.'#13#10#13#10'Thank you for being a part of our communi' +
+          'ty and we look forward to serving you better in the future.'
+        TabOrder = 7
+        TabStop = False
+      end
+      object Label3: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = []
+        Margins.Top = 30.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 499.000000000000000000
+        Size.Width = 569.000000000000000000
+        Size.Height = 24.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Segoe UI Emoji'
+        TextSettings.Font.Size = 18.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = xFFE9E9E9
+        TextSettings.WordWrap = False
+        Text = 'Privacy Statement'
+        TabOrder = 1
+        TabStop = False
+      end
+      object Label4: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = [Style]
+        Margins.Top = 10.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 538.000000000000000000
+        Size.Width = 569.000000000000000000
+        Size.Height = 168.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Segoe UI Emoji'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xB4FFFFFF
+        Text = 
+          'We value your privacy and are committed to protecting the privac' +
+          'y of our users. We do not collect or store the text you enter or' +
+          ' receive from the OpenAI server in any form on third party serve' +
+          'rs. All history is stored only on your computer and nowhere else' +
+          '. Our source code is available for review to verify this claim.'#13 +
+          #10#13#10'We prioritize the security of your API key and handle it with' +
+          ' the utmost care. If you use your own API key, your key is store' +
+          'd solely on your computer and is never shared with any third par' +
+          'ty. It is used solely for its intended purpose to access the Ope' +
+          'nAI API and not for any other unauthorized use.'
+        TabOrder = 3
+        TabStop = False
+      end
+      object Label6: TLabel
+        Align = Top
+        AutoSize = True
+        StyledSettings = []
+        Margins.Top = 30.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Position.Y = 741.000000000000000000
+        Size.Width = 569.000000000000000000
+        Size.Height = 24.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Segoe UI Emoji'
+        TextSettings.Font.Size = 18.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = xFFE9E9E9
+        TextSettings.WordWrap = False
+        Text = 'Autor'
+        TabOrder = 0
+        TabStop = False
+      end
+      object Layout4: TLayout
+        Align = Top
+        Margins.Top = 10.000000000000000000
+        Position.Y = 144.000000000000000000
+        Size.Width = 569.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 6
+        TabStop = False
+        object ButtonGitHub: TButton
+          Align = Left
+          Images = FormMain.SVGIconImageList
+          ImageIndex = 9
+          Size.Width = 289.000000000000000000
+          Size.Height = 46.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyle_menu'
+          TabOrder = 0
+          Text = 'Open GitHub page'
+          TextSettings.HorzAlign = Leading
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = ButtonGitHubClick
+        end
+      end
+      object Layout1: TLayout
+        Align = Top
+        Margins.Top = 10.000000000000000000
+        Position.Y = 423.000000000000000000
+        Size.Width = 569.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 5
+        TabStop = False
+        object ButtonReport: TButton
+          Align = Left
+          Images = FormMain.SVGIconImageList
+          ImageIndex = 9
+          Size.Width = 289.000000000000000000
+          Size.Height = 46.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyle_menu'
+          TabOrder = 0
+          Text = 'Report a problem'
+          TextSettings.HorzAlign = Leading
+          ParentShowHint = False
+          ShowHint = True
+          OnClick = ButtonReportClick
+        end
+      end
+    end
+    object Layout2: TLayout
+      Align = Bottom
+      Position.X = 20.000000000000000000
+      Position.Y = 575.000000000000000000
+      Size.Width = 595.000000000000000000
+      Size.Height = 46.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 3
+      object ButtonOk: TButton
+        Align = Right
+        Position.X = 515.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_menu'
+        TabOrder = 2
+        Text = 'OK'
+        OnClick = ButtonOkClick
+      end
+    end
+  end
+end

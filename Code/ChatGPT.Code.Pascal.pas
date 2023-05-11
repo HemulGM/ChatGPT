@@ -90,7 +90,7 @@ begin
   var Buf: string := '';
   var IsString: Boolean := False;
   var IsComment: Boolean := False;
-  for var C := 0 to Line.Length - 1 do
+  for var C := 0 to Line.Length do
   begin
     if Line.IsEmpty then
       Continue;
@@ -139,29 +139,32 @@ begin
       Buf := Buf + Line.Chars[C];
       Continue;
     end;
-    if (Line.Chars[C] = '/') and (Line.Chars[C + 1] = '/') then
+    if C <> Line.Length then
     begin
-      Result := Result + [
-        TTextAttributedRangeData.Create(
-        TTextRange.Create(C, Line.Length - C),
-        TTextAttribute.Create(FCommentKey.Font, FCommentKey.Color)
-        )];
-      Exit;
-    end;
-    if Line.Chars[C] = '{' then
-    begin
-      IsComment := True;
-      Buf := Buf + Line.Chars[C];
-      Continue;
-    end;
-    if Line.Chars[C] = '''' then
-    begin
-      IsString := True;
-      Buf := Buf + Line.Chars[C];
-      Continue;
+      if (Line.Chars[C] = '/') and (Line.Chars[C + 1] = '/') then
+      begin
+        Result := Result + [
+          TTextAttributedRangeData.Create(
+          TTextRange.Create(C, Line.Length - C),
+          TTextAttribute.Create(FCommentKey.Font, FCommentKey.Color)
+          )];
+        Exit;
+      end;
+      if Line.Chars[C] = '{' then
+      begin
+        IsComment := True;
+        Buf := Buf + Line.Chars[C];
+        Continue;
+      end;
+      if Line.Chars[C] = '''' then
+      begin
+        IsString := True;
+        Buf := Buf + Line.Chars[C];
+        Continue;
+      end;
     end;
 
-    if (C = Line.Length - 1) or CharInSet(Line.Chars[C], Seps) then
+    if (C = Line.Length) or CharInSet(Line.Chars[C], Seps) then
     begin
       if not Buf.IsEmpty then
       begin

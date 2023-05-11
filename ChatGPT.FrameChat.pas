@@ -182,6 +182,7 @@ type
     procedure SetPresencePenalty(const Value: Single);
     procedure ChatToUp;
     procedure SetTopP(const Value: Single);
+    procedure FOnMessageDelete(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -250,6 +251,8 @@ begin
   Result.Position.Y := VertScrollBoxChat.ContentBounds.Height;
   Result.Parent := VertScrollBoxChat;
   Result.Align := TAlignLayout.MostTop;
+  Result.Id := '';
+  Result.OnDelete := FOnMessageDelete;
   TFrameMessage(Result).MessageRole := Role;
   TFrameMessage(Result).Images := Images;
   Result.StartAnimate;
@@ -305,6 +308,17 @@ begin
   end;
 end;
 
+procedure TFrameChat.FOnMessageDelete(Sender: TObject);
+var
+  Frame: TFrameMessage absolute Sender;
+begin
+  if not (Sender is TFrameMessage) then
+    Exit;
+  FBuffer.DeleteByTag(Frame.Id);
+  if VertScrollBoxChat.Content.ControlsCount <= 3 then
+    LayoutWelcome.Visible := True;
+end;
+
 procedure TFrameChat.LoadFromJson(JSON: TJSONObject);
 begin
   var ItemCount: Integer := 0;
@@ -341,6 +355,8 @@ begin
           Frame.MessageRole := TMessageKind.Bot;
       end;
       Frame.IsAudio := False;
+      Frame.OnDelete := FOnMessageDelete;
+      Frame.Id := Item.Tag;
       Frame.Text := Item.Content;
       Frame.SetMode(FMode);
       Frame.UpdateContentSize;
@@ -825,9 +841,9 @@ begin
   end;
 
   var AppendText := Text;
+  var MessageTag := TGUID.NewGuid.ToString;
   if UseBuffer then
   begin
-    var MessageTag := TGUID.NewGuid.ToString;
     if Role = TMessageKind.User then
     begin
       if AppendText.StartsWith('/system ') then
@@ -835,18 +851,21 @@ begin
         AppendText := AppendText.Replace('/system ', '', []);
         AppendText := ProcText(AppendText, True);
         FBuffer.New(TMessageRole.System, AppendText, MessageTag);
+        Role := TMessageKind.System;
       end
       else if AppendText.StartsWith('/user ') then
       begin
         AppendText := AppendText.Replace('/user ', '', []);
         AppendText := ProcText(AppendText, True);
         FBuffer.New(TMessageRole.User, AppendText, MessageTag);
+        Role := TMessageKind.User;
       end
       else if AppendText.StartsWith('/assistant ') then
       begin
         AppendText := AppendText.Replace('/assistant ', '', []);
         AppendText := ProcText(AppendText, True);
         FBuffer.New(TMessageRole.Assistant, AppendText, MessageTag);
+        Role := TMessageKind.Bot;
       end
       else
       begin
@@ -865,9 +884,11 @@ begin
   Result.Position.Y := VertScrollBoxChat.ContentBounds.Height;
   Result.Parent := VertScrollBoxChat;
   Result.Align := TAlignLayout.MostTop;
+  Result.Id := MessageTag;
   Result.MessageRole := Role;
   Result.IsAudio := IsAudio;
   Result.Text := AppendText;
+  Result.OnDelete := FOnMessageDelete;
   Result.SetMode(FMode);
   Result.UpdateContentSize;
   Result.StartAnimate;
