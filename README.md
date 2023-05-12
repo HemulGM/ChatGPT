@@ -6,6 +6,8 @@
 
 ![Preview](https://github.com/HemulGM/ChatGPT/blob/main/preview.png?raw=true)
 
+### This is NOT a web page, this is a native application with its own interface!
+
 ## ⚒️ Builds
 [Windows 32](https://github.com/HemulGM/ChatGPT/releases)
 [Windows 64](https://github.com/HemulGM/ChatGPT/releases)
@@ -25,6 +27,7 @@
 - All model settings
 - Custom headers for third party APIs
 - Send message as assistant, user or system
+- Doesn't require a VPN
 
 ## 🙌 List of planned features
 - Display of mathematical formulas
