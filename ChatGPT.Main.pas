@@ -132,7 +132,7 @@ const
   URL_FAQ = 'https://help.openai.com/en/collections/3742473-chatgpt';
 
 const
-  VersionName = '1.0.12';
+  VersionName = '1.0.13';
 
 var
   FormMain: TFormMain;
