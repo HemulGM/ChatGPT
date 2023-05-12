@@ -136,7 +136,7 @@ const
 
 var
   FormMain: TFormMain;
-  FAppFolder: string;
+  FAppFolder, FImagesCacheFolder: string;
 
 const
   AniInterpolation = TInterpolationType.Quadratic;
@@ -168,6 +168,7 @@ uses
 procedure CreateAppFolder;
 begin
   TDirectory.CreateDirectory(FAppFolder);
+  TDirectory.CreateDirectory(FImagesCacheFolder);
 end;
 
 procedure OpenUrl(const URL: string);
@@ -902,7 +903,9 @@ initialization
   ReportMemoryLeaksOnShutdown := True;
   {$ENDIF}
   FAppFolder := TPath.Combine(TPath.GetHomePath, 'ChatGPT');
+  FImagesCacheFolder := TPath.Combine(FAppFolder, 'images');
   CreateAppFolder;
+  TBitmap.CachePath := FImagesCacheFolder;
 
 end.
 

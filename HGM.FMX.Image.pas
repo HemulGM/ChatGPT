@@ -1,4 +1,4 @@
-unit HGM.FMX.Image;
+﻿unit HGM.FMX.Image;
 
 interface
 
@@ -27,10 +27,15 @@ type
       FCallbackList: TThreadList<TCallbackObject>;
       FObjectOwner: TComponent;
       FClient: THTTPClient;
+      FCachePath: string;
+    class function UrlToCacheName(const Url: string): string;
     class procedure AddCallback(Callback: TCallbackObject);
     class procedure Ready(const Url: string; Stream: TStream);
     class function Get(const URL: string): TMemoryStream; static;
     class function GetClient: THTTPClient; static;
+    class procedure SetCachePath(const Value: string); static;
+    class function FindCached(const Url: string; out Stream: TMemoryStream): Boolean;
+    class procedure AddCache(const Url: string; Stream: TMemoryStream);
   public
     class procedure RemoveCallback(const AOwner: TComponent);
     procedure LoadFromUrl(const Url: string; UseCache: Boolean = True);
@@ -42,12 +47,13 @@ type
     class function CreateFromUrl(const Url: string; UseCache: Boolean = True): TBitmap;
     class function CreateFromResource(ResName: string; Url: string = ''): TBitmap;
     class property Client: THTTPClient read GetClient;
+    class property CachePath: string read FCachePath write SetCachePath;
   end;
 
 implementation
 
 uses
-  FMX.Surfaces, FMX.Types, FMX.Consts;
+  FMX.Surfaces, FMX.Types, FMX.Consts, System.Hash, System.IOUtils;
 
 { TBitmapHelper }
 
@@ -105,7 +111,12 @@ begin
   Result := TMemoryStream.Create;
   try
     if (GetClient.Get(URL, Result).StatusCode = 200) and (Result.Size > 0) then
-      Result.Position := 0;
+      Result.Position := 0
+    else
+    begin
+      Result.Free;
+      Result := nil;
+    end;
   except
     Result.Free;
     Result := nil;
@@ -122,6 +133,38 @@ begin
   Result := FClient;
 end;
 
+class function TBitmapHelper.FindCached(const Url: string; out Stream: TMemoryStream): Boolean;
+begin
+  Result := False;
+  Stream := nil;
+  var FileName := TPath.Combine(FCachePath, UrlToCacheName(Url));
+  if TFile.Exists(FileName) then
+  try
+    Stream := TMemoryStream.Create;
+    Stream.LoadFromFile(FileName);
+    Result := True;
+  except
+    Stream.Free;
+    Stream := nil;
+  end;
+end;
+
+class procedure TBitmapHelper.AddCache(const Url: string; Stream: TMemoryStream);
+begin
+  var FileName := TPath.Combine(FCachePath, UrlToCacheName(Url));
+  try
+    if TFile.Exists(FileName) then
+      TFile.Delete(FileName);
+  except
+    Exit;
+  end;
+  try
+    Stream.SaveToFile(FileName);
+  except
+    //
+  end;
+end;
+
 procedure TBitmapHelper.LoadFromUrlAsync(AOwner: TComponent; const Url: string; Cache: Boolean; OnDone: TProc<Boolean>);
 begin
   if AOwner = nil then
@@ -135,9 +178,13 @@ begin
     procedure
     begin
       try
-        var Mem := Get(Url);
-        //if Cache then
-        //  AddCache(Url, Mem);
+        var Mem: TMemoryStream;
+        if not FindCached(Url, Mem) then
+        begin
+          Mem := Get(Url);
+          if Cache and Assigned(Mem) then
+            AddCache(Url, Mem);
+        end;
         TThread.ForceQueue(nil,
           procedure
           begin
@@ -165,10 +212,12 @@ begin
           var Success: Boolean := False;
           try
             if Assigned(Stream) then
-            begin
+            try
               Stream.Position := 0;
               List[i].Bitmap.LoadFromStream(Stream);
               Success := True;
+            finally
+              Stream.Free;
             end
             else
               List[i].Bitmap.Assign(nil);
@@ -230,6 +279,16 @@ begin
   finally
     TMonitor.Exit(Self);
   end;
+end;
+
+class procedure TBitmapHelper.SetCachePath(const Value: string);
+begin
+  FCachePath := Value;
+end;
+
+class function TBitmapHelper.UrlToCacheName(const Url: string): string;
+begin
+  Result := THashMD5.GetHashString(Url);
 end;
 
 { TObjectOwner }

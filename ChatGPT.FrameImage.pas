@@ -60,7 +60,7 @@ end;
 procedure TFrameImage.RectangleImageClick(Sender: TObject);
 begin
   RectangleImage.Visible := False;
-  TFramePreview.ShowPreview(RectangleImage.Fill.Bitmap.Bitmap, RectangleImage.AbsoluteRect,
+  TFramePreview.ShowPreview(RectangleImage.Fill.Bitmap.Bitmap, RectangleImage,
     procedure
     begin
       RectangleImage.Visible := True;
@@ -72,7 +72,7 @@ begin
   if not FIsLoaded then
   begin
     FIsLoaded := True;
-    RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(RectangleImage, FImage, False,
+    RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(RectangleImage, FImage, True,
       procedure(Success: Boolean)
       begin
         AniIndicator.Visible := False;

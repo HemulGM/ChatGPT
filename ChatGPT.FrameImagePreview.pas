@@ -20,11 +20,11 @@ type
     procedure ButtonDownloadClick(Sender: TObject);
     procedure FrameResized(Sender: TObject);
   private
-    FInitImageBounds: TRectF;
+    FInitImageBounds: TControl;
     FOnClose: TProc;
-    procedure SetImageBounds(Rect: TRectF);
+    procedure SetImageBounds(Rect: TControl);
   public
-    class procedure ShowPreview(Bitmap: TBitmap; InitBounds: TRectF; OnClose: TProc);
+    class procedure ShowPreview(Bitmap: TBitmap; InitBounds: TControl; OnClose: TProc);
   end;
 
 implementation
@@ -44,12 +44,13 @@ end;
 
 procedure TFramePreview.FrameClick(Sender: TObject);
 begin
+  var ToRect := FInitImageBounds.AbsoluteRect;
   TAnimator.AnimateFloat(RectangleBG, 'Opacity', 0);
-  TAnimator.AnimateFloat(Image, 'Position.X', FInitImageBounds.Left);
-  TAnimator.AnimateFloat(Image, 'Position.Y', FInitImageBounds.Top);
-  TAnimator.AnimateFloat(Image, 'Width', FInitImageBounds.Width);
+  TAnimator.AnimateFloat(Image, 'Position.X', ToRect.Left);
+  TAnimator.AnimateFloat(Image, 'Position.Y', ToRect.Top);
+  TAnimator.AnimateFloat(Image, 'Width', ToRect.Width);
   TAnimator.AnimateFloat(LayoutControlsContent, 'Margins.Bottom', -LayoutControlsContent.Height);
-  TAnimator.AnimateFloatWithFinish(Image, 'Height', FInitImageBounds.Height,
+  TAnimator.AnimateFloatWithFinish(Image, 'Height', ToRect.Height,
     procedure
     begin
       if Assigned(FOnClose) then
@@ -63,19 +64,19 @@ begin
   Image.BoundsRect := LayoutControls.BoundsRect;
 end;
 
-procedure TFramePreview.SetImageBounds(Rect: TRectF);
+procedure TFramePreview.SetImageBounds(Rect: TControl);
 begin
   FInitImageBounds := Rect;
-  Image.BoundsRect := Rect;
+  Image.BoundsRect := FInitImageBounds.AbsoluteRect;
   TAnimator.AnimateFloat(Image, 'Position.X', LayoutControls.BoundsRect.Left);
   TAnimator.AnimateFloat(Image, 'Position.Y', LayoutControls.BoundsRect.Top);
   TAnimator.AnimateFloat(Image, 'Width', LayoutControls.BoundsRect.Width);
   TAnimator.AnimateFloat(Image, 'Height', LayoutControls.BoundsRect.Height);
 end;
 
-class procedure TFramePreview.ShowPreview(Bitmap: TBitmap; InitBounds: TRectF; OnClose: TProc);
+class procedure TFramePreview.ShowPreview(Bitmap: TBitmap; InitBounds: TControl; OnClose: TProc);
 begin
-  var Frame := TFramePreview.Create(Application.MainForm);
+  var Frame := TFramePreview.Create(InitBounds);
   Frame.Parent := Application.MainForm;
   Frame.Align := TAlignLayout.Contents;
   Frame.Image.Bitmap := Bitmap;
