@@ -32,7 +32,7 @@ begin
   with TFrameUIMessage.Create(Application) do
   begin
     LabelText.Text := Text;
-    Align := TAlignLayout.Contents;
+    Align := TAlignLayout.Client;
     Parent := Application.MainForm;
     BringToFront;
   end;

@@ -13,7 +13,7 @@ type
     Bitmap: TBitmap;
     Url: string;
     Task: ITask;
-    OnSuccess: TProc<TBitmap>;
+    OnDone: TProc<Boolean>;
   end;
 
   TObjectOwner = class(TComponent)
@@ -34,7 +34,7 @@ type
   public
     class procedure RemoveCallback(const AOwner: TComponent);
     procedure LoadFromUrl(const Url: string; UseCache: Boolean = True);
-    procedure LoadFromUrlAsync(AOwner: TComponent; const Url: string; Cache: Boolean = True; OnSuccess: TProc<TBitmap> = nil); overload;
+    procedure LoadFromUrlAsync(AOwner: TComponent; const Url: string; Cache: Boolean = True; OnDone: TProc<Boolean> = nil); overload;
     procedure LoadFromResource(ResName: string); overload;
     procedure LoadFromResource(Instanse: NativeUInt; ResName: string); overload;
     procedure SaveToStream(Stream: TStream; const Ext: string); overload;
@@ -122,7 +122,7 @@ begin
   Result := FClient;
 end;
 
-procedure TBitmapHelper.LoadFromUrlAsync(AOwner: TComponent; const Url: string; Cache: Boolean; OnSuccess: TProc<TBitmap>);
+procedure TBitmapHelper.LoadFromUrlAsync(AOwner: TComponent; const Url: string; Cache: Boolean; OnDone: TProc<Boolean>);
 begin
   if AOwner = nil then
     raise Exception.Create('You must specify an owner (responsible) who will ensure that the Bitmap is not destroyed before the owner');
@@ -130,7 +130,7 @@ begin
   Callback.Owner := AOwner;
   Callback.Bitmap := Self;
   Callback.Url := Url;
-  Callback.OnSuccess := OnSuccess;
+  Callback.OnDone := OnDone;
   Callback.Task := TTask.Run(
     procedure
     begin
@@ -156,46 +156,33 @@ end;
 
 class procedure TBitmapHelper.Ready(const Url: string; Stream: TStream);
 begin
-  if Assigned(Stream) then
+  var List := FCallbackList.LockList;
   try
-    var List := FCallbackList.LockList;
-    try
-      for var i := List.Count - 1 downto 0 do
-        if List[i].Url = Url then
-        begin
+    for var i := List.Count - 1 downto 0 do
+      if List[i].Url = Url then
+      begin
+        try
+          var Success: Boolean := False;
           try
-            Stream.Position := 0;
-            List[i].Bitmap.LoadFromStream(Stream);
-            if Assigned(List[i].OnSuccess) then
-              List[i].OnSuccess(List[i].Bitmap);
-          except
-            //
+            if Assigned(Stream) then
+            begin
+              Stream.Position := 0;
+              List[i].Bitmap.LoadFromStream(Stream);
+              Success := True;
+            end
+            else
+              List[i].Bitmap.Assign(nil);
+          finally
+            if Assigned(List[i].OnDone) then
+              List[i].OnDone(Success);
           end;
-          List.Delete(i);
+        except
+            //
         end;
-    finally
-      FCallbackList.UnlockList;
-    end;
+        List.Delete(i);
+      end;
   finally
-    Stream.Free;
-  end
-  else
-  begin
-    var List := FCallbackList.LockList;
-    try
-      for var i := List.Count - 1 downto 0 do
-        if List[i].Url = Url then
-        begin
-          try
-            List[i].Bitmap.Assign(nil);
-          except
-            //
-          end;
-          List.Delete(i);
-        end;
-    finally
-      FCallbackList.UnlockList;
-    end;
+    FCallbackList.UnlockList;
   end;
 end;
 

@@ -5,7 +5,8 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Objects, FMX.Effects, FMX.Filter.Effects, FMX.Menus;
+  FMX.Objects, FMX.Effects, FMX.Filter.Effects, FMX.Menus,
+  FMX.Controls.Presentation;
 
 type
   TFrameImage = class(TFrame)
@@ -14,6 +15,7 @@ type
     FillRGBEffect1: TFillRGBEffect;
     PopupMenuCopy: TPopupMenu;
     MenuItemCopy: TMenuItem;
+    LabelError: TLabel;
     procedure RectangleImageClick(Sender: TObject);
     procedure MenuItemCopyClick(Sender: TObject);
     procedure RectangleImagePaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
@@ -40,6 +42,7 @@ begin
   inherited;
   FIsLoaded := False;
   Name := '';
+  RectangleImage.HitTest := False;
 end;
 
 procedure TFrameImage.MenuItemCopyClick(Sender: TObject);
@@ -70,11 +73,19 @@ begin
   begin
     FIsLoaded := True;
     RectangleImage.Fill.Bitmap.Bitmap.LoadFromUrlAsync(RectangleImage, FImage, False,
-      procedure(Bitmap: TBitmap)
+      procedure(Success: Boolean)
       begin
         AniIndicator.Visible := False;
-        RectangleImage.Fill.Kind := TBrushKind.Bitmap;
-        RectangleImage.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
+        if Success then
+        begin
+          RectangleImage.Fill.Kind := TBrushKind.Bitmap;
+          RectangleImage.Fill.Bitmap.WrapMode := TWrapMode.TileStretch;
+          RectangleImage.HitTest := True;
+        end
+        else
+        begin
+          LabelError.Visible := True;
+        end;
       end);
   end;
 end;

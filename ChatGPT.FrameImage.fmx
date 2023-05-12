@@ -4,6 +4,7 @@ object FrameImage: TFrameImage
   Size.PlatformDefault = False
   object RectangleImage: TRectangle
     Align = Client
+    ClipChildren = True
     Cursor = crHandPoint
     Fill.Color = xA03F3F3F
     Margins.Right = 5.000000000000000000
@@ -26,6 +27,25 @@ object FrameImage: TFrameImage
       object FillRGBEffect1: TFillRGBEffect
         Color = xFFACACBE
       end
+    end
+    object LabelError: TLabel
+      Align = Client
+      AutoSize = True
+      StyledSettings = [Family, Style]
+      Padding.Left = 5.000000000000000000
+      Padding.Top = 5.000000000000000000
+      Padding.Right = 5.000000000000000000
+      Padding.Bottom = 5.000000000000000000
+      Opacity = 0.600000023841857900
+      Size.Width = 251.000000000000000000
+      Size.Height = 251.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Size = 14.000000000000000000
+      TextSettings.FontColor = claWhitesmoke
+      TextSettings.HorzAlign = Center
+      Text = 'No longer available'
+      Visible = False
+      TabOrder = 0
     end
   end
   object PopupMenuCopy: TPopupMenu
