@@ -859,28 +859,24 @@ begin
       if AppendText.StartsWith('/system ') then
       begin
         AppendText := AppendText.Replace('/system ', '', []);
-        AppendText := ProcText(AppendText, True);
-        FBuffer.New(TMessageRole.System, AppendText, MessageTag);
+        FBuffer.New(TMessageRole.System, ProcText(AppendText, True), MessageTag);
         Role := TMessageKind.System;
       end
       else if AppendText.StartsWith('/user ') then
       begin
         AppendText := AppendText.Replace('/user ', '', []);
-        AppendText := ProcText(AppendText, True);
-        FBuffer.New(TMessageRole.User, AppendText, MessageTag);
+        FBuffer.New(TMessageRole.User, ProcText(AppendText, True), MessageTag);
         Role := TMessageKind.User;
       end
       else if AppendText.StartsWith('/assistant ') then
       begin
         AppendText := AppendText.Replace('/assistant ', '', []);
-        AppendText := ProcText(AppendText, True);
-        FBuffer.New(TMessageRole.Assistant, AppendText, MessageTag);
+        FBuffer.New(TMessageRole.Assistant, ProcText(AppendText, True), MessageTag);
         Role := TMessageKind.Assistant;
       end
       else
       begin
-        AppendText := ProcText(AppendText, True);
-        FBuffer.New(TMessageRole.User, AppendText, MessageTag);
+        FBuffer.New(TMessageRole.User, ProcText(AppendText, True), MessageTag);
       end;
     end
     else
