@@ -12,13 +12,13 @@
 
 |Platform|Available||
 |--------|---------|--|
-|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/windows-10.png" alt="windows"> Windows 32 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases)|
-|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/windows-10.png" alt="windows"> Windows 64 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases)|
-|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/android-os.png" alt="android"> Android 32 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases)|
-|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/android-os.png" alt="android"> Android 64 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases)|
-|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/1A6DFF/C822FF/linux--v2.png" alt="linux"> Linux 64 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases)|
-|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/mac-logo.png" alt="mac"> MacOS arm64 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases)|
-|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/mac-logo.png" alt="mac"> MacOS Intel64 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases)|
+|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/windows-10.png" alt="windows"> Windows 32 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases/latest)|
+|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/windows-10.png" alt="windows"> Windows 64 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases/latest)|
+|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/android-os.png" alt="android"> Android 32 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases/latest)|
+|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/android-os.png" alt="android"> Android 64 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases/latest)|
+|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/1A6DFF/C822FF/linux--v2.png" alt="linux"> Linux 64 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases/latest)|
+|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/mac-logo.png" alt="mac"> MacOS arm64 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases/latest)|
+|<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/mac-logo.png" alt="mac"> MacOS Intel64 </p>|✔|[Download](https://github.com/HemulGM/ChatGPT/releases/latest)|
 |<p><img width="24" height="24" align="left" src="https://img.icons8.com/nolan/64/ios-logo.png" alt="ios"> iOS </p>|❌| |
 
 ## ⚡ Features
