@@ -14,6 +14,7 @@ type
     Url: string;
     Task: ITask;
     OnDone: TProc<Boolean>;
+    procedure Done(const Success: Boolean);
   end;
 
   TObjectOwner = class(TComponent)
@@ -203,35 +204,36 @@ end;
 
 class procedure TBitmapHelper.Ready(const Url: string; Stream: TStream);
 begin
-  var List := FCallbackList.LockList;
   try
-    for var i := List.Count - 1 downto 0 do
-      if List[i].Url = Url then
+    var List := FCallbackList.LockList;
+    try
+      for var i := List.Count - 1 downto 0 do
       begin
+        var Item := List[i];
+        if Item.Url <> Url then
+          Continue;
+        var Success: Boolean := False;
         try
-          var Success: Boolean := False;
+          if Assigned(Stream) then
           try
-            if Assigned(Stream) then
-            try
-              Stream.Position := 0;
-              List[i].Bitmap.LoadFromStream(Stream);
-              Success := True;
-            finally
-              Stream.Free;
-            end
-            else
-              List[i].Bitmap.Assign(nil);
-          finally
-            if Assigned(List[i].OnDone) then
-              List[i].OnDone(Success);
-          end;
-        except
+            Stream.Position := 0;
+            Item.Bitmap.LoadFromStream(Stream);
+            Success := True;
+          except
             //
+          end
+          else
+            Item.Bitmap.Assign(nil);
+        finally
+          Item.Done(Success);
         end;
         List.Delete(i);
       end;
+    finally
+      FCallbackList.UnlockList;
+    end;
   finally
-    FCallbackList.UnlockList;
+    Stream.Free;
   end;
 end;
 
@@ -308,6 +310,18 @@ begin
       end;
   finally
     TBitmap.FCallbackList.UnlockList;
+  end;
+end;
+
+{ TCallbackObject }
+
+procedure TCallbackObject.Done(const Success: Boolean);
+begin
+  if Assigned(OnDone) then
+  try
+    OnDone(Success);
+  except
+    //
   end;
 end;
 

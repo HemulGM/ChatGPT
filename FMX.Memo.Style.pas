@@ -195,6 +195,7 @@ type
     FOnUpdateLayoutParams: TOnUpdateLayoutParams;
     FNeedSelectorPoints: Boolean;
     FScrollToCaret: Boolean;
+    FLinesBackgroundColor: TDictionary<Integer, TAlphaColor>;
     function GetModel: TCustomMemoModel;
     function GetMemo: TCustomMemo;
     function GetPageSize: Single;
@@ -233,6 +234,7 @@ type
     procedure SetOnUpdateLayoutParams(const Value: TOnUpdateLayoutParams);
     procedure SetNeedSelectorPoints(const Value: Boolean);
     procedure SetScrollToCaret(const Value: Boolean);
+    procedure UpdateLinesPos;
   protected
     FDisableCaretInsideWords: Boolean;
     { Messages from model }
@@ -385,6 +387,9 @@ type
     property OnUpdateLayoutParams: TOnUpdateLayoutParams read FOnUpdateLayoutParams write SetOnUpdateLayoutParams;
     property NeedSelectorPoints: Boolean read FNeedSelectorPoints write SetNeedSelectorPoints;
     property ScrollToCaret: Boolean read FScrollToCaret write SetScrollToCaret;
+    function GetWordAtPos(const X, Y: Single; out BeginWord, Line: Int64): string;
+    procedure UpdateVisibleLayoutParams;
+    property LinesBackgroundColor: TDictionary<Integer, TAlphaColor> read FLinesBackgroundColor;
   end;
 
 implementation
@@ -463,6 +468,7 @@ var
   PlatformTextEditingBehaviorService: IFMXTextEditingService;
 begin
   inherited;
+  FLinesBackgroundColor := TDictionary<integer, TAlphaColor>.Create;
   EnableExecuteAction := False;
 
   if TPlatformServices.Current.SupportsPlatformService(IFMXTextService, PlatformTextService) then
@@ -499,13 +505,13 @@ begin
   //Timer to start scrolling when selecting text and cursor is out of content
   FStartAutoScrollTimer := TTimer.Create(Self);
   FStartAutoScrollTimer.Enabled := False;
-  FStartAutoScrollTimer.Interval := 500;
+  FStartAutoScrollTimer.Interval := 300;
   FStartAutoScrollTimer.OnTimer := StartAutoScrollHandler;
   FAutoVScrollTimer := TTimer.Create(Self);
-  FAutoVScrollTimer.Interval := 100;
+  FAutoVScrollTimer.Interval := 50;
   FAutoVScrollTimer.Enabled := False;
   FAutoHScrollTimer := TTimer.Create(Self);
-  FAutoHScrollTimer.Interval := 100;
+  FAutoHScrollTimer.Interval := 50;
   FAutoHScrollTimer.Enabled := False;
   Touch.InteractiveGestures := Touch.InteractiveGestures + [TInteractiveGesture.DoubleTap, TInteractiveGesture.LongTap];
 
@@ -545,6 +551,7 @@ begin
   FSpellingWords.Free;
   FSpellFill.Free;
   FSpellUnderlineBrush.Free;
+  FLinesBackgroundColor.Free;
   inherited;
 end;
 
@@ -579,6 +586,7 @@ begin
   begin
     RecalculateContextBounds;
     FLineObjects.RenderLayouts;
+    UpdateLinesPos;
     CaretPosition := TCaretPosition.Create(EnsureRange(CaretPosition.Line, -1, Model.Lines.Count - 1), CaretPosition.Pos);
     UpdateCaretPosition(True);
     RepaintEdit;
@@ -1245,6 +1253,68 @@ begin
     EndUpdate;
 end;
 
+function FindPhraseBound(const Text: string; const Pos: Integer; out BeginIndex, EndIndex: Integer): Boolean;
+var
+  Spes: TSysCharSet;
+begin
+  if Text.IsEmpty then
+    Exit(False);
+  Spes := [' ', '''', '(', ')', '[', ']', '"'];
+  BeginIndex := 0;
+  for var I := Pos downto 1 do
+    if CharInSet(Text[I], Spes) or (I = 1) then
+    begin
+      if I = 1 then
+        BeginIndex := 0
+      else
+        BeginIndex := I;
+      Break;
+    end;
+  EndIndex := -1;
+  for var I := Pos + 1 to Text.Length do
+    if CharInSet(Text[I], Spes) or (I = Text.Length) then
+    begin
+      if I = Text.Length then
+        EndIndex := Text.Length - 1
+      else
+        EndIndex := I - 2;
+      Break;
+    end;
+  Result := True;
+end;
+
+function TStyledMemo.GetWordAtPos(const X, Y: Single; out BeginWord, Line: Int64): string;
+var
+  WordBeginIndex, WordEndIndex: Integer;
+  ContentRect: TRectF;
+  Point: TPointF;
+begin
+  Result := '';
+  BeginWord := -1;
+  Line := -1;
+  if Model.Lines.Count > 0 then
+  begin
+    if FContent <> nil then
+      ContentRect := FContent.BoundsRect
+    else
+      ContentRect := TRectF.Create(0, 0, Model.ViewportSize.Width, Model.ViewportSize.Height);
+    Point := TPointF.Create(EnsureRange(X, ContentRect.Left, ContentRect.Right) - ContentRect.Left,
+      EnsureRange(Y, ContentRect.Top, ContentRect.Bottom) - ContentRect.Top);
+    var CaretPos := FLineObjects.GetPointPosition(Point, False);
+    //if Select then
+    //  SelectAtPos(CaretPosition);
+    if FindPhraseBound(Model.Lines[CaretPos.Line], CaretPos.Pos, WordBeginIndex, WordEndIndex) and
+      InRange(CaretPos.Pos, WordBeginIndex, WordEndIndex + 1) then
+    begin
+      var SelStart := Model.PosToTextPos(TCaretPosition.Create(CaretPos.Line, WordBeginIndex));
+      var SelLength := WordEndIndex - WordBeginIndex + 1;
+      Line := CaretPos.Line;
+      BeginWord := WordBeginIndex;
+      Result := Model.Lines.Text.SubString(SelStart, SelLength);
+    end;
+  end;
+end;
+
 procedure TStyledMemo.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 var
   HadMarkedText: Boolean;
@@ -1292,6 +1362,11 @@ procedure TStyledMemo.DoContentPaint(Sender: TObject; Canvas: TCanvas; const ARe
     for I := Low(ARegion) to High(ARegion) do
     begin
       RectLine := ARegion[I];
+      RectLine.Width := Max(RectLine.Width, 10);
+      if ((RectLine.Top < ARect.Top) and (RectLine.Bottom < ARect.Top)) or
+        (RectLine.Top > ARect.Bottom)
+        then
+        Continue;
 
       {$IFDEF IOS}
       if (Length(ARegion) > 1) and (I <> High(ARegion)) then
@@ -1306,7 +1381,7 @@ procedure TStyledMemo.DoContentPaint(Sender: TObject; Canvas: TCanvas; const ARe
         Exclude(Corners, TCorner.TopRight);
       if Next.Right >= ARegion[I].Right then
         Exclude(Corners, TCorner.BottomRight);
-      if (Next.Left <= ARegion[I].Left) and (Next.Right >= ARegion[I].Left) then
+      if ((Next.Left <= ARegion[I].Left) and (Next.Width > 0)) and (Next.Right >= ARegion[I].Left) then
         Exclude(Corners, TCorner.BottomLeft);
       RectLine.Offset(0, 2);
       Canvas.FillRect(RectLine, 3, 3, Corners, 1, Model.SelectionFill);
@@ -1334,6 +1409,13 @@ procedure TStyledMemo.DoContentPaint(Sender: TObject; Canvas: TCanvas; const ARe
         SelectionRect.Right + HalfCaretWidth, SelectionRect.Bottom);
       Canvas.FillRect(SideRect, 0, 0, AllCorners, AbsoluteOpacity, FCursorFill);
     end;
+  end;
+
+  procedure FillLine(Layout: TTextLayout; Color: TAlphaColor);
+  begin
+    Canvas.Fill.Kind := TBrushKind.Solid;
+    Canvas.Fill.Color := Color;
+    Canvas.FillRect(Layout.TextRect, 1);
   end;
 
 var
@@ -1369,12 +1451,20 @@ begin
                 TTextAlign.Leading, Model.TextSettingsInfo.ResultingTextSettings.WordWrap)
             end
             else
+            begin
+              if FLinesBackgroundColor.ContainsKey(I) then
+                FillLine(FLineObjects[I].Layout, FLinesBackgroundColor.Items[I]);
               FLineObjects[I].Layout.RenderLayout(Canvas);
+            end;
       end
       else
         for I := 0 to FLineObjects.Count - 1 do
           if FLineObjects[I].Layout <> nil then
+          begin
+            if FLinesBackgroundColor.ContainsKey(I) then
+              FillLine(FLineObjects[I].Layout, FLinesBackgroundColor.Items[I]);
             FLineObjects[I].Layout.RenderLayout(Canvas);
+          end;
 
     if Model.CheckSpelling and (FSpellingWords.Count > 0) and (FSpellService <> nil) and (Model.Lines.Count > 0) then
     begin
@@ -1399,6 +1489,16 @@ begin
     end;
   finally
     Canvas.RestoreState(State);
+  end;
+end;
+
+procedure TStyledMemo.UpdateVisibleLayoutParams;
+begin
+  for var I := 0 to FLineObjects.Count - 1 do
+  begin
+    var Line := FLineObjects[I];
+    if Line.Layout <> nil then
+      FLineObjects.UpdateLayoutParams(Line.Layout, I);
   end;
 end;
 
@@ -2798,7 +2898,7 @@ begin
   Point := TPointF.Create(EnsureRange(X, ContentRect.Left, ContentRect.Right) - ContentRect.Left,
     EnsureRange(Y, ContentRect.Top, ContentRect.Bottom) - ContentRect.Top);
   CaretPosition := FLineObjects.GetPointPosition(Point, PositionByWord);
-  if Select then
+  if Select and not (FSelEnd = CaretPosition) then
     SelectAtPos(CaretPosition);
 end;
 
@@ -3340,23 +3440,26 @@ begin
         LineLength := FMemo.Model.Lines[I].Length;
         LLength := Min(RemainLength, LineLength - LPos);
 
-        if Layout = nil then
+        if Assigned(Layout) or ((I = ALine) or (I = ALine + 1)) then
         begin
-          Layout := CreateLayout(FMemo.Model.Lines[I], I);
-          Layout.TopLeft := FLines[I].Rect.TopLeft;
-        end;
+          if Layout = nil then
+          begin
+            Layout := CreateLayout(FMemo.Model.Lines[I], I);
+            Layout.TopLeft := FLines[I].Rect.TopLeft;
+          end;
 
-        LRegion := Layout.RegionForRange(TTextRange.Create(LPos, LLength), RoundToWord);
-        for J := 0 to High(LRegion) do
-        begin
-          SetLength(Result, Length(Result) + 1);
-          Result[High(Result)] := LRegion[J];
-          Result[High(Result)].Top := Max(FLines[I].Rect.Top, LRegion[J].Top);
-          Result[High(Result)].Bottom := Min(FLines[I].Rect.Bottom, LRegion[J].Bottom);
-        end;
+          LRegion := Layout.RegionForRange(TTextRange.Create(LPos, LLength), RoundToWord);
+          for J := 0 to High(LRegion) do
+          begin
+            SetLength(Result, Length(Result) + 1);
+            Result[High(Result)] := LRegion[J];
+            Result[High(Result)].Top := Max(FLines[I].Rect.Top, LRegion[J].Top);
+            Result[High(Result)].Bottom := Min(FLines[I].Rect.Bottom, LRegion[J].Bottom);
+          end;
 
-        if FLines[I].Layout = nil then
-          Layout.Free;
+          if FLines[I].Layout = nil then
+            Layout.Free;
+        end;
 
         Inc(LPos, LLength);
         if LPos >= LineLength then
@@ -3551,11 +3654,11 @@ begin
   if not Content.IsEmpty then
   begin
     ViewPosition := FMemo.ViewportPosition;
-    RecalNextLines := False;
+    //RecalNextLines := False;
     for I := 0 to FLines.Count - 1 do
     begin
       Line := FLines[I];
-      RecalNextLines := RecalNextLines or not Line.SizeValid;
+      RecalNextLines := {RecalNextLines or} (not Line.SizeValid);
       if RecalNextLines then
       begin
         ContentBoundsUpdated := True;
@@ -3703,6 +3806,19 @@ begin
   FNeedUpdateContentSize := False;
   ContentBounds.Width := ContentBounds.Width + Max(1, FlasherWidth);
   FMemo.Model.ContentBounds := ContentBounds;
+end;
+
+procedure TStyledMemo.UpdateLinesPos;
+begin
+  var Point := -ViewportPosition;
+  for var I := 0 to FLineObjects.Count - 1 do
+  begin
+    var Line := FLineObjects[I];
+    Line.Rect.Location := Point;
+    if Line.Layout <> nil then
+      Line.Layout.TopLeft := Point;
+    Point.Offset(0, FLineObjects[I].Size.Height);
+  end;
 end;
 
 procedure TStyledMemo.TLines.UpdateLayoutParams(Layout: TTextLayout; const Index: Integer);

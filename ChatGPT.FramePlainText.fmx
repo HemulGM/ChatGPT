@@ -29,9 +29,11 @@ object FrameText: TFrameText
     Size.PlatformDefault = False
     StyleLookup = 'memostyle_clear'
     TabOrder = 0
-    OnApplyStyleLookup = MemoTextApplyStyleLookup
+    OnClick = MemoTextClick
+    OnMouseMove = MemoTextMouseMove
     OnMouseWheel = MemoTextMouseWheel
-    Viewport.Width = 575.000000000000000000
+    OnMouseLeave = MemoTextMouseLeave
+    Viewport.Width = 565.000000000000000000
     Viewport.Height = 387.000000000000000000
   end
 end

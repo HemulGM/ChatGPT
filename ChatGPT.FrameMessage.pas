@@ -44,7 +44,6 @@ type
     PopupMenuActions: TPopupMenu;
     MenuItemDelete: TMenuItem;
     MenuItemEdit: TMenuItem;
-    procedure MemoTextChange(Sender: TObject);
     procedure FrameResize(Sender: TObject);
     procedure ButtonCopyClick(Sender: TObject);
     procedure ButtonDeleteClick(Sender: TObject);
@@ -129,6 +128,7 @@ begin
 
   if LayoutCompact.Visible then
     H := Ceil(H + LayoutCompact.Height);
+  H := Max(H, 64);
   if Height <> H then
     Height := H;
 end;
@@ -138,7 +138,7 @@ begin
   case FMode of
     wmCompact:
       begin
-        LayoutCompact.Visible := not FText.IsEmpty;
+        LayoutCompact.Visible := True;
         LayoutActions.Visible := False;
         LayoutAudio.Visible := False;
       end;
@@ -146,7 +146,7 @@ begin
       begin
         LayoutCompact.Visible := False;
         LayoutAudio.Visible := FIsAudio;
-        LayoutActions.Visible := not FText.IsEmpty;
+        LayoutActions.Visible := True;
       end;
   end;
 end;
@@ -230,11 +230,6 @@ end;
 procedure TFrameMessage.FrameResize(Sender: TObject);
 begin
   LayoutContent.Width := Min(Width - (LayoutClient.Padding.Left + LayoutClient.Padding.Right), MaxMessageWidth);
-  UpdateContentSize;
-end;
-
-procedure TFrameMessage.MemoTextChange(Sender: TObject);
-begin
   UpdateContentSize;
 end;
 

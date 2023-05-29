@@ -106,6 +106,7 @@ object FrameCode: TFrameCode
     end
   end
   object RectangleClient: TRectangle
+    Touch.InteractiveGestures = [LongTap]
     Align = Client
     Corners = [BottomLeft, BottomRight]
     Fill.Color = claBlack
@@ -115,7 +116,9 @@ object FrameCode: TFrameCode
     Stroke.Kind = None
     XRadius = 6.000000000000000000
     YRadius = 6.000000000000000000
-    OnDblClick = RectangleClientDblClick
+    OnMouseDown = RectangleClientMouseDown
+    OnMouseMove = RectangleClientMouseMove
+    OnMouseUp = RectangleClientMouseUp
     object MemoCode: TMemo
       Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
       Caret.Color = x00FFFFFF
@@ -143,8 +146,10 @@ object FrameCode: TFrameCode
       Size.PlatformDefault = False
       StyleLookup = 'memostyle_code'
       TabOrder = 0
-      OnExit = MemoCodeExit
+      OnClick = MemoCodeClick
+      OnMouseMove = MemoCodeMouseMove
       OnMouseWheel = MemoCodeMouseWheel
+      OnMouseLeave = MemoCodeMouseLeave
       Viewport.Width = 565.000000000000000000
       Viewport.Height = 345.000000000000000000
     end

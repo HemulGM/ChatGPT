@@ -46,6 +46,8 @@ object FrameImage: TFrameImage
       Text = 'No longer available'
       Visible = False
       TabOrder = 0
+      OnResize = LabelErrorResize
+      OnResized = LabelErrorResize
     end
   end
   object PopupMenuCopy: TPopupMenu

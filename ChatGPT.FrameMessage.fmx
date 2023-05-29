@@ -1,6 +1,6 @@
 object FrameMessage: TFrameMessage
   Size.Width = 735.000000000000000000
-  Size.Height = 498.000000000000000000
+  Size.Height = 521.000000000000000000
   Size.PlatformDefault = False
   OnResize = FrameResize
   OnResized = FrameResize
@@ -11,7 +11,7 @@ object FrameMessage: TFrameMessage
     Padding.Right = 16.000000000000000000
     Padding.Bottom = 16.000000000000000000
     Size.Width = 735.000000000000000000
-    Size.Height = 498.000000000000000000
+    Size.Height = 521.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 1
     object RectangleBG: TRectangle
@@ -19,7 +19,7 @@ object FrameMessage: TFrameMessage
       Fill.Color = xFF343541
       Locked = True
       Size.Width = 735.000000000000000000
-      Size.Height = 498.000000000000000000
+      Size.Height = 521.000000000000000000
       Size.PlatformDefault = False
       Stroke.Kind = None
     end
@@ -28,7 +28,7 @@ object FrameMessage: TFrameMessage
       HitTest = False
       LineType = Bottom
       Size.Width = 735.000000000000000000
-      Size.Height = 498.000000000000000000
+      Size.Height = 521.000000000000000000
       Size.PlatformDefault = False
       Stroke.Color = x7F232120
     end
@@ -37,13 +37,13 @@ object FrameMessage: TFrameMessage
       Position.X = 45.000000000000000000
       Position.Y = 16.000000000000000000
       Size.Width = 645.000000000000000000
-      Size.Height = 466.000000000000000000
+      Size.Height = 489.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
       object LayoutContentText: TLayout
         Align = Client
         Size.Width = 507.000000000000000000
-        Size.Height = 436.000000000000000000
+        Size.Height = 459.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 2
         object FlowLayoutImages: TFlowLayout
@@ -61,7 +61,7 @@ object FrameMessage: TFrameMessage
         Align = MostLeft
         Margins.Right = 14.000000000000000000
         Size.Width = 30.000000000000000000
-        Size.Height = 466.000000000000000000
+        Size.Height = 489.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
         object RectangleUser: TRectangle
@@ -353,7 +353,7 @@ object FrameMessage: TFrameMessage
         Margins.Right = 14.000000000000000000
         Position.X = 44.000000000000000000
         Size.Width = 30.000000000000000000
-        Size.Height = 436.000000000000000000
+        Size.Height = 459.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 3
         object RectangleAudio: TRectangle
@@ -394,7 +394,7 @@ object FrameMessage: TFrameMessage
         Margins.Left = 4.000000000000000000
         Position.X = 599.000000000000000000
         Size.Width = 46.000000000000000000
-        Size.Height = 466.000000000000000000
+        Size.Height = 489.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
         object ButtonCopy: TButton
@@ -515,7 +515,7 @@ object FrameMessage: TFrameMessage
       object LayoutCompact: TLayout
         Align = Bottom
         Position.X = 44.000000000000000000
-        Position.Y = 436.000000000000000000
+        Position.Y = 459.000000000000000000
         Size.Width = 551.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False

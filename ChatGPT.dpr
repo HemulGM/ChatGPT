@@ -45,12 +45,14 @@ uses
   HGM.FMX.Image in 'HGM.FMX.Image.pas',
   HGM.FMX.Ani in 'HGM.FMX.Ani.pas',
   ChatGPT.Code.JSON in 'Code\ChatGPT.Code.JSON.pas',
-  ChatGPT.About in 'ChatGPT.About.pas' {FrameAbout: TFrame};
+  ChatGPT.About in 'ChatGPT.About.pas' {FrameAbout: TFrame},
+  ChatGPT.SoundRecorder in 'ChatGPT.SoundRecorder.pas',
+  ChatGPT.Android in 'ChatGPT.Android.pas';
 
 {$R *.res}
 
 begin
-  GlobalUseSkia := True;
+  //GlobalUseSkia := True;
   Application.Initialize;
   Application.CreateForm(TFormMain, FormMain);
   Application.Run;

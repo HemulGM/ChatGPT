@@ -8,9 +8,18 @@ uses
   FMX.Objects, FMX.Layouts, FMX.ListBox, FMX.Controls.Presentation, FMX.StdCtrls,
   System.ImageList, FMX.ImgList, FMX.SVGIconImageList, ChatGPT.FrameChat,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Effects, FMX.Filter.Effects,
-  FMX.Edit, ChatGPT.Classes, System.JSON, FMX.ComboEdit, FMX.Menus;
+  FMX.Edit, ChatGPT.Classes, System.JSON, FMX.ComboEdit, FMX.Menus,
+  System.Actions, FMX.ActnList, FMX.StdActns, FMX.MediaLibrary.Actions;
 
 type
+  TListBoxItemChat = class(TListBoxItem)
+  public
+    JSON: TJSONObject;
+    ChatId: string;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
   TFormMain = class(TForm)
     LayoutChats: TLayout;
     Rectangle1: TRectangle;
@@ -42,6 +51,8 @@ type
     ButtonSettings: TButton;
     Line2: TLine;
     ButtonAbout: TButton;
+    ActionListMain: TActionList;
+    ShowShareSheetAction: TShowShareSheetAction;
     procedure ButtonNewChatClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure ButtonMenuClick(Sender: TObject);
@@ -57,8 +68,13 @@ type
     procedure ButtonSettingsClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ButtonAboutClick(Sender: TObject);
+    procedure ShowShareSheetActionBeforeExecute(Sender: TObject);
+  private
+    class var
+      FChatIdCount: Integer;
   private
     FOpenAI: TOpenAIComponent;
+    FShareBitmap: TBitmap;
     FMode: TWindowMode;
     FToken: string;
     FTemperature: Single;
@@ -74,6 +90,7 @@ type
     FBaseUrl: string;
     FModel: string;
     FTopP: Single;
+    FCanShare: Boolean;
     procedure SetMode(const Value: TWindowMode);
     procedure UpdateMode;
     procedure SelectChat(const ChatId: string);
@@ -106,11 +123,14 @@ type
     procedure SetModel(const Value: string);
     function GetChatFrame(const ChatId: string): TFrameChat;
     procedure SetTopP(const Value: Single);
+    function GetCanShare: Boolean;
+    procedure Defaults;
   protected
     procedure CreateHandle; override;
   public
     procedure LoadChats;
     procedure SaveChats;
+    class function NextChatId: Integer; static;
     property OpenAI: TOpenAIComponent read FOpenAI;
     constructor Create(AOwner: TComponent); override;
     property Mode: TWindowMode read FMode write SetMode;
@@ -125,6 +145,8 @@ type
     property TopP: Single read FTopP write SetTopP;
     property Model: string read FModel write SetModel;
     property Lang: string read FLang write SetLang;
+    procedure ShareBitmap(Bitmap: TBitmap);
+    property CanShare: Boolean read FCanShare;
   end;
 
 const
@@ -132,36 +154,25 @@ const
   URL_FAQ = 'https://help.openai.com/en/collections/3742473-chatgpt';
 
 const
-  VersionName = '1.0.13';
+  VersionName = '1.0.16';
 
 var
   FormMain: TFormMain;
-  FAppFolder, FImagesCacheFolder: string;
+  FAppFolder, FImagesCacheFolder, FAudioCacheFolder: string;
 
 const
   AniInterpolation = TInterpolationType.Quadratic;
 
-procedure OpenUrl(const URL: string);
-
 implementation
 
 uses
-  {$IFDEF ANDROID}
-  Androidapi.Helpers, Androidapi.JNI.GraphicsContentViewText, Androidapi.JNI.NET,
-  {$ENDIF}
-  {$IFDEF IOS OR IOS64}
-  MacApi.Helpers, iOSApi.Foundation, FMX.Helpers.iOS,
-  {$ENDIF}
   {$IFDEF MSWINDOWS}
-  ShellAPI, DarkModeApi.FMX,
+  DarkModeApi.FMX, FMX.Platform.Win,
   {$ENDIF}
-  {$IFDEF POSIX}
-  Posix.Stdlib,
-  {$ENDIF POSIX}
   FMX.Ani, System.Math, System.Rtti, FMX.Utils, FMX.DialogService,
   System.Threading, System.Net.URLClient, System.IOUtils, ChatGPT.Settings,
   ChatGPT.Overlay, FMX.Styles, HGM.FMX.Ani, HGM.FMX.Image, OpenAI.API,
-  ChatGPT.About;
+  ChatGPT.About, FMX.Platform, FMX.MediaLibrary;
 
 {$R *.fmx}
 
@@ -169,31 +180,33 @@ procedure CreateAppFolder;
 begin
   TDirectory.CreateDirectory(FAppFolder);
   TDirectory.CreateDirectory(FImagesCacheFolder);
-end;
-
-procedure OpenUrl(const URL: string);
-begin
-  {$IFDEF ANDROID}
-  TAndroidHelper.Context.startActivity(TJIntent.JavaClass.init(TJIntent.JavaClass.ACTION_VIEW, StrToJURI(URL)));
-  {$ENDIF}
-  {$IFDEF IOS OR IOS64}
-  SharedApplication.OpenURL(StrToNSUrl(URL));
-  {$ENDIF}
-  {$IFDEF POSIX}
-  _system(PAnsiChar('open ' + AnsiString(URL)));
-  {$ENDIF POSIX}
-  {$IFDEF MSWINDOWS}
-  ShellExecute(0, 'open', PChar(URL), nil, nil, 1);
-  {$ENDIF}
+  TDirectory.CreateDirectory(FAudioCacheFolder);
 end;
 
 { TFormMain }
+
+class function TFormMain.NextChatId: Integer;
+begin
+  Inc(FChatIdCount);
+  Result := FChatIdCount;
+end;
+
+procedure TFormMain.ShareBitmap(Bitmap: TBitmap);
+begin
+  FShareBitmap := Bitmap;
+  ShowShareSheetAction.Execute;
+end;
 
 procedure TFormMain.ShowClearConfirm;
 begin
   ButtonClear.Text := 'Confirm clear';
   ButtonClearConfirm.Visible := True;
   ButtonClearCancel.Visible := True;
+end;
+
+procedure TFormMain.ShowShareSheetActionBeforeExecute(Sender: TObject);
+begin
+  ShowShareSheetAction.Bitmap.Assign(FShareBitmap);
 end;
 
 procedure TFormMain.HideClearConfirm;
@@ -271,31 +284,20 @@ end;
 
 function TFormMain.CreateChat(JSON: TJSONObject): string;
 begin
-  var Frame: TFrameChat;
-  var IsNew: Boolean := False;
-  Frame := TFrameChat.Create(LayoutChatsBox);
-  Frame.Parent := LayoutChatsBox;
-  Frame.Align := TAlignLayout.Client;
-  Frame.API := OpenAI;
-  Frame.Mode := Mode;
-  Frame.Visible := False;
-  if Assigned(JSON) then
+  var IsNew: Boolean := not Assigned(JSON);
+  var ItemList := TListBoxItemChat.Create(ListBoxChatList);
+  if IsNew then
   begin
-    Frame.LoadFromJson(JSON);
+    ItemList.JSON := nil;
+    ItemList.ChatId := TGUID.NewGuid.ToString;
+    ItemList.Text := 'New chat ' + NextChatId.ToString;
   end
   else
   begin
-    Frame.Temperature := Temperature;
-    Frame.PresencePenalty := PresencePenalty;
-    Frame.FrequencyPenalty := FrequencyPenalty;
-    Frame.Model := Model;
-    Frame.MaxTokens := MaxTokens;
-    Frame.MaxTokensQuery := MaxTokensQuery;
-    Frame.LangSrc := Lang;
-    IsNew := True;
+    ItemList.JSON := JSON.Clone as TJSONObject;
+    ItemList.Text := JSON.GetValue('title', '').Replace(#13, ' ').Replace(#10, ' ').Replace('&', '');
+    ItemList.ChatId := JSON.GetValue('chat_id', TGUID.NewGuid.ToString);
   end;
-
-  var ItemList := TListBoxItem.Create(ListBoxChatList);
   ItemList.HitTest := True;
   {$IFDEF ANDROID OR IOS OR IOS64}
   ItemList.OnTap := FOnChatItemTap;
@@ -304,8 +306,6 @@ begin
   {$ENDIF}
   ItemList.Margins.Bottom := 8;
   ItemList.TextSettings.WordWrap := False;
-  ItemList.Text := Frame.Title.Replace(#13, ' ').Replace(#10, ' ').Replace('&', '');
-  ItemList.TagString := Frame.ChatId;
   ItemList.ImageIndex := 1;
   ItemList.DisableDisappear := True;
   ItemList.StylesData['edit.OnClick'] := TValue.From<TNotifyEvent>(FOnChatEditClick);
@@ -315,9 +315,8 @@ begin
   else
     ListBoxChatList.AddObject(ItemList);
   ItemList.ApplyStyleLookup;
-  Frame.MenuItem := ItemList;
 
-  Result := Frame.ChatId;
+  Result := ItemList.ChatId;
 end;
 
 procedure TFormMain.CreateHandle;
@@ -342,18 +341,18 @@ begin
     end;
   var DeletedIndex: Integer := -1;
   for var i := 0 to Pred(ListBoxChatList.Count) do
-    if ListBoxChatList.ListItems[i].TagString = ChatId then
+    if (ListBoxChatList.ListItems[i] as TListBoxItemChat).ChatId = ChatId then
     begin
       DeletedIndex := i;
       ListBoxChatList.ListItems[i].Release;
       Break;
     end;
-  if LayoutChatsBox.ControlsCount <= 0 then
+  if ListBoxChatList.Count <= 0 then
     SelectChat(CreateChat)
-  else if ListBoxChatList.Count > 0 then
+  else
   begin
     DeletedIndex := Max(0, Min(DeletedIndex - 1, ListBoxChatList.Count - 1));
-    SelectChat(ListBoxChatList.ListItems[DeletedIndex].TagString);
+    SelectChat((ListBoxChatList.ListItems[DeletedIndex] as TListBoxItemChat).ChatId);
   end;
 end;
 
@@ -404,16 +403,16 @@ begin
       procedure(const AResult: TModalResult)
       begin
         if AResult = mrYes then
-          DeleteChat(ListItem.TagString);
+          DeleteChat((ListItem as TListBoxItemChat).ChatId);
       end);
   end;
 end;
 
 procedure TFormMain.FOnChatItemClick(Sender: TObject);
 var
-  Item: TListBoxItem absolute Sender;
+  Item: TListBoxItemChat absolute Sender;
 begin
-  SelectChat(Item.TagString);
+  SelectChat(Item.ChatId);
   if Mode = wmCompact then
     CloseMenu;
 end;
@@ -437,6 +436,20 @@ begin
   Result := FChatsFileName;
 end;
 
+procedure TFormMain.Defaults;
+begin
+  Token := '';
+  Temperature := 1;
+  FrequencyPenalty := 0;
+  PresencePenalty := 0;
+  TopP := 1;
+  Model := '';
+  MaxTokens := 0;
+  MaxTokensQuery := 0;
+  Lang := '';
+  FSelectedChatId := '';
+end;
+
 procedure TFormMain.LoadSettings;
 begin
   try
@@ -454,15 +467,16 @@ begin
     if Assigned(JSON) then
     try
       Token := JSON.GetValue('api_key', '');
-      Temperature := JSON.GetValue<Single>('temperature', 0.0);
+      Temperature := JSON.GetValue<Single>('temperature', 1);
       FrequencyPenalty := JSON.GetValue<Single>('frequency_penalty', 0.0);
       PresencePenalty := JSON.GetValue<Single>('presence_penalty', 0.0);
-      TopP := JSON.GetValue<Single>('top_p', 0.0);
+      TopP := JSON.GetValue<Single>('top_p', 1);
       Model := JSON.GetValue('model', '');
       MaxTokens := JSON.GetValue<Integer>('max_tokens', 0);
       MaxTokensQuery := JSON.GetValue<Integer>('max_tokens_query', 0);
       Lang := JSON.GetValue('translate_lang', '');
       FSelectedChatId := JSON.GetValue('selected_chat', '');
+      OpenAI.BaseURL := JSON.GetValue('base_url', OpenAI.BaseURL);
 
       if JSON.GetValue('on_top', False) then
         FormStyle := TFormStyle.StayOnTop
@@ -475,8 +489,6 @@ begin
         JSON.GetValue('proxy_username', ''),
         JSON.GetValue('proxy_password', ''));
       TBitmap.Client.ProxySettings := OpenAI.API.Client.ProxySettings;
-
-      OpenAI.BaseURL := JSON.GetValue('base_url', OpenAI.BaseURL);
 
       var Headers: TNetHeaders;
       try
@@ -496,6 +508,11 @@ begin
       except
         //
       end;
+
+      Width := Max(Trunc(Constraints.MinWidth), JSON.GetValue<Integer>('width', Width));
+      Height := Max(Trunc(Constraints.MinHeight), JSON.GetValue<Integer>('height', Height));
+      Left := JSON.GetValue<Integer>('left', Left);
+      Top := JSON.GetValue<Integer>('top', Top);
 
       OpenAI.API.CustomHeaders := Headers;
     finally
@@ -531,6 +548,11 @@ begin
     JSON.AddPair('proxy_password', OpenAI.API.Client.ProxySettings.Password);
 
     JSON.AddPair('base_url', OpenAI.BaseURL);
+
+    JSON.AddPair('width', Width);
+    JSON.AddPair('height', Height);
+    JSON.AddPair('left', Left);
+    JSON.AddPair('top', Top);
 
     if Length(OpenAI.API.CustomHeaders) > 0 then
     begin
@@ -570,9 +592,11 @@ begin
     try
       var JSONChats: TJSONArray;
       if JSON.TryGetValue('items', JSONChats) then
+      begin
         for var JChat in JSONChats do
           if JChat is TJSONObject then
             CreateChat(JChat as TJSONObject);
+      end;
       SelectChat(FSelectedChatId);
     finally
       JSON.Free;
@@ -581,7 +605,7 @@ begin
     if LayoutChatsBox.ControlsCount <= 0 then
       SelectChat(CreateChat)
     else if (ListBoxChatList.Count > 0) and (ListBoxChatList.Selected = nil) then
-      SelectChat(ListBoxChatList.ListItems[0].TagString);
+      SelectChat((ListBoxChatList.ListItems[0] as TListBoxItemChat).ChatId);
   end;
 end;
 
@@ -593,9 +617,11 @@ begin
     JSON.AddPair('items', JSONChats);
     for var i := 0 to ListBoxChatList.Count - 1 do
     begin
-      var Frame := GetChatFrame(ListBoxChatList.ListItems[i].TagString);
+      var Frame := GetChatFrame((ListBoxChatList.ListItems[i] as TListBoxItemChat).ChatId);
       if Assigned(Frame) then
-        JSONChats.Add(Frame.SaveAsJson);
+        JSONChats.Add(Frame.SaveAsJson)
+      else
+        JSONChats.Add((ListBoxChatList.ListItems[i] as TListBoxItemChat).JSON.Clone as TJSONObject);
     end;
     TFile.WriteAllText(GetChatsFileName, JSON.ToJSON, TEncoding.UTF8);
   except
@@ -603,6 +629,12 @@ begin
       ShowMessage(E.Message);
   end;
   JSON.Free;
+end;
+
+function TFormMain.GetCanShare: Boolean;
+begin
+  var FSharingService: IFMXShareSheetActionsService;
+  Result := TPlatformServices.Current.SupportsPlatformService(IFMXShareSheetActionsService, FSharingService);
 end;
 
 function TFormMain.GetChatFrame(const ChatId: string): TFrameChat;
@@ -620,29 +652,60 @@ end;
 procedure TFormMain.SelectChat(const ChatId: string);
 begin
   FSelectedChatId := ChatId;
+
+  var ItemList: TListBoxItemChat := nil;
+  for var i := 0 to Pred(ListBoxChatList.Count) do
+    if (ListBoxChatList.ListItems[i] as TListBoxItemChat).ChatId = ChatId then
+    begin
+      ListBoxChatList.ListItems[i].IsSelected := True;
+      LabelChatName.Text := ListBoxChatList.ListItems[i].Text;
+      ItemList := ListBoxChatList.ListItems[i] as TListBoxItemChat;
+      Break;
+    end;
+
+  var SelFrame: TFrameChat := nil;
   for var Control in LayoutChatsBox.Controls do
     if Control is TFrameChat then
     begin
       var Frame := Control as TFrameChat;
       Frame.Visible := Frame.ChatId = ChatId;
-      {$IFNDEF ANDROID OR IOS OR IOS64}
-      Frame.MemoQuery.SetFocus;
-      {$ENDIF}
-      Frame.MemoQuery.PrepareForPaint;
+      if Frame.Visible then
+        SelFrame := Frame;
     end;
-  for var i := 0 to Pred(ListBoxChatList.Count) do
-    if ListBoxChatList.ListItems[i].TagString = ChatId then
+
+  if not Assigned(SelFrame) then
+  begin
+    SelFrame := TFrameChat.Create(LayoutChatsBox);
+    SelFrame.Parent := LayoutChatsBox;
+    SelFrame.Align := TAlignLayout.Client;
+    SelFrame.API := OpenAI;
+    SelFrame.Mode := Mode;
+    if Assigned(ItemList.JSON) then
+      SelFrame.LoadFromJson(ItemList.JSON)
+    else
     begin
-      ListBoxChatList.ListItems[i].IsSelected := True;
-      LabelChatName.Text := ListBoxChatList.ListItems[i].Text;
-      Exit;
+      SelFrame.ChatId := ItemList.ChatId;
+      SelFrame.Title := ItemList.Text;
+      SelFrame.Temperature := Temperature;
+      SelFrame.PresencePenalty := PresencePenalty;
+      SelFrame.FrequencyPenalty := FrequencyPenalty;
+      SelFrame.Model := Model;
+      SelFrame.MaxTokens := MaxTokens;
+      SelFrame.MaxTokensQuery := MaxTokensQuery;
+      SelFrame.LangSrc := Lang;
     end;
+    SelFrame.MenuItem := ItemList;
+    SelFrame.Visible := True;
+  end;
+  {$IFNDEF ANDROID OR IOS OR IOS64}
+  SelFrame.MemoQuery.SetFocus;
+  {$ENDIF}
+  SelFrame.MemoQuery.PrepareForPaint;
 end;
 
 constructor TFormMain.Create(AOwner: TComponent);
 begin
   inherited;
-  Visible := True;
   {$IFDEF NEW_MEMO}
   var Style := StyleBook.Style;
   if Assigned(Style) then
@@ -667,6 +730,8 @@ begin
   FOpenAI := TOpenAIComponent.Create(Self);
   ListBoxChatList.AniCalculations.Animation := True;
 
+  Defaults;
+  FCanShare := GetCanShare;
   Clear;
   FMode := wmFull;
   UpdateMode;
@@ -898,12 +963,28 @@ begin
   FTopP := Value;
 end;
 
+{ TListBoxItemChat }
+
+constructor TListBoxItemChat.Create(AOwner: TComponent);
+begin
+  inherited;
+  JSON := nil;
+end;
+
+destructor TListBoxItemChat.Destroy;
+begin
+  if Assigned(JSON) then
+    JSON.Free;
+  inherited;
+end;
+
 initialization
   {$IFDEF DEBUG}
   ReportMemoryLeaksOnShutdown := True;
   {$ENDIF}
   FAppFolder := TPath.Combine(TPath.GetHomePath, 'ChatGPT');
   FImagesCacheFolder := TPath.Combine(FAppFolder, 'images');
+  FAudioCacheFolder := TPath.Combine(FAppFolder, 'audios');
   CreateAppFolder;
   TBitmap.CachePath := FImagesCacheFolder;
 

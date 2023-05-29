@@ -9,6 +9,9 @@
         <Projects Include="ChatGPT_Console.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="C:\Users\Public\Documents\Embarcadero\Studio\22.0\Samples\Object Pascal\Mobile Snippets\AudioRecPlay\AudioRecPlay.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -35,14 +38,23 @@
     <Target Name="ChatGPT_Console:Make">
         <MSBuild Projects="ChatGPT_Console.dproj" Targets="Make"/>
     </Target>
+    <Target Name="AudioRecPlay">
+        <MSBuild Projects="C:\Users\Public\Documents\Embarcadero\Studio\22.0\Samples\Object Pascal\Mobile Snippets\AudioRecPlay\AudioRecPlay.dproj"/>
+    </Target>
+    <Target Name="AudioRecPlay:Clean">
+        <MSBuild Projects="C:\Users\Public\Documents\Embarcadero\Studio\22.0\Samples\Object Pascal\Mobile Snippets\AudioRecPlay\AudioRecPlay.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="AudioRecPlay:Make">
+        <MSBuild Projects="C:\Users\Public\Documents\Embarcadero\Studio\22.0\Samples\Object Pascal\Mobile Snippets\AudioRecPlay\AudioRecPlay.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ChatGPT;ChatGPT_Console"/>
+        <CallTarget Targets="ChatGPT;ChatGPT_Console;AudioRecPlay"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ChatGPT:Clean;ChatGPT_Console:Clean"/>
+        <CallTarget Targets="ChatGPT:Clean;ChatGPT_Console:Clean;AudioRecPlay:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ChatGPT:Make;ChatGPT_Console:Make"/>
+        <CallTarget Targets="ChatGPT:Make;ChatGPT_Console:Make;AudioRecPlay:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

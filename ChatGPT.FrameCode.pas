@@ -5,9 +5,9 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
-  FMX.Objects, FMX.Memo.Types, FMX.Controls.Presentation, FMX.ScrollBox, FMX.Edit.Style,
-  FMX.Memo, FMX.Layouts, FMX.Memo.Style, ChatGPT.Classes, FMX.TextLayout,
-  ChatGPT.Code;
+  FMX.Objects, FMX.Memo.Types, FMX.Controls.Presentation, FMX.ScrollBox,
+  FMX.Edit.Style, FMX.Memo, FMX.Layouts, FMX.Memo.Style, ChatGPT.Classes,
+  FMX.TextLayout, ChatGPT.Code, FMX.Gestures;
 
 type
   TMemo = class(FMX.Memo.TMemo)
@@ -27,11 +27,19 @@ type
     procedure LayoutCopyCodeClick(Sender: TObject);
     procedure MemoCodeMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
     procedure LabelCopyResize(Sender: TObject);
-    procedure RectangleClientDblClick(Sender: TObject);
-    procedure MemoCodeExit(Sender: TObject);
+    procedure MemoCodeMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
+    procedure MemoCodeMouseLeave(Sender: TObject);
+    procedure MemoCodeClick(Sender: TObject);
+    procedure RectangleClientMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure RectangleClientMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
+    procedure RectangleClientMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
   private
     FCodeSyntax: TCodeSyntax;
     FOnWheel: TMouseWheelEvent;
+    FStyledMemo: TStyledMemo;
+    FUnderMouse: TUnderMouse;
+    FUnderMouseAttr: TTextAttribute;
+    FMouseDown: TPointF;
     procedure FOnStyleLookup(Sender: TObject);
     procedure SetOnWheel(const Value: TMouseWheelEvent);
     {$IFDEF NEW_MEMO}
@@ -49,7 +57,8 @@ type
 implementation
 
 uses
-  System.Math, FMX.Clipboard, System.JSON, FMX.Platform, ChatGPT.FrameUIMessage;
+  System.Math, FMX.Clipboard, System.JSON, FMX.Platform, ChatGPT.FrameUIMessage,
+  System.Net.URLClient;
 
 {$R *.fmx}
 
@@ -60,21 +69,28 @@ begin
   inherited;
   Name := '';
   FCodeSyntax := nil;
+  MemoCode.DisableDisappear := True;
+  FStyledMemo := (MemoCode.Presentation as TStyledMemo);
+  FUnderMouseAttr.Color := MemoCode.TextSettings.FontColor; // $FF006CE8;
+  FUnderMouseAttr.Font := TFont.Create;
+  FUnderMouseAttr.Font.Assign(MemoCode.TextSettings.Font);
+  FUnderMouseAttr.Font.Style := [TFontStyle.fsUnderline];
   {$IFDEF ANDROID OR IOS OR IOS64}
   MemoCode.HitTest := False;
   {$ENDIF}
   MemoCode.OnApplyStyleLookup := FOnStyleLookup;
   {$IFDEF NEW_MEMO}
-  (MemoCode.Presentation as TStyledMemo).OnUpdateLayoutParams := UpdateLayout;
-  (MemoCode.Presentation as TStyledMemo).ScrollToCaret := False;
+  FStyledMemo.OnUpdateLayoutParams := UpdateLayout;
+  FStyledMemo.ScrollToCaret := False;
   {$IFDEF ANDROID OR IOS OR IOS64}
-  (MemoCode.Presentation as TStyledMemo).NeedSelectorPoints := True;
+  FStyledMemo.NeedSelectorPoints := True;
   {$ENDIF}
   {$ENDIF}
 end;
 
 destructor TFrameCode.Destroy;
 begin
+  FUnderMouseAttr.Font.Free;
   FCodeSyntax.Free;
   inherited;
 end;
@@ -132,8 +148,8 @@ begin
   //(MemoCode.Presentation as TFixedStyledMemo).InvalidateContentSize;
   //(MemoCode.Presentation as TFixedStyledMemo).PrepareForPaint;
   {$ELSE}
-  (MemoCode.Presentation as TStyledMemo).InvalidateContentSize;
-  (MemoCode.Presentation as TStyledMemo).PrepareForPaint;
+  FStyledMemo.InvalidateContentSize;
+  FStyledMemo.PrepareForPaint;
   {$ENDIF}
   Result := Max(MemoCode.ContentBounds.Height + 20, 30) +
     MemoCode.Margins.Top +
@@ -158,10 +174,48 @@ begin
     ShowUIMessage('Clipboard error');
 end;
 
-procedure TFrameCode.MemoCodeExit(Sender: TObject);
+procedure TFrameCode.MemoCodeClick(Sender: TObject);
 begin
-  {$IFDEF ANDROID OR IOS OR IOS64}
-  MemoCode.HitTest := False;
+  if (FUnderMouse.WordLine <> -1) and (not FUnderMouse.Text.IsEmpty) and (MemoCode.SelLength = 0) then
+    OpenUrl(FUnderMouse.Text);
+end;
+
+procedure TFrameCode.MemoCodeMouseLeave(Sender: TObject);
+begin
+  {$IFDEF NEW_MEMO}
+  FUnderMouse.WordLine := -1;
+  FStyledMemo.UpdateVisibleLayoutParams;
+  FStyledMemo.Repaint;
+  {$ENDIF}
+end;
+
+procedure TFrameCode.MemoCodeMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
+begin
+  {$IFDEF NEW_MEMO}
+  var BeginWord: Int64;
+  var Line: Int64;
+  var Str := FStyledMemo.GetWordAtPos(X, Y, BeginWord, Line);
+  if (not Str.IsEmpty) and (Str.ToLower.StartsWith('http')) then
+  begin
+    try
+      TURI.Create(Str);
+      MemoCode.Cursor := crHandPoint;
+    except
+      MemoCode.Cursor := crDefault;
+      Line := -1;
+    end;
+  end
+  else
+  begin
+    MemoCode.Cursor := crDefault;
+    Line := -1;
+  end;
+  FUnderMouse.WordStart := BeginWord;
+  FUnderMouse.WordLength := Str.Length;
+  FUnderMouse.WordLine := Line;
+  FUnderMouse.Text := Str;
+  FStyledMemo.UpdateVisibleLayoutParams;
+  FStyledMemo.Repaint;
   {$ENDIF}
 end;
 
@@ -174,7 +228,7 @@ begin
     //Exit;
   end;
 
-  if (MemoCode.SelLength > 0) and (Root.Captured = IControl((MemoCode.Presentation as TStyledMemo))) then
+  if (MemoCode.SelLength > 0) and (Root.Captured = IControl(FStyledMemo)) then
   begin
     Handled := True;
     if Assigned(FOnWheel) then
@@ -182,11 +236,24 @@ begin
   end;
 end;
 
-procedure TFrameCode.RectangleClientDblClick(Sender: TObject);
+procedure TFrameCode.RectangleClientMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 begin
-  {$IFDEF ANDROID OR IOS OR IOS64}
-  MemoCode.HitTest := True;
-  {$ENDIF}
+  FMouseDown := TPointF.Create(X, Y);
+  Root.Captured := RectangleClient;
+end;
+
+procedure TFrameCode.RectangleClientMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
+begin
+  if ssLeft in Shift then
+  begin
+    MemoCode.ViewportPosition := TPointF.Create(MemoCode.ViewportPosition.X + (FMouseDown.X - X), MemoCode.ViewportPosition.Y);
+    FMouseDown := TPointF.Create(X, Y);
+  end;
+end;
+
+procedure TFrameCode.RectangleClientMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+begin
+  Root.Captured := nil;
 end;
 
 procedure TFrameCode.SetOnWheel(const Value: TMouseWheelEvent);
@@ -209,6 +276,8 @@ begin
   except
     //
   end;
+  if Index = FUnderMouse.WordLine then
+    Layout.AddAttribute(TTextRange.Create(FUnderMouse.WordStart, FUnderMouse.WordLength), FUnderMouseAttr);
 end;
 {$ENDIF}
 

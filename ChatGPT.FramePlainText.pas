@@ -13,12 +13,18 @@ type
   TFrameText = class(TFrame)
     MemoText: TMemo;
     procedure FrameResize(Sender: TObject);
-    procedure MemoTextApplyStyleLookup(Sender: TObject);
     procedure MemoTextMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
+    procedure MemoTextMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
+    procedure MemoTextMouseLeave(Sender: TObject);
+    procedure MemoTextClick(Sender: TObject);
   private
     FOnWheel: TMouseWheelEvent;
     FCodeSyntax: TCodeSyntax;
+    FStyledMemo: TStyledMemo;
+    FUnderMouse: TUnderMouse;
+    FUnderMouseAttr: TTextAttribute;
     procedure SetOnWheel(const Value: TMouseWheelEvent);
+  private
     {$IFDEF NEW_MEMO}
     procedure UpdateLayout(Sender: TObject; Layout: TTextLayout; const Index: Integer);
     {$ENDIF}
@@ -33,7 +39,7 @@ type
 implementation
 
 uses
-  System.Math;
+  System.Math, System.Net.URLClient, ChatGPT.Main;
 
 {$R *.fmx}
 
@@ -43,21 +49,28 @@ constructor TFrameText.Create(AOwner: TComponent);
 begin
   inherited;
   Name := '';
+  MemoText.DisableDisappear := True;
   FCodeSyntax := nil;
+  FUnderMouseAttr.Color := MemoText.TextSettings.FontColor; // $FF006CE8;
+  FUnderMouseAttr.Font := TFont.Create;
+  FUnderMouseAttr.Font.Assign(MemoText.TextSettings.Font);
+  FUnderMouseAttr.Font.Style := [TFontStyle.fsUnderline];
+  FStyledMemo := (MemoText.Presentation as TStyledMemo);
   {$IFDEF ANDROID OR IOS OR IOS64}
   MemoText.HitTest := False;
   {$ENDIF}
   MemoText.TextSettings.VertAlign := TTextAlign.Center;
   {$IFDEF NEW_MEMO}
-  (MemoText.Presentation as TStyledMemo).OnUpdateLayoutParams := UpdateLayout;
+  FStyledMemo.OnUpdateLayoutParams := UpdateLayout;
   {$IFDEF ANDROID OR IOS OR IOS64}
-  (MemoText.Presentation as TStyledMemo).NeedSelectorPoints := True;
+  FStyledMemo.NeedSelectorPoints := True;
   {$ENDIF}
   {$ENDIF}
 end;
 
 destructor TFrameText.Destroy;
 begin
+  FUnderMouseAttr.Font.Free;
   FCodeSyntax.Free;
   inherited;
 end;
@@ -79,21 +92,15 @@ end;
 
 procedure TFrameText.FrameResize(Sender: TObject);
 begin
-  Height := GetContentHeight;
+  var H := GetContentHeight;
+  if H <> Height then
+    Height := H;
 end;
 
 function TFrameText.GetContentHeight: Single;
 begin
-  {$IFDEF NEW_MEMO}
-  (MemoText.Presentation as TStyledMemo).InvalidateContentSize;
-  (MemoText.Presentation as TStyledMemo).PrepareForPaint;
-  //var ContentH := (MemoText.Presentation as TStyledMemo).LinesLayout.ContentSize.Height;
+  FStyledMemo.PrepareForPaint;
   var ContentH := MemoText.ContentBounds.Height;
-  {$ELSE}
-  (MemoText.Presentation as TStyledMemo).InvalidateContentSize;
-  (MemoText.Presentation as TStyledMemo).PrepareForPaint;
-  var ContentH := MemoText.ContentBounds.Height;
-  {$ENDIF}
   if (ContentH + 5) < 30 then
     MemoText.Margins.Top := 25 - ContentH
   else
@@ -103,14 +110,54 @@ begin
     MemoText.Margins.Bottom;
 end;
 
-procedure TFrameText.MemoTextApplyStyleLookup(Sender: TObject);
+procedure TFrameText.MemoTextClick(Sender: TObject);
 begin
-  FrameResize(nil);
+  if (FUnderMouse.WordLine <> -1) and (not FUnderMouse.Text.IsEmpty) and (MemoText.SelLength = 0) then
+    OpenUrl(FUnderMouse.Text);
+end;
+
+procedure TFrameText.MemoTextMouseLeave(Sender: TObject);
+begin
+  {$IFDEF NEW_MEMO}
+  FUnderMouse.WordLine := -1;
+  FStyledMemo.UpdateVisibleLayoutParams;
+  FStyledMemo.Repaint;
+  {$ENDIF}
+end;
+
+procedure TFrameText.MemoTextMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
+begin
+  {$IFDEF NEW_MEMO}
+  var BeginWord: Int64;
+  var Line: Int64;
+  var Str := FStyledMemo.GetWordAtPos(X, Y, BeginWord, Line);
+  if (not Str.IsEmpty) and (Str.ToLower.StartsWith('http')) then
+  begin
+    try
+      TURI.Create(Str);
+      MemoText.Cursor := crHandPoint;
+    except
+      MemoText.Cursor := crDefault;
+      Line := -1;
+    end;
+  end
+  else
+  begin
+    MemoText.Cursor := crDefault;
+    Line := -1;
+  end;
+  FUnderMouse.WordStart := BeginWord;
+  FUnderMouse.WordLength := Str.Length;
+  FUnderMouse.WordLine := Line;
+  FUnderMouse.Text := Str;
+  FStyledMemo.UpdateVisibleLayoutParams;
+  FStyledMemo.Repaint;
+  {$ENDIF}
 end;
 
 procedure TFrameText.MemoTextMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
 begin
-  if (MemoText.SelLength > 0) and (Root.Captured = IControl((MemoText.Presentation as TStyledMemo))) then
+  if (MemoText.SelLength > 0) and (Root.Captured = IControl(FStyledMemo)) then
   begin
     Handled := True;
     if Assigned(FOnWheel) then
@@ -134,6 +181,8 @@ begin
   if Assigned(FCodeSyntax) then
     for var Attr in FCodeSyntax.GetAttributesForLine(MemoText.Lines[Index]) do
       Layout.AddAttribute(Attr.Range, Attr.Attribute);
+  if Index = FUnderMouse.WordLine then
+    Layout.AddAttribute(TTextRange.Create(FUnderMouse.WordStart, FUnderMouse.WordLength), FUnderMouseAttr);
 end;
 {$ENDIF}
 

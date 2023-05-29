@@ -16,21 +16,24 @@ type
     Rectangle1: TRectangle;
     SaveDialogJPG: TSaveDialog;
     LayoutControls: TLayout;
+    ButtonShare: TButton;
     procedure FrameClick(Sender: TObject);
     procedure ButtonDownloadClick(Sender: TObject);
     procedure FrameResized(Sender: TObject);
+    procedure ButtonShareClick(Sender: TObject);
   private
     FInitImageBounds: TControl;
     FOnClose: TProc;
     procedure SetImageBounds(Rect: TControl);
   public
     class procedure ShowPreview(Bitmap: TBitmap; InitBounds: TControl; OnClose: TProc);
+    constructor Create(AOwner: TComponent); override;
   end;
 
 implementation
 
 uses
-  HGM.FMX.Ani;
+  HGM.FMX.Ani, ChatGPT.Main, System.IOUtils, ChatGPT.FrameUIMessage;
 
 {$R *.fmx}
 
@@ -38,8 +41,30 @@ uses
 
 procedure TFramePreview.ButtonDownloadClick(Sender: TObject);
 begin
+  {$IFNDEF ANDROID OR IOS OR IOS64}
+  SaveDialogJPG.FileName := TPath.GetRandomFileName + '.jpg';
   if SaveDialogJPG.Execute then
+  begin
     Image.Bitmap.SaveToFile(SaveDialogJPG.FileName);
+    ShowUIMessage('Saved');
+  end;
+  {$ELSE}
+  ShowMessage(TPath.Combine(TPath.GetSharedPicturesPath, TPath.GetRandomFileName + '.jpg'));
+  Image.Bitmap.SaveToFile(TPath.Combine(TPath.GetSharedPicturesPath, TPath.GetRandomFileName + '.jpg'));
+  ShowUIMessage('Saved to gallery');
+  {$ENDIF}
+end;
+
+procedure TFramePreview.ButtonShareClick(Sender: TObject);
+begin
+  FormMain.ShareBitmap(Image.Bitmap);
+end;
+
+constructor TFramePreview.Create(AOwner: TComponent);
+begin
+  inherited;
+  Name := '';
+  ButtonShare.Visible := FormMain.CanShare;
 end;
 
 procedure TFramePreview.FrameClick(Sender: TObject);
@@ -50,6 +75,8 @@ begin
   TAnimator.AnimateFloat(Image, 'Position.Y', ToRect.Top);
   TAnimator.AnimateFloat(Image, 'Width', ToRect.Width);
   TAnimator.AnimateFloat(LayoutControlsContent, 'Margins.Bottom', -LayoutControlsContent.Height);
+  LayoutControlsContent.Opacity := 0;
+  TAnimator.AnimateFloat(LayoutControlsContent, 'Opacity', 1);
   TAnimator.AnimateFloatWithFinish(Image, 'Height', ToRect.Height,
     procedure
     begin

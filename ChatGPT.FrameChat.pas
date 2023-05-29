@@ -10,7 +10,7 @@ uses
   ChatGPT.FrameMessage, ChatGPT.Classes, System.Threading, FMX.Edit, FMX.ImgList,
   OpenAI.Chat, System.Generics.Collections, OpenAI.Audio,
   OpenAI.Utils.ChatHistory, OpenAI.Images, ChatGPT.ChatSettings, System.JSON,
-  FMX.Effects, FMX.ListBox;
+  FMX.Effects, FMX.ListBox, Skia, Skia.FMX, ChatGPT.SoundRecorder;
 
 type
   TButton = class(FMX.StdCtrls.TButton)
@@ -46,7 +46,7 @@ type
     MemoQuery: TMemo;
     LayoutQuery: TLayout;
     Rectangle2: TRectangle;
-    Layout1: TLayout;
+    LayoutSendControls: TLayout;
     LayoutTyping: TLayout;
     TimerTyping: TTimer;
     LayoutTypingContent: TLayout;
@@ -77,11 +77,11 @@ type
     Label7: TLabel;
     Label10: TLabel;
     Label12: TLabel;
-    Layout2: TLayout;
+    LayoutSendCommons: TLayout;
     ButtonAudio: TButton;
     Path8: TPath;
     ButtonSend: TButton;
-    Path1: TPath;
+    PathSend: TPath;
     OpenDialogAudio: TOpenDialog;
     ButtonImage: TButton;
     PathImage: TPath;
@@ -98,7 +98,7 @@ type
     Layout7: TLayout;
     Label11: TLabel;
     PathLimCompact: TPath;
-    Layout8: TLayout;
+    LayoutChatSettings: TLayout;
     ButtonSettings: TButton;
     Path9: TPath;
     LayoutButtom: TLayout;
@@ -107,6 +107,12 @@ type
     ShadowEffect1: TShadowEffect;
     LayoutScrollDown: TLayout;
     ButtonScrollDown: TButton;
+    PathAudio: TPath;
+    LayoutAudioRecording: TLayout;
+    AnimatedImageRecording: TSkAnimatedImage;
+    PathStopRecord: TPath;
+    TimerCheckRecording: TTimer;
+    LabelRecordingTime: TLabel;
     procedure LayoutSendResize(Sender: TObject);
     procedure MemoQueryChange(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
@@ -125,9 +131,11 @@ type
     procedure TimerUpdateTextSizeTimer(Sender: TObject);
     procedure ButtonScrollDownClick(Sender: TObject);
     procedure VertScrollBoxChatViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
-  private
-    class var
-      FChatIdCount: Integer;
+    procedure TimerCheckRecordingTimer(Sender: TObject);
+    procedure ButtonExample1Tap(Sender: TObject; const Point: TPointF);
+    procedure ButtonExample2Tap(Sender: TObject; const Point: TPointF);
+    procedure ButtonExample3Tap(Sender: TObject; const Point: TPointF);
+    procedure MemoQueryKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
   private
     FAPI: IOpenAI;
     FChatId: string;
@@ -148,6 +156,8 @@ type
     FMaxTokensQuery: Integer;
     FFrequencyPenalty: Single;
     FTopP: Single;
+    FAudioRecord: TAudioRecord;
+    FRecordingStartTime: TDateTime;
     function NewMessage(const Text: string; Role: TMessageKind; UseBuffer: Boolean = True; IsAudio: Boolean = False): TFrameMessage;
     function NewMessageImage(Role: TMessageKind; Images: TArray<string>): TFrameMessage;
     procedure ClearChat;
@@ -173,7 +183,6 @@ type
     procedure SetLastRequest(const Value: TProc);
     procedure SetMenuItem(const Value: TListBoxItem);
     procedure UpdateMenuTitle(const Text: string);
-    class function NextChatId: Integer; static;
     procedure SetFrequencyPenalty(const Value: Single);
     procedure SetMaxTokens(const Value: Integer);
     procedure SetMaxTokensQuery(const Value: Integer);
@@ -182,6 +191,11 @@ type
     procedure ChatToUp;
     procedure SetTopP(const Value: Single);
     procedure FOnMessageDelete(Sender: TObject);
+    procedure StopRecording;
+    procedure StartRecording;
+    function GenerateAudioFileName: string;
+    procedure FOnStartRecord(Sender: TObject);
+    procedure UpdateSendControls;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -214,9 +228,34 @@ implementation
 
 uses
   FMX.Ani, System.Math, OpenAI.API, ChatGPT.Translate, System.IOUtils,
-  ChatGPT.Overlay, FMX.BehaviorManager, HGM.FMX.Ani;
+  ChatGPT.Main, ChatGPT.Overlay, FMX.BehaviorManager, HGM.FMX.Ani,
+  {$IFDEF ANDROID}
+  ChatGPT.Android,
+  {$ENDIF}
+  System.DateUtils;
 
 {$R *.fmx}
+
+function HumanTime(Value: TTime): string;
+var
+  H, M, S, Ms: Word;
+begin
+  DecodeTime(Value, H, M, S, Ms);
+  Result := '';
+  if H > 0 then
+    Result := Result + H.ToString + ' ч. ';
+  if M > 0 then
+    Result := Result + M.ToString + ' мин. ';
+  if S > 0 then
+    Result := Result + S.ToString + ' сек. ';
+  if Result.IsEmpty then
+    Result := Result + '< 1 сек. ';
+end;
+
+function SecondsToTime(Value: Double): TTime;
+begin
+  Result := Value / SecsPerDay;
+end;
 
 procedure TFrameChat.ShowError(const Text: string);
 begin
@@ -300,15 +339,6 @@ begin
       if Control is TFrameMessage then
         if not TFrameMessage(Control).IsError then
           JArray.Add(TFrameMessage(Control).ToJsonObject);
-             {
-    for var Item in FBuffer do
-    begin
-      var JItem := TJSONObject.Create;
-      JItem.AddPair('id', Item.Tag);
-      JItem.AddPair('role', Item.Role.ToString);
-      JItem.AddPair('content', Item.Content);
-      JArray.Add(JItem);
-    end; }
   except
     //
   end;
@@ -325,14 +355,19 @@ begin
     LayoutWelcome.Visible := True;
 end;
 
+function TFrameChat.GenerateAudioFileName: string;
+begin
+  Result := TPath.Combine(FAudioCacheFolder, 'audio_record' + FormatDateTime('DDMMYYYY_HHNNSS', Now) + '.wav');
+end;
+
 procedure TFrameChat.LoadFromJson(JSON: TJSONObject);
 begin
   var ItemCount: Integer := 0;
   var LastRoleIsUser: Boolean := False;
   FChatId := JSON.GetValue('chat_id', TGUID.NewGuid.ToString);
+  FTitle := JSON.GetValue('title', '');
   FTemperature := JSON.GetValue('temperature', 0.0);
   FLangSrc := JSON.GetValue('user_lang', '');
-  FTitle := JSON.GetValue('title', '');
   FrequencyPenalty := JSON.GetValue<Single>('frequency_penalty', 0.0);
   PresencePenalty := JSON.GetValue<Single>('presence_penalty', 0.0);
   TopP := JSON.GetValue<Single>('top_p', 0.0);
@@ -353,7 +388,7 @@ begin
       Item.Content := JItem.GetValue('content', '');
       Item.Tag := JItem.GetValue('id', TGUID.NewGuid.ToString);
 
-      if not (IsAudio and (Item.Role <> TMessageRole.User)) then
+      if not (IsAudio and (Item.Role = TMessageRole.User)) then
         FBuffer.Add(Item);
 
       var Frame := TFrameMessage.Create(VertScrollBoxChat);
@@ -466,12 +501,27 @@ procedure TFrameChat.ButtonAudioClick(Sender: TObject);
 begin
   if FIsTyping then
     Exit;
+  {$IFNDEF ANDROID}
   if not OpenDialogAudio.Execute then
     Exit;
   var AudioFile := OpenDialogAudio.FileName;
-  MemoQuery.Text := '';
+  //MemoQuery.Text := '';
   NewMessage(TPath.GetFileName(AudioFile), TMessageKind.User, False, True);
   RequestAudio(AudioFile);
+  {$ELSE}
+  try
+    OpenFileDialog('*/*',
+      procedure(FilePath: string)
+      begin
+        //MemoQuery.Text := '';
+        NewMessage(TPath.GetFileName(FilePath), TMessageKind.User, False, True);
+        RequestAudio(FilePath);
+      end);
+  except
+    on E: Exception do
+      ShowError(E.Message);
+  end;
+  {$ENDIF}
 end;
 
 procedure TFrameChat.RequestAudio(const AudioFile: string);
@@ -528,14 +578,29 @@ begin
   MemoQuery.Text := 'Explain quantum computing in simple terms';
 end;
 
+procedure TFrameChat.ButtonExample1Tap(Sender: TObject; const Point: TPointF);
+begin
+  ButtonExample1Click(Sender);
+end;
+
 procedure TFrameChat.ButtonExample2Click(Sender: TObject);
 begin
   MemoQuery.Text := 'Got any creative ideas for a 10 year old’s birthday?';
 end;
 
+procedure TFrameChat.ButtonExample2Tap(Sender: TObject; const Point: TPointF);
+begin
+  ButtonExample2Click(Sender);
+end;
+
 procedure TFrameChat.ButtonExample3Click(Sender: TObject);
 begin
   MemoQuery.Text := 'How do I make an HTTP request in Javascript?';
+end;
+
+procedure TFrameChat.ButtonExample3Tap(Sender: TObject; const Point: TPointF);
+begin
+  ButtonExample3Click(Sender);
 end;
 
 procedure TFrameChat.ButtonImageClick(Sender: TObject);
@@ -616,7 +681,7 @@ procedure TFrameChat.SendRequestPrompt;
 begin
   if FIsTyping then
     Exit;
-  var Prompt := MemoQuery.Text;
+  var Prompt := MemoQuery.Text.Trim([' ', #13, #10]);
   if Prompt.IsEmpty then
     Exit;
   MemoQuery.Text := '';
@@ -679,12 +744,39 @@ begin
   ScrollDown(True);
 end;
 
+procedure TFrameChat.StopRecording;
+begin
+  LayoutAudioRecording.Visible := False;
+  MemoQuery.Visible := True;
+  PathStopRecord.Visible := False;
+  PathAudio.Visible := True;
+  TimerCheckRecording.Enabled := False;
+end;
+
+procedure TFrameChat.StartRecording;
+begin
+  FAudioRecord.StartRecord(GenerateAudioFileName);
+end;
+
 procedure TFrameChat.ButtonSendClick(Sender: TObject);
 begin
+  if FAudioRecord.IsAvailableDevice then
+  begin
+    if FAudioRecord.IsMicrophoneRecording then
+    begin
+      FAudioRecord.StopRecord;
+      Exit;
+    end;
+  end;
   if IsImageMode then
     SendRequestImage
   else
-    SendRequestPrompt;
+  begin
+    if MemoQuery.Text.IsEmpty and FAudioRecord.IsAvailableDevice then
+      StartRecording
+    else
+      SendRequestPrompt;
+  end;
 end;
 
 procedure TFrameChat.ClearChat;
@@ -697,19 +789,24 @@ begin
   LayoutWelcome.Parent := VertScrollBoxChat;
 end;
 
-class function TFrameChat.NextChatId: Integer;
+procedure TFrameChat.FOnStartRecord(Sender: TObject);
 begin
-  Inc(FChatIdCount);
-  Result := FChatIdCount;
+  FRecordingStartTime := Now;
+  TimerCheckRecording.Enabled := True;
+  LabelRecordingTime.Text := '';
+  LayoutAudioRecording.Visible := True;
+  MemoQuery.Visible := False;
+  PathStopRecord.Visible := True;
+  PathAudio.Visible := False;
 end;
 
 constructor TFrameChat.Create(AOwner: TComponent);
 begin
   inherited;
-  ChatId := TGUID.NewGuid.ToString;
-  Title := 'New chat ' + NextChatId.ToString;
   FIsFirstMessage := True;
   LastRequest := nil;
+  FAudioRecord := TAudioRecord.Create(Self);
+  FAudioRecord.OnStartRecord := FOnStartRecord;
   FBuffer := TChatHistory.Create;
   FBuffer.MaxTokensForQuery := MAX_TOKENS;
   FBuffer.MaxTokensOfModel := MODEL_TOKENS_LIMIT;
@@ -720,9 +817,27 @@ begin
   Name := '';
   VertScrollBoxChat.AniCalculations.Animation := True;
   MemoQuery.ScrollAnimation := TBehaviorBoolean.True;
+  PathStopRecord.Visible := False;
+  PathAudio.Visible := False;
+  PathSend.Visible := True;
+  LayoutAudioRecording.Visible := False;
+
+  {$IFNDEF ANDROID OR IOS OR IOS64}
+  LayoutSendControls.Width := ButtonSend.Width * 3;
+  ButtonAudio.Visible := True;
+  {$ELSE}
+  LayoutSendControls.Width := ButtonSend.Width * 2;
+  //ButtonAudio.Visible := False;
+
+  ButtonExample1.OnClick := nil;
+  ButtonExample2.OnClick := nil;
+  ButtonExample3.OnClick := nil;
+  {$ENDIF}
+
   SetTyping(False);
   ClearChat;
   IsImageMode := False;
+  MemoQueryChange(nil);
 end;
 
 destructor TFrameChat.Destroy;
@@ -791,29 +906,41 @@ end;
 procedure TFrameChat.MemoQueryChange(Sender: TObject);
 begin
   LabelSendTip.Visible := MemoQuery.Text.IsEmpty;
-  //TimerUpdateTextSize.Enabled := False;
-  //TimerUpdateTextSize.Enabled := True;
-
-  var H: Single := LayoutSend.Padding.Top + LayoutSend.Padding.Bottom + LayoutQuery.Padding.Top + LayoutQuery.Padding.Bottom;
+  var H: Single := 0;
   if not LabelSendTip.Visible then
     H := H + MemoQuery.ContentBounds.Height;
+  //LayoutAudioRecording
   //LayoutSend.Height := Max(LayoutSend.TagFloat, Min(H, 400));
+
+  var MaxMemoH := Min(H, 400 - (LayoutSend.Padding.Top + LayoutSend.Padding.Bottom + LayoutQuery.Padding.Top + LayoutQuery.Padding.Bottom));
+  MemoQuery.Height := Max(26, MaxMemoH);
+  H := H + LayoutSend.Padding.Top + LayoutSend.Padding.Bottom + LayoutQuery.Padding.Top + LayoutQuery.Padding.Bottom;
   TAnimator.DetachPropertyAnimation(LayoutSend, 'Height');
-  TAnimator.AnimateFloat(LayoutSend, 'Height', Max(LayoutSend.TagFloat, Min(H, 400)));
-  if not LabelSendTip.Visible then
-    MemoQuery.ViewportPosition := TPointF.Create(0, MemoQuery.ContentBounds.Height)
-  else
-    MemoQuery.ViewportPosition := TPointF.Zero;
+  TAnimator.AnimateFloat(LayoutSend, 'Height', Max(LayoutSend.TagFloat, Min(H, 400)), 0.1);
+  MemoQuery.ShowScrollBars := H > 400;
+  UpdateSendControls;
+end;
+
+procedure TFrameChat.UpdateSendControls;
+begin
+  PathAudio.Visible := FAudioRecord.IsAvailableDevice and LabelSendTip.Visible;
+  PathSend.Visible := not PathAudio.Visible;
 end;
 
 procedure TFrameChat.MemoQueryKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
-  if (Key = vkReturn) and not ((ssCtrl in Shift) or (ssShift in Shift)) then
+  if (Key = vkReturn) and not ((ssCtrl in Shift) or (ssShift in Shift)) and not MemoQuery.Text.IsEmpty then
   begin
     Key := 0;
     KeyChar := #0;
     ButtonSendClick(nil);
   end;
+  MemoQueryChange(Sender);
+end;
+
+procedure TFrameChat.MemoQueryKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+begin
+  MemoQueryChange(Sender);
 end;
 
 procedure TFrameChat.UpdateMenuTitle(const Text: string);
@@ -1078,6 +1205,18 @@ begin
     TAnimator.AnimateFloat(LayoutTyping, 'Opacity', 1);
   end;
   LabelTyping.Visible := Value;
+end;
+
+procedure TFrameChat.TimerCheckRecordingTimer(Sender: TObject);
+begin
+  if FAudioRecord.IsMicrophoneRecording then
+  begin
+    LabelRecordingTime.Text := HumanTime(SecondsToTime(SecondsBetween(Now, FRecordingStartTime)));
+  end
+  else
+  begin
+    StopRecording;
+  end;
 end;
 
 procedure TFrameChat.TimerTypingTimer(Sender: TObject);

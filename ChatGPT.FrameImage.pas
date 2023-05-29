@@ -19,6 +19,7 @@ type
     procedure RectangleImageClick(Sender: TObject);
     procedure MenuItemCopyClick(Sender: TObject);
     procedure RectangleImagePaint(Sender: TObject; Canvas: TCanvas; const ARect: TRectF);
+    procedure LabelErrorResize(Sender: TObject);
   private
     FImage: string;
     FIsLoaded: Boolean;
@@ -43,6 +44,14 @@ begin
   FIsLoaded := False;
   Name := '';
   RectangleImage.HitTest := False;
+end;
+
+procedure TFrameImage.LabelErrorResize(Sender: TObject);
+begin
+  if LabelError.Width < 100 then
+    LabelError.Font.Size := 12
+  else
+    LabelError.Font.Size := 14;
 end;
 
 procedure TFrameImage.MenuItemCopyClick(Sender: TObject);

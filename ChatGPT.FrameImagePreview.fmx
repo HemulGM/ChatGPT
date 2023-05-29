@@ -68,24 +68,40 @@ object FramePreview: TFramePreview
         Size.Height = 86.000000000000000000
         Size.PlatformDefault = False
         Stroke.Kind = None
-      end
-      object ButtonDownload: TButton
-        Align = Right
-        Images = FormMain.SVGIconImageList
-        ImageIndex = 5
-        Margins.Left = 20.000000000000000000
-        Margins.Top = 20.000000000000000000
-        Margins.Right = 20.000000000000000000
-        Margins.Bottom = 20.000000000000000000
-        Position.X = 540.000000000000000000
-        Position.Y = 20.000000000000000000
-        Size.Width = 146.000000000000000000
-        Size.Height = 46.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'buttonstyle_menu'
-        TabOrder = 0
-        Text = 'Save as...'
-        OnClick = ButtonDownloadClick
+        object ButtonDownload: TButton
+          Align = Right
+          Hint = 'Save as ...'
+          Images = FormMain.SVGIconImageList
+          ImageIndex = 15
+          Margins.Top = 20.000000000000000000
+          Margins.Right = 20.000000000000000000
+          Margins.Bottom = 20.000000000000000000
+          Position.X = 640.000000000000000000
+          Position.Y = 20.000000000000000000
+          Size.Width = 46.000000000000000000
+          Size.Height = 46.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyle_icon'
+          TabOrder = 1
+          OnClick = ButtonDownloadClick
+        end
+        object ButtonShare: TButton
+          Align = Right
+          Hint = 'Share'
+          Images = FormMain.SVGIconImageList
+          ImageIndex = 14
+          Margins.Top = 20.000000000000000000
+          Margins.Right = 20.000000000000000000
+          Margins.Bottom = 20.000000000000000000
+          Position.X = 574.000000000000000000
+          Position.Y = 20.000000000000000000
+          Size.Width = 46.000000000000000000
+          Size.Height = 46.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyle_icon'
+          TabOrder = 0
+          OnClick = ButtonShareClick
+        end
       end
     end
   end
