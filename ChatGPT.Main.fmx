@@ -2187,7 +2187,6 @@ object FormMain: TFormMain
       item
         MultiResBitmap = <
           item
-            Size = 24
           end>
         IconName = 'Item 4'
         SVGText = 
@@ -2225,7 +2224,6 @@ object FormMain: TFormMain
       item
         MultiResBitmap = <
           item
-            Size = 24
           end>
         IconName = 'Item 7'
         SVGText = 
@@ -2250,7 +2248,6 @@ object FormMain: TFormMain
       item
         MultiResBitmap = <
           item
-            Size = 24
           end>
         IconName = 'Item 8'
         SVGText = 
@@ -2271,8 +2268,7 @@ object FormMain: TFormMain
       item
         MultiResBitmap = <
           item
-            Width = 19
-            Height = 15
+            Height = 26
           end>
         IconName = 'Item 9'
         SVGText = 
@@ -2415,23 +2411,29 @@ object FormMain: TFormMain
       item
         MultiResBitmap = <
           item
-            Size = 16
           end>
         IconName = 'Item 16'
         SVGText = 
-          '<?xml version="1.0" ?><svg class="feather feather-share-2" fill=' +
-          '"none" height="24" stroke="currentColor" stroke-linecap="round" ' +
-          'stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" wid' +
-          'th="24" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="5' +
-          '" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r' +
-          '="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1' +
-          '="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>'
+          '<?xml version="1.0" ?><!DOCTYPE svg  PUBLIC '#39'-//W3C//DTD SVG 1.1' +
+          '//EN'#39'  '#39'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'#39'><svg e' +
+          'nable-background="new 0 0 64 64" height="64px" id="Layer_1" vers' +
+          'ion="1.1" viewBox="0 0 64 64" width="64px" xml:space="preserve" ' +
+          'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.or' +
+          'g/1999/xlink"><path d="M48,39.26c-2.377,0-4.515,1-6.033,2.596L24' +
+          '.23,33.172c0.061-0.408,0.103-0.821,0.103-1.246c0-0.414-0.04-0.81' +
+          '8-0.098-1.215  l17.711-8.589c1.519,1.609,3.667,2.619,6.054,2.619' +
+          'c4.602,0,8.333-3.731,8.333-8.333c0-4.603-3.731-8.333-8.333-8.333' +
+          '  s-8.333,3.73-8.333,8.333c0,0.414,0.04,0.817,0.098,1.215l-17.71' +
+          '1,8.589c-1.519-1.609-3.666-2.619-6.054-2.619  c-4.603,0-8.333,3.' +
+          '731-8.333,8.333c0,4.603,3.73,8.333,8.333,8.333c2.377,0,4.515-1,6' +
+          '.033-2.596l17.737,8.684  c-0.061,0.407-0.103,0.821-0.103,1.246c0' +
+          ',4.603,3.731,8.333,8.333,8.333s8.333-3.73,8.333-8.333C56.333,42.' +
+          '99,52.602,39.26,48,39.26  z"/></svg>'
         Opacity = 1.000000000000000000
       end
       item
         MultiResBitmap = <
           item
-            Size = 20
           end>
         IconName = 'Item 17'
         SVGText = 
@@ -2481,32 +2483,32 @@ object FormMain: TFormMain
         Layers = <
           item
             Name = 'Item 4'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 22.000000000000000000
+            SourceRect.Bottom = 22.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 7'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 22.000000000000000000
+            SourceRect.Bottom = 22.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 8'
-            SourceRect.Right = 24.000000000000000000
-            SourceRect.Bottom = 24.000000000000000000
+            SourceRect.Right = 22.000000000000000000
+            SourceRect.Bottom = 22.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 9'
-            SourceRect.Right = 19.000000000000000000
-            SourceRect.Bottom = 19.000000000000000000
+            SourceRect.Right = 22.000000000000000000
+            SourceRect.Bottom = 22.000000000000000000
           end>
       end
       item
@@ -2553,14 +2555,16 @@ object FormMain: TFormMain
         Layers = <
           item
             Name = 'Item 16'
+            SourceRect.Right = 120.000000000000000000
+            SourceRect.Bottom = 120.000000000000000000
           end>
       end
       item
         Layers = <
           item
             Name = 'Item 17'
-            SourceRect.Right = 20.000000000000000000
-            SourceRect.Bottom = 20.000000000000000000
+            SourceRect.Right = 22.000000000000000000
+            SourceRect.Bottom = 22.000000000000000000
           end>
       end>
     Size = 24

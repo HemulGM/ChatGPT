@@ -1328,8 +1328,12 @@ object FrameChat: TFrameChat
         end
       end
       object LayoutAudioRecording: TLayout
-        Align = Client
-        Size.Width = 620.000000000000000000
+        Align = Contents
+        Margins.Left = 26.000000000000000000
+        Margins.Top = 12.000000000000000000
+        Margins.Right = 16.000000000000000000
+        Margins.Bottom = 12.000000000000000000
+        Size.Width = 726.000000000000000000
         Size.Height = 26.000000000000000000
         Size.PlatformDefault = False
         Visible = False

@@ -150,7 +150,6 @@ type
   end;
 
 const
-  URL_DISCORD = 'https://discord.com/invite/openai';
   URL_FAQ = 'https://help.openai.com/en/collections/3742473-chatgpt';
 
 const

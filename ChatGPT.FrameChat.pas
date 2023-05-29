@@ -822,13 +822,7 @@ begin
   PathSend.Visible := True;
   LayoutAudioRecording.Visible := False;
 
-  {$IFNDEF ANDROID OR IOS OR IOS64}
-  LayoutSendControls.Width := ButtonSend.Width * 3;
-  ButtonAudio.Visible := True;
-  {$ELSE}
-  LayoutSendControls.Width := ButtonSend.Width * 2;
-  //ButtonAudio.Visible := False;
-
+  {$IFDEF ANDROID OR IOS OR IOS64}
   ButtonExample1.OnClick := nil;
   ButtonExample2.OnClick := nil;
   ButtonExample3.OnClick := nil;

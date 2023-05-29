@@ -52,7 +52,7 @@ uses
 {$R *.res}
 
 begin
-  //GlobalUseSkia := True;
+  GlobalUseSkia := True;
   Application.Initialize;
   Application.CreateForm(TFormMain, FormMain);
   Application.Run;
