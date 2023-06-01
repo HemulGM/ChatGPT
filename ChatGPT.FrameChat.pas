@@ -10,7 +10,8 @@ uses
   ChatGPT.FrameMessage, ChatGPT.Classes, System.Threading, FMX.Edit, FMX.ImgList,
   OpenAI.Chat, System.Generics.Collections, OpenAI.Audio,
   OpenAI.Utils.ChatHistory, OpenAI.Images, ChatGPT.ChatSettings, System.JSON,
-  FMX.Effects, FMX.ListBox, Skia, Skia.FMX, ChatGPT.SoundRecorder;
+  FMX.Effects, FMX.ListBox, Skia, Skia.FMX, ChatGPT.SoundRecorder,
+  FMX.InertialMovement, System.RTLConsts;
 
 type
   TButton = class(FMX.StdCtrls.TButton)
@@ -23,10 +24,17 @@ type
     procedure SetBounds(X, Y, AWidth, AHeight: Single); override;
   end;
 
+  TFixedScrollCalculations = class(TScrollCalculations)
+  protected
+    procedure DoChanged; override;
+  end;
+
   TVertScrollBox = class(FMX.Layouts.TVertScrollBox)
   private
     FViewPositionY: Single;
     procedure SetViewPositionY(const Value: Single);
+  protected
+    function CreateAniCalculations: TScrollCalculations; override;
   published
     property ViewPositionY: Single read FViewPositionY write SetViewPositionY;
   end;
@@ -136,6 +144,7 @@ type
     procedure ButtonExample2Tap(Sender: TObject; const Point: TPointF);
     procedure ButtonExample3Tap(Sender: TObject; const Point: TPointF);
     procedure MemoQueryKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+    procedure MemoQueryEnter(Sender: TObject);
   private
     FAPI: IOpenAI;
     FChatId: string;
@@ -832,6 +841,7 @@ begin
   ClearChat;
   IsImageMode := False;
   MemoQueryChange(nil);
+  MemoQuery.ApplyStyleLookup;
 end;
 
 destructor TFrameChat.Destroy;
@@ -913,6 +923,11 @@ begin
   TAnimator.AnimateFloat(LayoutSend, 'Height', Max(LayoutSend.TagFloat, Min(H, 400)), 0.1);
   MemoQuery.ShowScrollBars := H > 400;
   UpdateSendControls;
+end;
+
+procedure TFrameChat.MemoQueryEnter(Sender: TObject);
+begin
+  MemoQuery.PrepareForPaint;
 end;
 
 procedure TFrameChat.UpdateSendControls;
@@ -1195,6 +1210,7 @@ begin
   begin
     LayoutTyping.Margins.Top := 40;
     LayoutTyping.Opacity := 0;
+    LayoutTyping.Position.X := LayoutSendControls.Position.X - 20;
     TAnimator.AnimateFloat(LayoutTyping, 'Margins.Top', 0);
     TAnimator.AnimateFloat(LayoutTyping, 'Opacity', 1);
   end;
@@ -1264,6 +1280,11 @@ end;
 
 { TVertScrollBox }
 
+function TVertScrollBox.CreateAniCalculations: TScrollCalculations;
+begin
+  Result := TFixedScrollCalculations.Create(Self);
+end;
+
 procedure TVertScrollBox.SetViewPositionY(const Value: Single);
 begin
   FViewPositionY := Value;
@@ -1276,6 +1297,24 @@ procedure TMemo.SetViewPos(const Value: Single);
 begin
   FViewPos := Value;
   ViewportPosition := TPointF.Create(ViewportPosition.X, Value);
+end;
+
+{ TFixedScrollCalculations }
+
+type
+  TControlHook = class(TControl)
+
+  end;
+
+procedure TFixedScrollCalculations.DoChanged;
+begin
+  //inherited .DoChanged;
+  TControlHook(ScrollBox).FDisableAlign := True;
+  try
+    inherited;
+  finally
+  TControlHook(ScrollBox).FDisableAlign := False;
+  end;
 end;
 
 end.

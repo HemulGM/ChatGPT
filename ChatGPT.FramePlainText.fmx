@@ -23,6 +23,7 @@ object FrameText: TFrameText
     Align = Client
     CanParentFocus = True
     Cursor = crDefault
+    DisableFocusEffect = True
     EnableDragHighlight = False
     Size.Width = 575.000000000000000000
     Size.Height = 387.000000000000000000
@@ -35,5 +36,12 @@ object FrameText: TFrameText
     OnMouseLeave = MemoTextMouseLeave
     Viewport.Width = 565.000000000000000000
     Viewport.Height = 387.000000000000000000
+  end
+  object TimerMouseOver: TTimer
+    Enabled = False
+    Interval = 50
+    OnTimer = TimerMouseOverTimer
+    Left = 256
+    Top = 144
   end
 end

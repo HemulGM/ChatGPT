@@ -47,6 +47,7 @@ begin
   KeyWord.Color := $FFC22700;
   KeyWord.Font.Assign(FDefaultFont);
   KeyWord.Font.Style := [TFontStyle.fsBold];
+  //KeyWord.Font.Size := 25;
   FKeyWords.Add(KeyWord);
 
   KeyWord := TKeyWord.Create;

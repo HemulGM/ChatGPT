@@ -12,15 +12,18 @@ uses
 type
   TFrameText = class(TFrame)
     MemoText: TMemo;
+    TimerMouseOver: TTimer;
     procedure FrameResize(Sender: TObject);
     procedure MemoTextMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
     procedure MemoTextMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
     procedure MemoTextMouseLeave(Sender: TObject);
     procedure MemoTextClick(Sender: TObject);
+    procedure TimerMouseOverTimer(Sender: TObject);
   private
     FOnWheel: TMouseWheelEvent;
     FCodeSyntax: TCodeSyntax;
     FStyledMemo: TStyledMemo;
+    FMouseMemo: TPointF;
     FUnderMouse: TUnderMouse;
     FUnderMouseAttr: TTextAttribute;
     procedure SetOnWheel(const Value: TMouseWheelEvent);
@@ -119,6 +122,7 @@ end;
 procedure TFrameText.MemoTextMouseLeave(Sender: TObject);
 begin
   {$IFDEF NEW_MEMO}
+  TimerMouseOver.Enabled := False;
   FUnderMouse.WordLine := -1;
   FStyledMemo.UpdateVisibleLayoutParams;
   FStyledMemo.Repaint;
@@ -128,30 +132,9 @@ end;
 procedure TFrameText.MemoTextMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
 begin
   {$IFDEF NEW_MEMO}
-  var BeginWord: Int64;
-  var Line: Int64;
-  var Str := FStyledMemo.GetWordAtPos(X, Y, BeginWord, Line);
-  if (not Str.IsEmpty) and (Str.ToLower.StartsWith('http')) then
-  begin
-    try
-      TURI.Create(Str);
-      MemoText.Cursor := crHandPoint;
-    except
-      MemoText.Cursor := crDefault;
-      Line := -1;
-    end;
-  end
-  else
-  begin
-    MemoText.Cursor := crDefault;
-    Line := -1;
-  end;
-  FUnderMouse.WordStart := BeginWord;
-  FUnderMouse.WordLength := Str.Length;
-  FUnderMouse.WordLine := Line;
-  FUnderMouse.Text := Str;
-  FStyledMemo.UpdateVisibleLayoutParams;
-  FStyledMemo.Repaint;
+  TimerMouseOver.Enabled := False;
+  TimerMouseOver.Enabled := True;
+  FMouseMemo := TPointF.Create(X, Y);
   {$ENDIF}
 end;
 
@@ -168,6 +151,35 @@ end;
 procedure TFrameText.SetOnWheel(const Value: TMouseWheelEvent);
 begin
   FOnWheel := Value;
+end;
+
+procedure TFrameText.TimerMouseOverTimer(Sender: TObject);
+begin
+  TimerMouseOver.Enabled := False;
+  {$IFDEF NEW_MEMO}
+  var BeginWord: Int64;
+  var Line: Int64;
+  var Str := FStyledMemo.GetWordAtPos(FMouseMemo.X, FMouseMemo.Y, BeginWord, Line);
+  if (not Str.IsEmpty) and (Str.ToLower.StartsWith('http')) then
+  try
+    TURI.Create(Str);
+    MemoText.Cursor := crHandPoint;
+  except
+    MemoText.Cursor := crDefault;
+    Line := -1;
+  end
+  else
+  begin
+    MemoText.Cursor := crDefault;
+    Line := -1;
+  end;
+  FUnderMouse.WordStart := BeginWord;
+  FUnderMouse.WordLength := Str.Length;
+  FUnderMouse.WordLine := Line;
+  FUnderMouse.Text := Str;
+  FStyledMemo.UpdateVisibleLayoutParams;
+  MemoText.Repaint;
+  {$ENDIF}
 end;
 
 {$IFDEF NEW_MEMO}

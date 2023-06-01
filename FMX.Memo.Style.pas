@@ -1262,22 +1262,26 @@ begin
   Spes := [' ', '''', '(', ')', '[', ']', '"'];
   BeginIndex := 0;
   for var I := Pos downto 1 do
-    if CharInSet(Text[I], Spes) or (I = 1) then
+    if CharInSet(Text[I], Spes) then
     begin
-      if I = 1 then
-        BeginIndex := 0
-      else
-        BeginIndex := I;
+      BeginIndex := I + 1;
+      Break;
+    end
+    else if I = 1 then
+    begin
+      BeginIndex := 0;
       Break;
     end;
   EndIndex := -1;
   for var I := Pos + 1 to Text.Length do
-    if CharInSet(Text[I], Spes) or (I = Text.Length) then
+    if CharInSet(Text[I], Spes) then
     begin
-      if I = Text.Length then
-        EndIndex := Text.Length - 1
-      else
-        EndIndex := I - 2;
+      EndIndex := I - 1;
+      Break;
+    end
+    else if I = Text.Length then
+    begin
+      EndIndex := Text.Length;
       Break;
     end;
   Result := True;
@@ -1306,10 +1310,10 @@ begin
     if FindPhraseBound(Model.Lines[CaretPos.Line], CaretPos.Pos, WordBeginIndex, WordEndIndex) and
       InRange(CaretPos.Pos, WordBeginIndex, WordEndIndex + 1) then
     begin
-      var SelStart := Model.PosToTextPos(TCaretPosition.Create(CaretPos.Line, WordBeginIndex));
+      var SelStart := Model.PosToTextPos(TCaretPosition.Create(CaretPos.Line, WordBeginIndex - 1));
       var SelLength := WordEndIndex - WordBeginIndex + 1;
       Line := CaretPos.Line;
-      BeginWord := WordBeginIndex;
+      BeginWord := WordBeginIndex - 1;
       Result := Model.Lines.Text.SubString(SelStart, SelLength);
     end;
   end;
@@ -3448,13 +3452,16 @@ begin
             Layout.TopLeft := FLines[I].Rect.TopLeft;
           end;
 
-          LRegion := Layout.RegionForRange(TTextRange.Create(LPos, LLength), RoundToWord);
-          for J := 0 to High(LRegion) do
+          if LLength >= 0 then
           begin
-            SetLength(Result, Length(Result) + 1);
-            Result[High(Result)] := LRegion[J];
-            Result[High(Result)].Top := Max(FLines[I].Rect.Top, LRegion[J].Top);
-            Result[High(Result)].Bottom := Min(FLines[I].Rect.Bottom, LRegion[J].Bottom);
+            LRegion := Layout.RegionForRange(TTextRange.Create(LPos, LLength), RoundToWord);
+            for J := 0 to High(LRegion) do
+            begin
+              SetLength(Result, Length(Result) + 1);
+              Result[High(Result)] := LRegion[J];
+              Result[High(Result)].Top := Max(FLines[I].Rect.Top, LRegion[J].Top);
+              Result[High(Result)].Bottom := Min(FLines[I].Rect.Bottom, LRegion[J].Bottom);
+            end;
           end;
 
           if FLines[I].Layout = nil then

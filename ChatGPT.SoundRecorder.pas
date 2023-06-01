@@ -31,7 +31,7 @@ implementation
 constructor TAudioRecord.Create(AOwner: TComponent);
 begin
   inherited;
-  FMicrophone := TCaptureDeviceManager.Current.DefaultAudioCaptureDevice;
+  FMicrophone := nil;// TCaptureDeviceManager.Current.DefaultAudioCaptureDevice;
   if Assigned(FMicrophone) then
     FMicrophone.OnPermissionRequest := MicrophonePermissionRequest;
 end;

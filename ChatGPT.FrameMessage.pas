@@ -44,6 +44,8 @@ type
     PopupMenuActions: TPopupMenu;
     MenuItemDelete: TMenuItem;
     MenuItemEdit: TMenuItem;
+    RectangleError: TRectangle;
+    Path9: TPath;
     procedure FrameResize(Sender: TObject);
     procedure ButtonCopyClick(Sender: TObject);
     procedure ButtonDeleteClick(Sender: TObject);
@@ -184,6 +186,8 @@ begin
   LayoutActions.Visible := False;
   IsAudio := False;
   FlowLayoutImages.Visible := False;
+  ButtonCopy.Enabled := False;
+  MenuItemEdit.Enabled := False;
 end;
 
 procedure TFrameMessage.StartAnimate;
@@ -266,6 +270,7 @@ begin
   for var Control in LayoutContentText.Controls do
     if Control is TFrameText then
       (Control as TFrameText).MemoText.FontColor := $FFEF4444;
+  UpdateMessageRole;
 end;
 
 procedure TFrameMessage.SetMessageRole(const Value: TMessageKind);
@@ -401,6 +406,7 @@ begin
   RectangleUser.Visible := FMessageRole = TMessageKind.User;
   RectangleBot.Visible := FMessageRole = TMessageKind.Assistant;
   RectangleSystem.Visible := FMessageRole = TMessageKind.System;
+  RectangleError.Visible := FMessageRole = TMessageKind.Error;
 
   if FMessageRole = TMessageKind.Assistant then
     RectangleBG.Fill.Color := BGColorBot
@@ -489,6 +495,9 @@ begin
   else
     FText := '';
   FText := FText.Trim([' ', #13, #10]);
+
+  ButtonCopy.Enabled := not FText.IsEmpty;
+  MenuItemEdit.Enabled := not FText.IsEmpty;
   UpdateMode;
   ParseText(FText);
 end;

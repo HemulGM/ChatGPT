@@ -23,6 +23,7 @@ type
     LayoutCopyCode: TLayout;
     PathCopy: TPath;
     LabelCopy: TLabel;
+    TimerMouseOver: TTimer;
     procedure FrameResize(Sender: TObject);
     procedure LayoutCopyCodeClick(Sender: TObject);
     procedure MemoCodeMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
@@ -33,11 +34,13 @@ type
     procedure RectangleClientMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure RectangleClientMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
     procedure RectangleClientMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
+    procedure TimerMouseOverTimer(Sender: TObject);
   private
     FCodeSyntax: TCodeSyntax;
     FOnWheel: TMouseWheelEvent;
     FStyledMemo: TStyledMemo;
     FUnderMouse: TUnderMouse;
+    FMouseMemo: TPointF;
     FUnderMouseAttr: TTextAttribute;
     FMouseDown: TPointF;
     procedure FOnStyleLookup(Sender: TObject);
@@ -183,6 +186,7 @@ end;
 procedure TFrameCode.MemoCodeMouseLeave(Sender: TObject);
 begin
   {$IFDEF NEW_MEMO}
+  TimerMouseOver.Enabled := False;
   FUnderMouse.WordLine := -1;
   FStyledMemo.UpdateVisibleLayoutParams;
   FStyledMemo.Repaint;
@@ -192,30 +196,9 @@ end;
 procedure TFrameCode.MemoCodeMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
 begin
   {$IFDEF NEW_MEMO}
-  var BeginWord: Int64;
-  var Line: Int64;
-  var Str := FStyledMemo.GetWordAtPos(X, Y, BeginWord, Line);
-  if (not Str.IsEmpty) and (Str.ToLower.StartsWith('http')) then
-  begin
-    try
-      TURI.Create(Str);
-      MemoCode.Cursor := crHandPoint;
-    except
-      MemoCode.Cursor := crDefault;
-      Line := -1;
-    end;
-  end
-  else
-  begin
-    MemoCode.Cursor := crDefault;
-    Line := -1;
-  end;
-  FUnderMouse.WordStart := BeginWord;
-  FUnderMouse.WordLength := Str.Length;
-  FUnderMouse.WordLine := Line;
-  FUnderMouse.Text := Str;
-  FStyledMemo.UpdateVisibleLayoutParams;
-  FStyledMemo.Repaint;
+  TimerMouseOver.Enabled := False;
+  TimerMouseOver.Enabled := True;
+  FMouseMemo := TPointF.Create(X, Y);
   {$ENDIF}
 end;
 
@@ -259,6 +242,34 @@ end;
 procedure TFrameCode.SetOnWheel(const Value: TMouseWheelEvent);
 begin
   FOnWheel := Value;
+end;
+
+procedure TFrameCode.TimerMouseOverTimer(Sender: TObject);
+begin
+  {$IFDEF NEW_MEMO}
+  var BeginWord: Int64;
+  var Line: Int64;
+  var Str := FStyledMemo.GetWordAtPos(FMouseMemo.X, FMouseMemo.Y, BeginWord, Line);
+  if (not Str.IsEmpty) and (Str.ToLower.StartsWith('http')) then
+  try
+    TURI.Create(Str);
+    MemoCode.Cursor := crHandPoint;
+  except
+    MemoCode.Cursor := crDefault;
+    Line := -1;
+  end
+  else
+  begin
+    MemoCode.Cursor := crDefault;
+    Line := -1;
+  end;
+  FUnderMouse.WordStart := BeginWord;
+  FUnderMouse.WordLength := Str.Length;
+  FUnderMouse.WordLine := Line;
+  FUnderMouse.Text := Str;
+  FStyledMemo.UpdateVisibleLayoutParams;
+  FStyledMemo.Repaint;
+  {$ENDIF}
 end;
 
 {$IFDEF NEW_MEMO}

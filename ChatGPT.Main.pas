@@ -39,7 +39,7 @@ type
     RectangleMenuBG: TRectangle;
     ButtonCloseMenu: TButton;
     LayoutMenuContainer: TLayout;
-    Layout1: TLayout;
+    LayoutCloseMenu: TLayout;
     Line1: TLine;
     ButtonClear: TButton;
     ButtonFAQ: TButton;
@@ -53,6 +53,8 @@ type
     ButtonAbout: TButton;
     ActionListMain: TActionList;
     ShowShareSheetAction: TShowShareSheetAction;
+    LayoutMenuButtons: TLayout;
+    ButtonMenuButonsSwitch: TButton;
     procedure ButtonNewChatClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure ButtonMenuClick(Sender: TObject);
@@ -69,6 +71,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ButtonAboutClick(Sender: TObject);
     procedure ShowShareSheetActionBeforeExecute(Sender: TObject);
+    procedure ButtonMenuButonsSwitchClick(Sender: TObject);
   private
     class var
       FChatIdCount: Integer;
@@ -254,6 +257,20 @@ end;
 procedure TFormMain.ButtonFAQClick(Sender: TObject);
 begin
   OpenUrl(URL_FAQ);
+end;
+
+procedure TFormMain.ButtonMenuButonsSwitchClick(Sender: TObject);
+begin
+  if LayoutMenuButtons.Height < 210 then
+  begin
+    TAnimator.AnimateFloat(LayoutMenuButtons, 'Height', 210);
+    ButtonMenuButonsSwitch.RotationAngle := 0;
+  end
+  else
+  begin
+    TAnimator.AnimateFloat(LayoutMenuButtons, 'Height', 17);
+    ButtonMenuButonsSwitch.RotationAngle := 180;
+  end;
 end;
 
 procedure TFormMain.ButtonMenuClick(Sender: TObject);
@@ -513,6 +530,17 @@ begin
       Left := JSON.GetValue<Integer>('left', Left);
       Top := JSON.GetValue<Integer>('top', Top);
 
+      if JSON.GetValue('menubuttons', True) then
+      begin
+        LayoutMenuButtons.Height := 210;
+        ButtonMenuButonsSwitch.RotationAngle := 0;
+      end
+      else
+      begin
+        LayoutMenuButtons.Height := 17;
+        ButtonMenuButonsSwitch.RotationAngle := 180;
+      end;
+
       OpenAI.API.CustomHeaders := Headers;
     finally
       JSON.Free;
@@ -552,6 +580,8 @@ begin
     JSON.AddPair('height', Height);
     JSON.AddPair('left', Left);
     JSON.AddPair('top', Top);
+
+    JSON.AddPair('menubuttons', LayoutMenuButtons.Height >= 210);
 
     if Length(OpenAI.API.CustomHeaders) > 0 then
     begin
@@ -699,7 +729,7 @@ begin
   {$IFNDEF ANDROID OR IOS OR IOS64}
   SelFrame.MemoQuery.SetFocus;
   {$ENDIF}
-  SelFrame.MemoQuery.PrepareForPaint;
+  TThread.ForceQueue(nil, SelFrame.MemoQuery.PrepareForPaint);
 end;
 
 constructor TFormMain.Create(AOwner: TComponent);

@@ -130,7 +130,7 @@ object FrameCode: TFrameCode
         'end.')
       ReadOnly = True
       StyledSettings = [Style]
-      TextSettings.Font.Family = 'Consolas'
+      TextSettings.Font.Family = 'Consolas, monospace'
       TextSettings.Font.Size = 14.000000000000000000
       TextSettings.FontColor = xFFE8E8E8
       Align = Client
@@ -153,5 +153,12 @@ object FrameCode: TFrameCode
       Viewport.Width = 565.000000000000000000
       Viewport.Height = 345.000000000000000000
     end
+  end
+  object TimerMouseOver: TTimer
+    Enabled = False
+    Interval = 50
+    OnTimer = TimerMouseOverTimer
+    Left = 136
+    Top = 160
   end
 end

@@ -934,9 +934,10 @@ object FrameChat: TFrameChat
         Size.PlatformDefault = False
         StyleLookup = 'memostyle_clear'
         TabOrder = 0
+        OnEnter = MemoQueryEnter
         OnKeyUp = MemoQueryKeyUp
         OnKeyDown = MemoQueryKeyDown
-        Viewport.Width = 610.000000000000000000
+        Viewport.Width = 620.000000000000000000
         Viewport.Height = 26.000000000000000000
         object LabelSendTip: TLabel
           Align = Client

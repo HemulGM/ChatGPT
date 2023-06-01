@@ -329,6 +329,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Android64\Release\provider_paths.xml" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\res\xml\</RemoteDir>
+            <RemoteName>provider_paths.xml</RemoteName>
+            <DeployClass>AndroidFileProvider</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_426x320.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>ChatGPT\res\drawable-small\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
@@ -724,15 +733,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ChatGPT\library\lib\armeabi-v7a\</RemoteDir>
-            <RemoteName>gdbserver</RemoteName>
-            <DeployClass>AndroidGDBServer</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_470x320.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ChatGPT\res\drawable-normal\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
@@ -769,15 +769,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Condition="'$(Config)'=='Release'">
-            <RemoteDir>ChatGPT\library\lib\armeabi-v7a\</RemoteDir>
-            <RemoteName>gdbserver</RemoteName>
-            <DeployClass>AndroidGDBServer</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="Android\Debug\AndroidManifest.xml" Condition="'$(Config)'=='Debug'">
             <RemoteDir>ChatGPT\</RemoteDir>
             <RemoteName>AndroidManifest.xml</RemoteName>
@@ -800,15 +791,6 @@
             <RemoteDir>ChatGPT\</RemoteDir>
             <RemoteName>AndroidManifest.xml</RemoteName>
             <DeployClass>ProjectAndroidManifest</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="Android\Debug\provider_paths.xml" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>ChatGPT\res\xml\</RemoteDir>
-            <RemoteName>provider_paths.xml</RemoteName>
-            <DeployClass>AndroidFileProvider</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -906,6 +888,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
             <Required>True</Required>
+        </DeployFile>
+        <DeployFile Include="Android\Release\provider_paths.xml" Condition="'$(Config)'=='Release'">
+            <RemoteDir>ChatGPT\res\xml\</RemoteDir>
+            <RemoteName>provider_paths.xml</RemoteName>
+            <DeployClass>AndroidFileProvider</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
         </DeployFile>
         <DeployFile Include="Android\Release\ChatGPT.classes" Condition="'$(Config)'=='Release'">
             <RemoteDir>ChatGPT\classes\</RemoteDir>

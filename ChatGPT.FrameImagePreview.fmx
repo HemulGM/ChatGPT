@@ -34,6 +34,7 @@ object FramePreview: TFramePreview
     Size.Width = 345.000000000000000000
     Size.Height = 249.000000000000000000
     Size.PlatformDefault = False
+    WrapMode = Place
   end
   object LayoutControls: TLayout
     Align = Contents
