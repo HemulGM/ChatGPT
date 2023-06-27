@@ -47,7 +47,12 @@ uses
   ChatGPT.Code.JSON in 'Code\ChatGPT.Code.JSON.pas',
   ChatGPT.About in 'ChatGPT.About.pas' {FrameAbout: TFrame},
   ChatGPT.SoundRecorder in 'ChatGPT.SoundRecorder.pas',
-  ChatGPT.Android in 'ChatGPT.Android.pas';
+  ChatGPT.Android in 'ChatGPT.Android.pas',
+  OpenAI.Chat.Functions in 'DelphiOpenAI\OpenAI.Chat.Functions.pas',
+  OpenAI.Chat.Functions.Samples in 'DelphiOpenAI\OpenAI.Chat.Functions.Samples.pas',
+  ChatGPT.GPTFunctions in 'ChatGPT.GPTFunctions.pas',
+  OWM.API in 'OWM_API\OWM.API.pas',
+  OWM.Classes in 'OWM_API\OWM.Classes.pas';
 
 {$R *.res}
 

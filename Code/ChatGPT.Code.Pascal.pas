@@ -14,7 +14,7 @@ type
   public
     constructor Create(DefaultFont: TFont; DefaultColor: TAlphaColor); override;
     destructor Destroy; override;
-    function GetAttributesForLine(const Line: string): TArray<TTextAttributedRangeData>; override;
+    function GetAttributesForLine(const Line: string; const Index: Integer): TArray<TTextAttributedRangeData>; override;
   end;
 
 implementation
@@ -84,120 +84,126 @@ begin
   inherited;
 end;
 
-function TCodeSyntaxPascal.GetAttributesForLine(const Line: string): TArray<TTextAttributedRangeData>;
+function TCodeSyntaxPascal.GetAttributesForLine(const Line: string; const Index: Integer): TArray<TTextAttributedRangeData>;
 const
   Seps =[' ', ';', ')', '(', '[', ']', ':', '<', '>', ',', '+', '-', '=', '*', '/', '&'];
 begin
-  var Buf: string := '';
-  var IsString: Boolean := False;
-  var IsComment: Boolean := False;
-  for var C := 0 to Line.Length do
-  begin
-    if Line.IsEmpty then
-      Continue;
-    if IsComment then
+  if FCached.TryGetValue(Index, Result) then
+    Exit;
+  try
+    var Buf: string := '';
+    var IsString: Boolean := False;
+    var IsComment: Boolean := False;
+    for var C := 0 to Line.Length do
     begin
-      if Line.Chars[C] = '}' then
+      if Line.IsEmpty then
+        Continue;
+      if IsComment then
       begin
-        IsComment := False;
-        if not Buf.IsEmpty then
+        if Line.Chars[C] = '}' then
         begin
-          if Buf.StartsWith('{$') then
-            Result := Result + [
-              TTextAttributedRangeData.Create(
-              TTextRange.Create(C - Buf.Length, Buf.Length + 1),
-              TTextAttribute.Create(FDirectiveKey.Font, FDirectiveKey.Color)
-              )]
-          else
-            Result := Result + [
-              TTextAttributedRangeData.Create(
-              TTextRange.Create(C - Buf.Length, Buf.Length + 1),
-              TTextAttribute.Create(FCommentKey.Font, FCommentKey.Color)
-              )];
-          Buf := '';
+          IsComment := False;
+          if not Buf.IsEmpty then
+          begin
+            if Buf.StartsWith('{$') then
+              Result := Result + [
+                TTextAttributedRangeData.Create(
+                TTextRange.Create(C - Buf.Length, Buf.Length + 1),
+                TTextAttribute.Create(FDirectiveKey.Font, FDirectiveKey.Color)
+                )]
+            else
+              Result := Result + [
+                TTextAttributedRangeData.Create(
+                TTextRange.Create(C - Buf.Length, Buf.Length + 1),
+                TTextAttribute.Create(FCommentKey.Font, FCommentKey.Color)
+                )];
+            Buf := '';
+          end;
+          Continue;
         end;
+        Buf := Buf + Line.Chars[C];
         Continue;
       end;
-      Buf := Buf + Line.Chars[C];
-      Continue;
-    end;
-    if IsString then
-    begin
-      if Line.Chars[C] = '''' then
+      if IsString then
       begin
-        IsString := False;
-        if not Buf.IsEmpty then
+        if Line.Chars[C] = '''' then
+        begin
+          IsString := False;
+          if not Buf.IsEmpty then
+          begin
+            Result := Result + [
+              TTextAttributedRangeData.Create(
+              TTextRange.Create(C - Buf.Length, Buf.Length + 1),
+              TTextAttribute.Create(FStringKey.Font, FStringKey.Color)
+              )];
+            Buf := '';
+          end;
+          Continue;
+        end;
+        Buf := Buf + Line.Chars[C];
+        Continue;
+      end;
+      if C <> Line.Length then
+      begin
+        if (Line.Chars[C] = '/') and (Line.Chars[C + 1] = '/') then
         begin
           Result := Result + [
             TTextAttributedRangeData.Create(
-            TTextRange.Create(C - Buf.Length, Buf.Length + 1),
-            TTextAttribute.Create(FStringKey.Font, FStringKey.Color)
+            TTextRange.Create(C, Line.Length - C),
+            TTextAttribute.Create(FCommentKey.Font, FCommentKey.Color)
             )];
+          Exit;
+        end;
+        if Line.Chars[C] = '{' then
+        begin
+          IsComment := True;
+          Buf := Buf + Line.Chars[C];
+          Continue;
+        end;
+        if Line.Chars[C] = '''' then
+        begin
+          IsString := True;
+          Buf := Buf + Line.Chars[C];
+          Continue;
+        end;
+      end;
+
+      if (C = Line.Length) or CharInSet(Line.Chars[C], Seps) then
+      begin
+        if not Buf.IsEmpty then
+        begin
+          var KeyWord: TKeyWord;
+          var Num: Extended;
+          if (TryStrToFloat(Buf.Replace('.', ','), Num) or Buf.StartsWith('$')) then
+          begin
+            Result := Result + [TTextAttributedRangeData.Create(
+              TTextRange.Create(C - Buf.Length, Buf.Length),
+              TTextAttribute.Create(FNumKey.Font, FNumKey.Color)
+              )];
+          end
+          else if Buf.StartsWith('#') then
+          begin
+            Result := Result + [TTextAttributedRangeData.Create(
+              TTextRange.Create(C - Buf.Length, Buf.Length),
+              TTextAttribute.Create(FStringKey.Font, FStringKey.Color)
+              )];
+          end
+          else if FKeyWords.FindWord(Buf, KeyWord) then
+          begin
+            Result := Result + [TTextAttributedRangeData.Create(
+              TTextRange.Create(C - Buf.Length, Buf.Length),
+              TTextAttribute.Create(KeyWord.Font, KeyWord.Color)
+              )];
+          end;
+
           Buf := '';
         end;
-        Continue;
-      end;
-      Buf := Buf + Line.Chars[C];
-      Continue;
-    end;
-    if C <> Line.Length then
-    begin
-      if (Line.Chars[C] = '/') and (Line.Chars[C + 1] = '/') then
-      begin
-        Result := Result + [
-          TTextAttributedRangeData.Create(
-          TTextRange.Create(C, Line.Length - C),
-          TTextAttribute.Create(FCommentKey.Font, FCommentKey.Color)
-          )];
-        Exit;
-      end;
-      if Line.Chars[C] = '{' then
-      begin
-        IsComment := True;
+      end
+      else
         Buf := Buf + Line.Chars[C];
-        Continue;
-      end;
-      if Line.Chars[C] = '''' then
-      begin
-        IsString := True;
-        Buf := Buf + Line.Chars[C];
-        Continue;
-      end;
     end;
-
-    if (C = Line.Length) or CharInSet(Line.Chars[C], Seps) then
-    begin
-      if not Buf.IsEmpty then
-      begin
-        var KeyWord: TKeyWord;
-        var FL: Extended;
-        if (TryStrToFloat(Buf.Replace('.', ','), FL) or Buf.StartsWith('$')) then
-        begin
-          Result := Result + [TTextAttributedRangeData.Create(
-            TTextRange.Create(C - Buf.Length, Buf.Length),
-            TTextAttribute.Create(FNumKey.Font, FNumKey.Color)
-            )];
-        end
-        else if Buf.StartsWith('#') then
-        begin
-          Result := Result + [TTextAttributedRangeData.Create(
-            TTextRange.Create(C - Buf.Length, Buf.Length),
-            TTextAttribute.Create(FStringKey.Font, FStringKey.Color)
-            )];
-        end
-        else if FKeyWords.FindWord(Buf, KeyWord) then
-        begin
-          Result := Result + [TTextAttributedRangeData.Create(
-            TTextRange.Create(C - Buf.Length, Buf.Length),
-            TTextAttribute.Create(KeyWord.Font, KeyWord.Color)
-            )];
-        end;
-
-        Buf := '';
-      end;
-    end
-    else
-      Buf := Buf + Line.Chars[C];
+  finally
+    FCached.AddOrSetValue(Index, Result);
   end;
 end;
 

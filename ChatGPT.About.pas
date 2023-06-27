@@ -100,7 +100,7 @@ end;
 procedure TFrameAbout.SetMode(const Value: TWindowMode);
 begin
   inherited;
-  if Mode = TWindowMode.wmCompact then
+  if Mode = TWindowMode.Compact then
   begin
     LayoutClient.Align := TAlignLayout.Client;
     RectangleFrame.Corners := [];

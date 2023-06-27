@@ -937,14 +937,15 @@ object FrameChat: TFrameChat
         OnEnter = MemoQueryEnter
         OnKeyUp = MemoQueryKeyUp
         OnKeyDown = MemoQueryKeyDown
+        OnViewportPositionChange = MemoQueryViewportPositionChange
         Viewport.Width = 620.000000000000000000
         Viewport.Height = 26.000000000000000000
         object LabelSendTip: TLabel
           Align = Client
           StyledSettings = [Family, Style]
           Opacity = 0.800000011920929000
-          Size.Width = 610.000000000000000000
-          Size.Height = 26.000000000000000000
+          Size.Width = 50.000000000000000000
+          Size.Height = 50.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Size = 16.000000000000000000
           TextSettings.FontColor = xFFACACBE
@@ -1590,13 +1591,6 @@ object FrameChat: TFrameChat
       'mpeg'
     Left = 64
     Top = 202
-  end
-  object TimerUpdateTextSize: TTimer
-    Enabled = False
-    Interval = 100
-    OnTimer = TimerUpdateTextSizeTimer
-    Left = 64
-    Top = 144
   end
   object LayoutButtom: TLayout
     Align = Bottom

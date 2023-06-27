@@ -4,3 +4,6 @@
 [submodule "WindowDarkMode"]
 	path = WindowDarkMode
 	url = https://github.com/HemulGM/WindowDarkMode
+[submodule "OWM_API"]
+	path = OWM_API
+	url = https://github.com/HemulGM/OWM_API

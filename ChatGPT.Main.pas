@@ -9,7 +9,8 @@ uses
   System.ImageList, FMX.ImgList, FMX.SVGIconImageList, ChatGPT.FrameChat,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Effects, FMX.Filter.Effects,
   FMX.Edit, ChatGPT.Classes, System.JSON, FMX.ComboEdit, FMX.Menus,
-  System.Actions, FMX.ActnList, FMX.StdActns, FMX.MediaLibrary.Actions;
+  System.Generics.Collections, System.Actions, FMX.ActnList, FMX.StdActns,
+  FMX.MediaLibrary.Actions, OpenAI.Chat.Functions;
 
 type
   TListBoxItemChat = class(TListBoxItem)
@@ -68,10 +69,11 @@ type
     procedure ButtonClearCancelClick(Sender: TObject);
     procedure ButtonFAQClick(Sender: TObject);
     procedure ButtonSettingsClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ButtonAboutClick(Sender: TObject);
     procedure ShowShareSheetActionBeforeExecute(Sender: TObject);
     procedure ButtonMenuButonsSwitchClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormSaveState(Sender: TObject);
   private
     class var
       FChatIdCount: Integer;
@@ -94,6 +96,8 @@ type
     FModel: string;
     FTopP: Single;
     FCanShare: Boolean;
+    FGPTFuncList: TList<IChatFunction>;
+    FUseFunctions: Boolean;
     procedure SetMode(const Value: TWindowMode);
     procedure UpdateMode;
     procedure SelectChat(const ChatId: string);
@@ -128,14 +132,18 @@ type
     procedure SetTopP(const Value: Single);
     function GetCanShare: Boolean;
     procedure Defaults;
+    procedure FOnNeedFuncList(Sender: TObject; out Items: TArray<IChatFunction>);
+    procedure CreateGPTFunctions;
+    procedure SetUseFunctions(const Value: Boolean);
   protected
     procedure CreateHandle; override;
   public
     procedure LoadChats;
     procedure SaveChats;
+    procedure ShareBitmap(Bitmap: TBitmap);
     class function NextChatId: Integer; static;
+    property UseFunctions: Boolean read FUseFunctions write SetUseFunctions;
     property OpenAI: TOpenAIComponent read FOpenAI;
-    constructor Create(AOwner: TComponent); override;
     property Mode: TWindowMode read FMode write SetMode;
     property Token: string read FToken write SetToken;
     property Temperature: Single read FTemperature write SetTemperature;
@@ -148,8 +156,9 @@ type
     property TopP: Single read FTopP write SetTopP;
     property Model: string read FModel write SetModel;
     property Lang: string read FLang write SetLang;
-    procedure ShareBitmap(Bitmap: TBitmap);
     property CanShare: Boolean read FCanShare;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
 const
@@ -171,18 +180,23 @@ uses
   {$IFDEF MSWINDOWS}
   DarkModeApi.FMX, FMX.Platform.Win,
   {$ENDIF}
-  FMX.Ani, System.Math, System.Rtti, FMX.Utils, FMX.DialogService,
+  FMX.Text, FMX.Ani, System.Math, System.Rtti, FMX.Utils, FMX.DialogService,
   System.Threading, System.Net.URLClient, System.IOUtils, ChatGPT.Settings,
   ChatGPT.Overlay, FMX.Styles, HGM.FMX.Ani, HGM.FMX.Image, OpenAI.API,
-  ChatGPT.About, FMX.Platform, FMX.MediaLibrary;
+  ChatGPT.About, FMX.Platform, FMX.MediaLibrary, ChatGPT.GPTFunctions;
 
 {$R *.fmx}
 
 procedure CreateAppFolder;
 begin
-  TDirectory.CreateDirectory(FAppFolder);
-  TDirectory.CreateDirectory(FImagesCacheFolder);
-  TDirectory.CreateDirectory(FAudioCacheFolder);
+  try
+    TDirectory.CreateDirectory(FAppFolder);
+    TDirectory.CreateDirectory(FImagesCacheFolder);
+    TDirectory.CreateDirectory(FAudioCacheFolder);
+  except
+    on E: Exception do
+      ShowMessage('Error: ' + E.Message);
+  end;
 end;
 
 { TFormMain }
@@ -263,12 +277,12 @@ procedure TFormMain.ButtonMenuButonsSwitchClick(Sender: TObject);
 begin
   if LayoutMenuButtons.Height < 210 then
   begin
-    TAnimator.AnimateFloat(LayoutMenuButtons, 'Height', 210);
+    TAnimator.AnimateFloat(LayoutMenuButtons, 'Height', 210, 0.1);
     ButtonMenuButonsSwitch.RotationAngle := 0;
   end
   else
   begin
-    TAnimator.AnimateFloat(LayoutMenuButtons, 'Height', 17);
+    TAnimator.AnimateFloat(LayoutMenuButtons, 'Height', 17, 0.1);
     ButtonMenuButonsSwitch.RotationAngle := 180;
   end;
 end;
@@ -348,7 +362,7 @@ begin
   for var Control in LayoutChatsBox.Controls do
     if Control is TFrameChat then
     begin
-      var Frame := Control as TFrameChat;
+      var Frame := TFrameChat(Control);
       if Frame.ChatId = ChatId then
       begin
         Frame.Release;
@@ -357,12 +371,13 @@ begin
     end;
   var DeletedIndex: Integer := -1;
   for var i := 0 to Pred(ListBoxChatList.Count) do
-    if (ListBoxChatList.ListItems[i] as TListBoxItemChat).ChatId = ChatId then
-    begin
-      DeletedIndex := i;
-      ListBoxChatList.ListItems[i].Release;
-      Break;
-    end;
+    if ListBoxChatList.ListItems[i] is TListBoxItemChat then
+      if TListBoxItemChat(ListBoxChatList.ListItems[i]).ChatId = ChatId then
+      begin
+        DeletedIndex := i;
+        ListBoxChatList.ListItems[i].Release;
+        Break;
+      end;
   if ListBoxChatList.Count <= 0 then
     SelectChat(CreateChat)
   else
@@ -372,10 +387,16 @@ begin
   end;
 end;
 
+destructor TFormMain.Destroy;
+begin
+  FGPTFuncList.Free;
+  inherited;
+end;
+
 procedure TFormMain.ButtonNewChatClick(Sender: TObject);
 begin
   SelectChat(CreateChat);
-  if Mode = wmCompact then
+  if Mode = TWindowMode.Compact then
     CloseMenu;
 end;
 
@@ -396,7 +417,7 @@ var
 begin
   if TFMXObjectHelper.FindNearestParentOfClass<TListBoxItem>(Button, ListItem) then
   begin
-    TDialogService.InputQuery('Chat name', ['Name'], [ListItem.Text],
+    TDialogService.InputQuery('New Chat name', ['Name'], [ListItem.Text],
       procedure(const AResult: TModalResult; const AValues: array of string)
       begin
         if AResult = mrOk then
@@ -411,15 +432,18 @@ end;
 procedure TFormMain.FOnChatDeleteClick(Sender: TObject);
 var
   Button: TButton absolute Sender;
-  ListItem: TListBoxItem;
+  ListItem: TListBoxItemChat;
+  ChatId: string;
 begin
-  if TFMXObjectHelper.FindNearestParentOfClass<TListBoxItem>(Button, ListItem) then
+  if TFMXObjectHelper.FindNearestParentOfClass<TListBoxItemChat>(Button, ListItem) then
   begin
-    TDialogService.MessageDialog('Delete "' + ListItem.Text + '"?', TMsgDlgType.mtConfirmation, [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo], TMsgDlgBtn.mbNo, 0,
+    ChatId := ListItem.ChatId;
+    TDialogService.MessageDialog('Delete "' + ListItem.Text + '"?', TMsgDlgType.mtConfirmation,
+      [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo], TMsgDlgBtn.mbNo, 0,
       procedure(const AResult: TModalResult)
       begin
         if AResult = mrYes then
-          DeleteChat((ListItem as TListBoxItemChat).ChatId);
+          DeleteChat(ChatId);
       end);
   end;
 end;
@@ -428,14 +452,21 @@ procedure TFormMain.FOnChatItemClick(Sender: TObject);
 var
   Item: TListBoxItemChat absolute Sender;
 begin
+  if not (Item is TListBoxItemChat) then
+    Exit;
   SelectChat(Item.ChatId);
-  if Mode = wmCompact then
+  if Mode = TWindowMode.Compact then
     CloseMenu;
 end;
 
 procedure TFormMain.FOnChatItemTap(Sender: TObject; const Point: TPointF);
 begin
   FOnChatItemClick(Sender);
+end;
+
+procedure TFormMain.FOnNeedFuncList(Sender: TObject; out Items: TArray<IChatFunction>);
+begin
+  Items := FGPTFuncList.ToArray;
 end;
 
 function TFormMain.GetSettingsFileName: string;
@@ -624,7 +655,7 @@ begin
       begin
         for var JChat in JSONChats do
           if JChat is TJSONObject then
-            CreateChat(JChat as TJSONObject);
+            CreateChat(TJSONObject(JChat));
       end;
       SelectChat(FSelectedChatId);
     finally
@@ -645,13 +676,14 @@ begin
     var JSONChats := TJSONArray.Create;
     JSON.AddPair('items', JSONChats);
     for var i := 0 to ListBoxChatList.Count - 1 do
-    begin
-      var Frame := GetChatFrame((ListBoxChatList.ListItems[i] as TListBoxItemChat).ChatId);
-      if Assigned(Frame) then
-        JSONChats.Add(Frame.SaveAsJson)
-      else
-        JSONChats.Add((ListBoxChatList.ListItems[i] as TListBoxItemChat).JSON.Clone as TJSONObject);
-    end;
+      if ListBoxChatList.ListItems[i] is TListBoxItemChat then
+      begin
+        var Frame := GetChatFrame(TListBoxItemChat(ListBoxChatList.ListItems[i]).ChatId);
+        if Assigned(Frame) then
+          JSONChats.Add(Frame.SaveAsJson)
+        else
+          JSONChats.Add(TListBoxItemChat(ListBoxChatList.ListItems[i]).JSON.Clone as TJSONObject);
+      end;
     TFile.WriteAllText(GetChatsFileName, JSON.ToJSON, TEncoding.UTF8);
   except
     on E: Exception do
@@ -671,7 +703,7 @@ begin
   for var Control in LayoutChatsBox.Controls do
     if Control is TFrameChat then
     begin
-      var Frame := Control as TFrameChat;
+      var Frame := TFrameChat(Control);
       if Frame.ChatId = ChatId then
         Exit(Frame);
     end;
@@ -688,15 +720,17 @@ begin
     begin
       ListBoxChatList.ListItems[i].IsSelected := True;
       LabelChatName.Text := ListBoxChatList.ListItems[i].Text;
-      ItemList := ListBoxChatList.ListItems[i] as TListBoxItemChat;
+      ItemList := TListBoxItemChat(ListBoxChatList.ListItems[i]);
       Break;
     end;
+  if not Assigned(ItemList) then
+    Exit;
 
   var SelFrame: TFrameChat := nil;
   for var Control in LayoutChatsBox.Controls do
     if Control is TFrameChat then
     begin
-      var Frame := Control as TFrameChat;
+      var Frame := TFrameChat(Control);
       Frame.Visible := Frame.ChatId = ChatId;
       if Frame.Visible then
         SelFrame := Frame;
@@ -709,6 +743,7 @@ begin
     SelFrame.Align := TAlignLayout.Client;
     SelFrame.API := OpenAI;
     SelFrame.Mode := Mode;
+    SelFrame.OnNeedFuncList := FOnNeedFuncList;
     if Assigned(ItemList.JSON) then
       SelFrame.LoadFromJson(ItemList.JSON)
     else
@@ -722,14 +757,17 @@ begin
       SelFrame.MaxTokens := MaxTokens;
       SelFrame.MaxTokensQuery := MaxTokensQuery;
       SelFrame.LangSrc := Lang;
+      SelFrame.UseFunctions := UseFunctions;
     end;
     SelFrame.MenuItem := ItemList;
     SelFrame.Visible := True;
   end;
-  {$IFNDEF ANDROID OR IOS OR IOS64}
-  SelFrame.MemoQuery.SetFocus;
-  {$ENDIF}
-  TThread.ForceQueue(nil, SelFrame.MemoQuery.PrepareForPaint);
+  SelFrame.Init;
+end;
+
+procedure TFormMain.CreateGPTFunctions;
+begin
+  FGPTFuncList.Add(TChatFunctionWeather.Create);
 end;
 
 constructor TFormMain.Create(AOwner: TComponent);
@@ -744,50 +782,54 @@ begin
     begin
       var Sel := ObjStyle.FindStyleResource('selection');
       if Assigned(Sel) and (Sel is TBrushObject) then
-        (Sel as TBrushObject).Brush.Color := $FF1F2027;
+        TBrushObject(Sel).Brush.Color := $FF1F2027;
     end;
     ObjStyle := Style.FindStyleResource('memostyle_code');
     if Assigned(ObjStyle) then
     begin
       var Sel := ObjStyle.FindStyleResource('selection');
       if Assigned(Sel) and (Sel is TBrushObject) then
-        (Sel as TBrushObject).Brush.Color := $FF4E4E53;
+        TBrushObject(Sel).Brush.Color := $FF4E4E53;
     end;
     TStyleManager.UpdateScenes;
   end;
   {$ENDIF}
-  FOpenAI := TOpenAIComponent.Create(Self);
   ListBoxChatList.AniCalculations.Animation := True;
-
+  FGPTFuncList := TList<IChatFunction>.Create;
+  FOpenAI := TOpenAIComponent.Create(Self);
+  CreateGPTFunctions;
   Defaults;
   FCanShare := GetCanShare;
   Clear;
-  FMode := wmFull;
+  FMode := TWindowMode.Full;
   UpdateMode;
   Temperature := 0;
   Lang := '';
   Token := '';
-  LoadSettings;
-  LoadChats;
 end;
 
 procedure TFormMain.Clear;
 begin
   HideClearConfirm;
   ListBoxChatList.Clear;
-  while LayoutChatsBox.ControlsCount > 0 do
-    LayoutChatsBox.Controls[0].Free;
-end;
-
-procedure TFormMain.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  SaveChats;
-  SaveSettings;
+  LayoutChatsBox.BeginUpdate;
+  try
+    while LayoutChatsBox.ControlsCount > 0 do
+      LayoutChatsBox.Controls[0].Free;
+  finally
+    LayoutChatsBox.EndUpdate;
+  end;
 end;
 
 procedure TFormMain.FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight, MaxWidth, MaxHeight: Single);
 begin
   FormResize(Sender);
+end;
+
+procedure TFormMain.FormCreate(Sender: TObject);
+begin
+  LoadSettings;
+  LoadChats;
 end;
 
 procedure TFormMain.OpenSettings;
@@ -815,6 +857,7 @@ begin
       Frame.EditProxyPassword.Text := OpenAI.API.Client.ProxySettings.Password;
       Frame.LabelVersion.Text := 'Version: ' + VersionName;
       Frame.EditBaseUrl.Text := OpenAI.BaseURL;
+      Frame.SwitchOnTop.IsChecked := UseFunctions;
       for var Head in OpenAI.API.CustomHeaders do
         Frame.MemoCustomHeaders.Lines.AddPair(Head.Name, Head.Value);
     end,
@@ -844,6 +887,7 @@ begin
         Frame.EditProxyPassword.Text);
       TBitmap.Client.ProxySettings := OpenAI.API.Client.ProxySettings;
       OpenAI.BaseURL := Frame.EditBaseUrl.Text;
+      UseFunctions := Frame.SwitchOnTop.IsChecked;
 
       var FHeaders: TNetHeaders;
       try
@@ -874,21 +918,31 @@ procedure TFormMain.FormResize(Sender: TObject);
 begin
   LayoutMenuContainer.Width := Min(320, ClientWidth - 45);
   if ClientWidth < 768 then
-    Mode := wmCompact
+    Mode := TWindowMode.Compact
   else
-    Mode := wmFull;
+    Mode := TWindowMode.Full;
+end;
+
+procedure TFormMain.FormSaveState(Sender: TObject);
+begin
+  SaveChats;
+  SaveSettings;
 end;
 
 procedure TFormMain.FormVirtualKeyboardHidden(Sender: TObject; KeyboardVisible: Boolean; const Bounds: TRect);
 begin
-  Padding.Bottom := 0;
-  LayoutOverlay.Margins.Bottom := 0;
+  TAnimator.AnimateFloat(Self, 'Padding.Bottom', 0);
+  TAnimator.AnimateFloat(LayoutOverlay, 'Margins.Bottom', 0);
+  //Padding.Bottom := 0;
+  //LayoutOverlay.Margins.Bottom := 0;
 end;
 
 procedure TFormMain.FormVirtualKeyboardShown(Sender: TObject; KeyboardVisible: Boolean; const Bounds: TRect);
 begin
-  LayoutOverlay.Margins.Bottom := Bounds.Height;
-  Padding.Bottom := Bounds.Height;
+  TAnimator.AnimateFloat(Self, 'Padding.Bottom', Bounds.Height);
+  TAnimator.AnimateFloat(LayoutOverlay, 'Margins.Bottom', Bounds.Height);
+  //LayoutOverlay.Margins.Bottom := Bounds.Height;
+  //Padding.Bottom := Bounds.Height;
 end;
 
 procedure TFormMain.UpdateMode;
@@ -896,24 +950,24 @@ begin
   for var Control in LayoutChatsBox.Controls do
     if Control is TFrameChat then
     begin
-      var Frame := Control as TFrameChat;
+      var Frame := TFrameChat(Control);
       Frame.Mode := FMode;
     end;
   for var Control in LayoutOverlay.Controls do
     if Control is TFrameOveraly then
     begin
-      var Frame := Control as TFrameOveraly;
+      var Frame := TFrameOveraly(Control);
       Frame.Mode := FMode;
     end;
   case FMode of
-    wmCompact:
+    TWindowMode.Compact:
       begin
         RectangleMenu.Align := TAlignLayout.Client;
         RectangleMenu.Parent := LayoutMenuContainer;
         LayoutHead.Visible := True;
         ButtonCloseMenu.Visible := True;
       end;
-    wmFull:
+    TWindowMode.Full:
       begin
         RectangleMenu.Align := TAlignLayout.Left;
         RectangleMenu.Width := 260;
@@ -992,6 +1046,11 @@ begin
   FTopP := Value;
 end;
 
+procedure TFormMain.SetUseFunctions(const Value: Boolean);
+begin
+  FUseFunctions := Value;
+end;
+
 { TListBoxItemChat }
 
 constructor TListBoxItemChat.Create(AOwner: TComponent);
@@ -1014,8 +1073,8 @@ initialization
   FAppFolder := TPath.Combine(TPath.GetHomePath, 'ChatGPT');
   FImagesCacheFolder := TPath.Combine(FAppFolder, 'images');
   FAudioCacheFolder := TPath.Combine(FAppFolder, 'audios');
-  CreateAppFolder;
   TBitmap.CachePath := FImagesCacheFolder;
+  CreateAppFolder;
 
 end.
 

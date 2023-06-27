@@ -102,7 +102,7 @@ end;
 
 function TFrameText.GetContentHeight: Single;
 begin
-  FStyledMemo.PrepareForPaint;
+  FStyledMemo.RecalcSize;
   var ContentH := MemoText.ContentBounds.Height;
   if (ContentH + 5) < 30 then
     MemoText.Margins.Top := 25 - ContentH
@@ -117,6 +117,21 @@ procedure TFrameText.MemoTextClick(Sender: TObject);
 begin
   if (FUnderMouse.WordLine <> -1) and (not FUnderMouse.Text.IsEmpty) and (MemoText.SelLength = 0) then
     OpenUrl(FUnderMouse.Text);
+end;
+
+procedure TFrameText.MemoTextMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
+begin
+  if (MemoText.SelLength > 0) and (Root.Captured = IControl(FStyledMemo)) then
+  begin
+    Handled := True;
+    if Assigned(FOnWheel) then
+      FOnWheel(Sender, Shift, WheelDelta, Handled);
+  end;
+end;
+
+procedure TFrameText.SetOnWheel(const Value: TMouseWheelEvent);
+begin
+  FOnWheel := Value;
 end;
 
 procedure TFrameText.MemoTextMouseLeave(Sender: TObject);
@@ -136,21 +151,6 @@ begin
   TimerMouseOver.Enabled := True;
   FMouseMemo := TPointF.Create(X, Y);
   {$ENDIF}
-end;
-
-procedure TFrameText.MemoTextMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
-begin
-  if (MemoText.SelLength > 0) and (Root.Captured = IControl(FStyledMemo)) then
-  begin
-    Handled := True;
-    if Assigned(FOnWheel) then
-      FOnWheel(Sender, Shift, WheelDelta, Handled);
-  end;
-end;
-
-procedure TFrameText.SetOnWheel(const Value: TMouseWheelEvent);
-begin
-  FOnWheel := Value;
 end;
 
 procedure TFrameText.TimerMouseOverTimer(Sender: TObject);
@@ -187,14 +187,19 @@ procedure TFrameText.UpdateLayout(Sender: TObject; Layout: TTextLayout; const In
 begin
   if not Assigned(Layout) then
     Exit;
-  Layout.ClearAttributes;
-  Layout.Padding.Top := 1;
-  Layout.Padding.Bottom := 1;
-  if Assigned(FCodeSyntax) then
-    for var Attr in FCodeSyntax.GetAttributesForLine(MemoText.Lines[Index]) do
-      Layout.AddAttribute(Attr.Range, Attr.Attribute);
-  if Index = FUnderMouse.WordLine then
-    Layout.AddAttribute(TTextRange.Create(FUnderMouse.WordStart, FUnderMouse.WordLength), FUnderMouseAttr);
+  Layout.BeginUpdate;
+  try
+    Layout.ClearAttributes;
+    Layout.Padding.Top := 1;
+    Layout.Padding.Bottom := 1;
+    if Assigned(FCodeSyntax) then
+      for var Attr in FCodeSyntax.GetAttributesForLine(MemoText.Lines[Index], Index) do
+        Layout.AddAttribute(Attr.Range, Attr.Attribute);
+    if Index = FUnderMouse.WordLine then
+      Layout.AddAttribute(TTextRange.Create(FUnderMouse.WordStart, FUnderMouse.WordLength), FUnderMouseAttr);
+  finally
+    Layout.EndUpdate;
+  end;
 end;
 {$ENDIF}
 

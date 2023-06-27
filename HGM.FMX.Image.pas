@@ -29,22 +29,22 @@ type
       FObjectOwner: TComponent;
       FClient: THTTPClient;
       FCachePath: string;
-    class function UrlToCacheName(const Url: string): string;
     class procedure AddCallback(Callback: TCallbackObject);
     class procedure Ready(const Url: string; Stream: TStream);
     class function Get(const URL: string): TMemoryStream; static;
     class function GetClient: THTTPClient; static;
     class procedure SetCachePath(const Value: string); static;
-    class function FindCached(const Url: string; out Stream: TMemoryStream): Boolean;
-    class procedure AddCache(const Url: string; Stream: TMemoryStream);
   public
     class procedure RemoveCallback(const AOwner: TComponent);
     procedure LoadFromUrl(const Url: string; UseCache: Boolean = True);
-    procedure LoadFromUrlAsync(AOwner: TComponent; const Url: string; Cache: Boolean = True; OnDone: TProc<Boolean> = nil); overload;
+    procedure LoadFromUrlAsync(AOwner: TComponent; const Url: string; Cache: Boolean = True; OnDone: TProc<Boolean> = nil; SyncAssign: Boolean = True); overload;
     procedure LoadFromResource(ResName: string); overload;
+    class function UrlToCacheName(const Url: string): string;
     procedure LoadFromResource(Instanse: NativeUInt; ResName: string); overload;
     procedure SaveToStream(Stream: TStream; const Ext: string); overload;
     procedure SaveToFile(const AFileName: string; const Ext: string); overload;
+    class procedure AddCache(const Url: string; Stream: TMemoryStream);
+    class function FindCached(const Url: string; out Stream: TMemoryStream): Boolean;
     class function CreateFromUrl(const Url: string; UseCache: Boolean = True): TBitmap;
     class function CreateFromResource(ResName: string; Url: string = ''): TBitmap;
     class property Client: THTTPClient read GetClient;
@@ -166,7 +166,7 @@ begin
   end;
 end;
 
-procedure TBitmapHelper.LoadFromUrlAsync(AOwner: TComponent; const Url: string; Cache: Boolean; OnDone: TProc<Boolean>);
+procedure TBitmapHelper.LoadFromUrlAsync(AOwner: TComponent; const Url: string; Cache: Boolean; OnDone: TProc<Boolean>; SyncAssign: Boolean);
 begin
   if AOwner = nil then
     raise Exception.Create('You must specify an owner (responsible) who will ensure that the Bitmap is not destroyed before the owner');
@@ -186,17 +186,23 @@ begin
           if Cache and Assigned(Mem) then
             AddCache(Url, Mem);
         end;
-        TThread.ForceQueue(nil,
-          procedure
-          begin
-            Ready(Url, Mem);
-          end);
+        if SyncAssign then
+          TThread.ForceQueue(nil,
+            procedure
+            begin
+              Ready(Url, Mem);
+            end)
+        else
+          Ready(Url, Mem);
       except
-        TThread.ForceQueue(nil,
-          procedure
-          begin
-            Ready(Url, nil);
-          end);
+        if SyncAssign then
+          TThread.ForceQueue(nil,
+            procedure
+            begin
+              Ready(Url, nil);
+            end)
+        else
+          Ready(Url, nil);
       end;
     end, Pool);
   AddCallback(Callback);

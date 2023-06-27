@@ -40,16 +40,21 @@ type
     Languages: TArray<string>;
   end;
 
+  TCachedAttributes = TDictionary<Integer, TArray<TTextAttributedRangeData>>;
+
   TCodeSyntax = class abstract
   private
     class var
       FRegitered: TList<TRegisteredSyntax>;
   protected
+    FCached: TCachedAttributes;
     FDefaultFont: TFont;
     FDefaultColor: TAlphaColor;
   public
     constructor Create(DefaultFont: TFont; DefaultColor: TAlphaColor); virtual;
-    function GetAttributesForLine(const Line: string): TArray<TTextAttributedRangeData>; virtual; abstract;
+    destructor Destroy; override;
+    function GetAttributesForLine(const Line: string; const Index: Integer): TArray<TTextAttributedRangeData>; virtual; abstract;
+    procedure DropCache; virtual;
     class function FindSyntax(const Language: string; DefaultFont: TFont; DefaultColor: TAlphaColor): TCodeSyntax;
     class procedure RegisterSyntax(Languages: TArray<string>; CodeSyntaxClass: TCodeSyntaxClass);
   end;
@@ -100,8 +105,20 @@ end;
 constructor TCodeSyntax.Create(DefaultFont: TFont; DefaultColor: TAlphaColor);
 begin
   inherited Create;
+  FCached := TCachedAttributes.Create;
   FDefaultFont := DefaultFont;
   FDefaultColor := DefaultColor;
+end;
+
+destructor TCodeSyntax.Destroy;
+begin
+  FCached.Free;
+  inherited;
+end;
+
+procedure TCodeSyntax.DropCache;
+begin
+  FCached.Clear;
 end;
 
 class function TCodeSyntax.FindSyntax(const Language: string; DefaultFont: TFont; DefaultColor: TAlphaColor): TCodeSyntax;

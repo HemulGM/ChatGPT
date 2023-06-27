@@ -104,6 +104,10 @@ type
     Label32: TLabel;
     MemoCustomHeaders: TMemo;
     Label33: TLabel;
+    Layout7: TLayout;
+    SwitchUseFunctions: TSwitch;
+    Label34: TLabel;
+    Label35: TLabel;
     procedure TrackBarTempTracking(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);
@@ -205,7 +209,7 @@ end;
 procedure TFrameSettings.SetMode(const Value: TWindowMode);
 begin
   inherited;
-  if Mode = TWindowMode.wmCompact then
+  if Mode = TWindowMode.Compact then
   begin
     LayoutClient.Align := TAlignLayout.Client;
     RectangleFrame.Corners := [];

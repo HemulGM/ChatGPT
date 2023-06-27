@@ -46,10 +46,21 @@ type
     MenuItemEdit: TMenuItem;
     RectangleError: TRectangle;
     Path9: TPath;
+    RectangleFunc: TRectangle;
+    Path10: TPath;
+    LayoutFunc: TLayout;
+    ButtonExecuteFunc: TButton;
+    LabelGPTFunc: TLabel;
+    AniIndicatorFunc: TAniIndicator;
+    LayoutFuncState: TLayout;
+    PathSuccess: TPath;
+    PathError: TPath;
+    PathWait: TPath;
     procedure FrameResize(Sender: TObject);
     procedure ButtonCopyClick(Sender: TObject);
     procedure ButtonDeleteClick(Sender: TObject);
     procedure ButtonActionsClick(Sender: TObject);
+    procedure ButtonExecuteFuncClick(Sender: TObject);
   private
     FText: string;
     FIsError: Boolean;
@@ -59,6 +70,10 @@ type
     FMode: TWindowMode;
     FOnDelete: TNotifyEvent;
     FMessageRole: TMessageKind;
+    FFuncName: string;
+    FFuncArgs: string;
+    FOnFuncExecute: TOnFuncExecute;
+    FFuncState: TMessageFuncState;
     procedure SetText(const Value: string);
     procedure SetIsError(const Value: Boolean);
     procedure ParseText(const Value: string);
@@ -74,6 +89,12 @@ type
     procedure SetOnDelete(const Value: TNotifyEvent);
     procedure UpdateMessageRole;
     procedure SetMessageRole(const Value: TMessageKind);
+    procedure SetFuncArgs(const Value: string);
+    procedure SetFuncName(const Value: string);
+    procedure ExecuteFunc;
+    procedure SetOnFuncExecute(const Value: TOnFuncExecute);
+    procedure AfterExecuteFunc(Result: Boolean; Error: string);
+    procedure SetFuncState(const Value: TMessageFuncState);
   public
     procedure UpdateContentSize;
     property Id: string read FId write SetId;
@@ -82,10 +103,14 @@ type
     property IsAudio: Boolean read FIsAudio write SetIsAudio;
     property IsError: Boolean read FIsError write SetIsError;
     property MessageRole: TMessageKind read FMessageRole write SetMessageRole;
+    property FuncName: string read FFuncName write SetFuncName;
+    property FuncArgs: string read FFuncArgs write SetFuncArgs;
+    property FuncState: TMessageFuncState read FFuncState write SetFuncState;
     procedure SetMode(const Value: TWindowMode);
     procedure StartAnimate;
     constructor Create(AOwner: TComponent); override;
     property OnDelete: TNotifyEvent read FOnDelete write SetOnDelete;
+    property OnFuncExecute: TOnFuncExecute read FOnFuncExecute write SetOnFuncExecute;
     function ToJsonObject: TJSONObject;
   end;
 
@@ -138,19 +163,49 @@ end;
 procedure TFrameMessage.UpdateMode;
 begin
   case FMode of
-    wmCompact:
+    TWindowMode.Compact:
       begin
         LayoutCompact.Visible := True;
         LayoutActions.Visible := False;
         LayoutAudio.Visible := False;
       end;
-    wmFull:
+    TWindowMode.Full:
       begin
         LayoutCompact.Visible := False;
         LayoutAudio.Visible := FIsAudio;
         LayoutActions.Visible := True;
       end;
   end;
+end;
+
+procedure TFrameMessage.AfterExecuteFunc(Result: Boolean; Error: string);
+begin
+  AniIndicatorFunc.Visible := False;
+  LayoutFuncState.Hint := '';
+  LayoutFuncState.HitTest := False;
+  if Result then
+    FuncState := TMessageFuncState.Success
+  else
+  begin
+    FuncState := TMessageFuncState.Error;
+    LayoutFuncState.Hint := Error;
+  LayoutFuncState.HitTest := True;
+  end;
+end;
+
+procedure TFrameMessage.ExecuteFunc;
+begin
+  if Assigned(FOnFuncExecute) then
+  begin
+    AniIndicatorFunc.Visible := True;
+    AniIndicatorFunc.Enabled := True;
+    FOnFuncExecute(Self, FFuncName, FFuncArgs, AfterExecuteFunc);
+  end;
+end;
+
+procedure TFrameMessage.ButtonExecuteFuncClick(Sender: TObject);
+begin
+  ExecuteFunc;
 end;
 
 procedure TFrameMessage.ButtonActionsClick(Sender: TObject);
@@ -165,7 +220,12 @@ begin
   var ClipBoard: IFMXClipboardService;
   if TPlatformServices.Current.SupportsPlatformService(IFMXClipboardService, ClipBoard) then
   begin
-    ClipBoard.SetClipboard(Text);
+    if not Text.IsEmpty then
+      ClipBoard.SetClipboard(Text)
+    else if Length(Images) > 0 then
+      ClipBoard.SetClipboard(string.Join(','#13#10, Images))
+    else if not FFuncName.IsEmpty then
+      ClipBoard.SetClipboard(FFuncName + #13#10 + FFuncArgs);
     ShowUIMessage('Coppied');
   end
   else
@@ -186,8 +246,8 @@ begin
   LayoutActions.Visible := False;
   IsAudio := False;
   FlowLayoutImages.Visible := False;
-  ButtonCopy.Enabled := False;
   MenuItemEdit.Enabled := False;
+  LayoutFunc.Visible := False;
 end;
 
 procedure TFrameMessage.StartAnimate;
@@ -212,7 +272,9 @@ begin
         JImages.Add(Img);
       Result.AddPair('images', JImages);
     end;
-    Result.AddPair('is_audio', FIsAudio);
+    Result.AddPair('func_name', FFuncName);
+    Result.AddPair('func_args', FFuncArgs);
+    Result.AddPair('func_state', Ord(FFuncState));
   except
     //
   end;
@@ -223,18 +285,38 @@ begin
   if ssTouch in Shift then
   begin
     if ParentControl.ParentControl is TCustomScrollBox then
-      (ParentControl.ParentControl as TCustomScrollBox).ViewportPosition :=
-        TPointF.Create((ParentControl.ParentControl as TCustomScrollBox).ViewportPosition.X,
-        (ParentControl.ParentControl as TCustomScrollBox).ViewportPosition.Y + WheelDelta);
+      TCustomScrollBox(ParentControl.ParentControl).ViewportPosition :=
+        TPointF.Create(TCustomScrollBox(ParentControl.ParentControl).ViewportPosition.X,
+        TCustomScrollBox(ParentControl.ParentControl).ViewportPosition.Y + WheelDelta);
   end
   else if ParentControl.ParentControl is TCustomScrollBox then
-    (ParentControl.ParentControl as TCustomScrollBox).AniCalculations.MouseWheel(0, -WheelDelta);
+    TCustomScrollBox(ParentControl.ParentControl).AniCalculations.MouseWheel(0, -WheelDelta);
 end;
 
 procedure TFrameMessage.FrameResize(Sender: TObject);
 begin
   LayoutContent.Width := Min(Width - (LayoutClient.Padding.Left + LayoutClient.Padding.Right), MaxMessageWidth);
   UpdateContentSize;
+end;
+
+procedure TFrameMessage.SetFuncArgs(const Value: string);
+begin
+  FFuncArgs := Value;
+end;
+
+procedure TFrameMessage.SetFuncName(const Value: string);
+begin
+  FFuncName := Value;
+  LayoutFunc.Visible := not FFuncName.IsEmpty;
+  LabelGPTFunc.Text := Value;
+end;
+
+procedure TFrameMessage.SetFuncState(const Value: TMessageFuncState);
+begin
+  FFuncState := Value;
+  PathSuccess.Visible := Value = TMessageFuncState.Success;
+  PathError.Visible := Value = TMessageFuncState.Error;
+  PathWait.Visible := Value = TMessageFuncState.Wait;
 end;
 
 procedure TFrameMessage.SetId(const Value: string);
@@ -245,13 +327,18 @@ end;
 procedure TFrameMessage.SetImages(const Value: TArray<string>);
 begin
   FImages := Value;
-  while FlowLayoutImages.ControlsCount > 0 do
-    FlowLayoutImages.Controls[0].Free;
-  for var Item in FImages do
-  begin
-    var Frame := TFrameImage.Create(FlowLayoutImages);
-    Frame.Parent := FlowLayoutImages;
-    Frame.Image := Item;
+  FlowLayoutImages.BeginUpdate;
+  try
+    while FlowLayoutImages.ControlsCount > 0 do
+      FlowLayoutImages.Controls[0].Free;
+    for var Item in FImages do
+    begin
+      var Frame := TFrameImage.Create(FlowLayoutImages);
+      Frame.Parent := FlowLayoutImages;
+      Frame.Image := Item;
+    end;
+  finally
+    FlowLayoutImages.EndUpdate;
   end;
   FlowLayoutImages.Visible := FlowLayoutImages.ControlsCount > 0;
   UpdateContentSize;
@@ -269,7 +356,7 @@ begin
   FIsError := Value;
   for var Control in LayoutContentText.Controls do
     if Control is TFrameText then
-      (Control as TFrameText).MemoText.FontColor := $FFEF4444;
+      TFrameText(Control).MemoText.FontColor := $FFEF4444;
   UpdateMessageRole;
 end;
 
@@ -290,12 +377,17 @@ begin
   FOnDelete := Value;
 end;
 
+procedure TFrameMessage.SetOnFuncExecute(const Value: TOnFuncExecute);
+begin
+  FOnFuncExecute := Value;
+end;
+
 procedure TFrameMessage.ParseText(const Value: string);
 
   function CreatePart(AType: TPartType; AContent: string): TPart;
   begin
     Result.PartType := AType;
-    if (AType = ptCode) and (not (AContent.StartsWith(#13) or AContent.StartsWith(' '))) then
+    if (AType = TPartType.Code) and (not (AContent.StartsWith(#13) or AContent.StartsWith(' '))) then
     begin
       var Len := AContent.IndexOfAny([#13, #10, ' ']);
       if Len >= 0 then
@@ -327,7 +419,7 @@ begin
         if Assigned(JSON) then
         try
           var Part: TPart;
-          Part.PartType := ptCode;
+          Part.PartType := TPartType.Code;
           Part.Content := Value;
           Part.Language := 'json';
           Parts.Add(Part);
@@ -336,7 +428,7 @@ begin
           JSON.Free;
         end;
       except
-      //
+        //
       end;
       CodePairs := 0;
       Buf := '';
@@ -352,13 +444,13 @@ begin
             if IsCodeParse then
             begin
               if not Buf.Trim([' ', '`']).IsEmpty then
-                Parts.Add(CreatePart(ptCode, Buf.Trim(['`'])));
+                Parts.Add(CreatePart(TPartType.Code, Buf.Trim(['`'])));
               IsCodeParse := False;
             end
             else
             begin
               if not Buf.Trim([' ', '`']).IsEmpty then
-                Parts.Add(CreatePart(ptText, Buf.Trim([' ', '`'])));
+                Parts.Add(CreatePart(TPartType.Text, Buf.Trim([' ', '`'])));
               IsCodeParse := True;
             end;
             CodePairs := 0;
@@ -374,12 +466,12 @@ begin
       if IsCodeParse then
       begin
         if not Buf.Trim([' ', '`']).IsEmpty then
-          Parts.Add(CreatePart(ptCode, Buf.Trim(['`'])));
+          Parts.Add(CreatePart(TPartType.Code, Buf.Trim(['`'])));
       end
       else
       begin
         if not Buf.Trim([' ']).IsEmpty then
-          Parts.Add(CreatePart(ptText, Buf));
+          Parts.Add(CreatePart(TPartType.Text, Buf));
       end;
     finally
       BuildContent(Parts);
@@ -407,6 +499,7 @@ begin
   RectangleBot.Visible := FMessageRole = TMessageKind.Assistant;
   RectangleSystem.Visible := FMessageRole = TMessageKind.System;
   RectangleError.Visible := FMessageRole = TMessageKind.Error;
+  RectangleFunc.Visible := FMessageRole = TMessageKind.Func;
 
   if FMessageRole = TMessageKind.Assistant then
     RectangleBG.Fill.Color := BGColorBot
@@ -466,21 +559,21 @@ begin
     end;
 
     // Code
-    if Part.PartType = ptCode then
+    if Part.PartType = TPartType.Code then
     begin
       CreateCodePart(Part);
       Continue;
     end;
 
     // Text
-    if Part.PartType = ptText then
+    if Part.PartType = TPartType.Text then
     begin
       CreatePartText(Part);
       Continue;
     end;
 
     // Text
-    if Part.PartType = ptSVG then
+    if Part.PartType = TPartType.SVG then
     begin
       CreatePartSVG(Part);
       Continue;
@@ -495,8 +588,6 @@ begin
   else
     FText := '';
   FText := FText.Trim([' ', #13, #10]);
-
-  ButtonCopy.Enabled := not FText.IsEmpty;
   MenuItemEdit.Enabled := not FText.IsEmpty;
   UpdateMode;
   ParseText(FText);

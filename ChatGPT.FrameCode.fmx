@@ -150,8 +150,8 @@ object FrameCode: TFrameCode
       OnMouseMove = MemoCodeMouseMove
       OnMouseWheel = MemoCodeMouseWheel
       OnMouseLeave = MemoCodeMouseLeave
-      Viewport.Width = 565.000000000000000000
-      Viewport.Height = 345.000000000000000000
+      Viewport.Width = 555.000000000000000000
+      Viewport.Height = 335.000000000000000000
     end
   end
   object TimerMouseOver: TTimer

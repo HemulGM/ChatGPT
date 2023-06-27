@@ -56,6 +56,134 @@ object FrameMessage: TFrameMessage
           JustifyLastLine = Left
           FlowDirection = LeftToRight
         end
+        object LayoutFunc: TLayout
+          Align = Top
+          Position.Y = 107.000000000000000000
+          Size.Width = 507.000000000000000000
+          Size.Height = 30.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 1
+          object ButtonExecuteFunc: TButton
+            Align = Left
+            Size.Width = 97.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            StyleLookup = 'buttonstyle_execute'
+            TabOrder = 0
+            Text = 'Execute'
+            TextSettings.HorzAlign = Leading
+            OnClick = ButtonExecuteFuncClick
+          end
+          object LabelGPTFunc: TLabel
+            Align = Client
+            StyledSettings = [Family, Size, Style]
+            Margins.Left = 10.000000000000000000
+            Size.Width = 370.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.FontColor = claWhite
+            TextSettings.WordWrap = False
+            Text = 'get_weather_info'
+            TabOrder = 1
+          end
+          object AniIndicatorFunc: TAniIndicator
+            Align = Left
+            Position.X = 97.000000000000000000
+            Size.Width = 50.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            Visible = False
+          end
+          object LayoutFuncState: TLayout
+            Align = Right
+            Cursor = crHelp
+            HitTest = True
+            Position.X = 477.000000000000000000
+            Size.Width = 30.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 2
+            object PathSuccess: TPath
+              Align = Center
+              Data.Path = {
+                1700000000000000CDCC4C419A99E54101000000343353409A99994102000000
+                9A99394067669641020000009A993940CDCC90410200000034335340CDCC8C41
+                010000009A999940CDCC8041020000006766A64034337B4102000000CDCCBC40
+                34337B4102000000CDCCCC40CDCC8041010000009A9959416666BA4101000000
+                CDCCEC419899E940020000000000F041CBCCDC40020000009A99F541CBCCDC40
+                020000009A99F9419899E94001000000CDCC0242CCCC0C410200000067660442
+                32331341020000006766044266661E4102000000CDCC02426666264101000000
+                666666419A99E5410200000066665E41CDCCE8410200000033335341CDCCE841
+                02000000CDCC4C419A99E54103000000CDCC4C419A99E541}
+              Fill.Color = xFFACACBE
+              HitTest = False
+              Size.Width = 20.000000000000000000
+              Size.Height = 20.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Kind = None
+              WrapMode = Fit
+            end
+            object PathError: TPath
+              Align = Center
+              Data.Path = {
+                3C000000000000000000404100000040020000001B2F8C410000004002000000
+                0000B041C74BCF40020000000000B04100004041020000000000B0410E2D8C41
+                020000001B2F8C410000B04102000000000040410000B041020000009643CF40
+                0000B04102000000000000400E2D8C4102000000000000400000404102000000
+                00000040C74BCF40020000009643CF4000000040020000000000404100000040
+                030000000000404100000040000000000000404121B06A4002000000C3F5EC40
+                21B06A400200000021B06A40C3F5EC400200000021B06A400000404102000000
+                21B06A408FC2844102000000C3F5EC40FCA9A2410200000000004041FCA9A241
+                020000008FC28441FCA9A24102000000FCA9A2418FC2844102000000FCA9A241
+                0000404102000000FCA9A241C3F5EC40020000008FC2844121B06A4002000000
+                0000404121B06A40030000000000404121B06A4000000000ADFA3F4103096841
+                020000009FCD48410309684102000000F1F44F41BE306F4102000000F1F44F41
+                B003784102000000F1F44F41516B8041020000009FCD48412EFF834102000000
+                ADFA3F412EFF834102000000522737412EFF83410200000000003041516B8041
+                0200000000003041B00378410200000000003041BE306F410200000052273741
+                0309684102000000ADFA3F410309684103000000ADFA3F410309684100000000
+                79E93F410000E04002000000B9FC45418BFDDF4002000000DE024B41DE02E940
+                0200000042CF4B4178B9F44001000000EEEB4B4116FBF74001000000ADFA4B41
+                1904444102000000E7FB4B41A9A44A4102000000B29D46415305504102000000
+                22FD3F418E06504102000000E2E93941C80750410200000054E334411F854B41
+                02000000F0163441FCA9454101000000ADFA33410309444101000000EEEB3341
+                EA04F840020000004BEA3341B5C3EA400200000080483941B402E04002000000
+                79E93F410000E0400300000079E93F410000E040}
+              Fill.Color = xFFEA4141
+              HitTest = False
+              Size.Width = 20.000000000000000000
+              Size.Height = 20.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Kind = None
+              WrapMode = Fit
+            end
+            object PathWait: TPath
+              Align = Center
+              Data.Path = {
+                2300000000000000C3F59641B81E41410100000086EB4D41EC51AC4102000000
+                4EE44A41B0AEAE4102000000129C45412C14B04102000000010040410000B041
+                020000000D843E41EB1DB0410200000013013D41EB1DB0410200000020853B41
+                0000B04102000000B97534413BF9AE410200000024B52F4162ACAB4102000000
+                000030410000A84101000000000030410000704101000000713DDA4000007041
+                02000000CFE4B640AB007041020000005B3C9A4087AD614102000000053B9A40
+                3601504102000000903A9A4001F149410200000019AC9D40AB00444102000000
+                F628A44048E13E41010000007B143241A4701D4002000000E4C535412EC90340
+                02000000F3613D419238EF3F02000000E17A44410000004002000000468A4B41
+                2A36084002000000DB4A5041F19C224002000000000050410000404001000000
+                000050410000104101000000A47089410000104102000000CD46924154FF0F41
+                02000000EA70994178521E410200000040719941C9FE2F41020000005D719941
+                FF0E364102000000FB94984155FF3B4102000000C4F59641B81E414103000000
+                C3F59641B81E4141}
+              Fill.Color = xFFACACBE
+              HitTest = False
+              Size.Width = 20.000000000000000000
+              Size.Height = 20.000000000000000000
+              Size.PlatformDefault = False
+              Stroke.Kind = None
+              WrapMode = Fit
+            end
+          end
+        end
       end
       object LayoutInfo: TLayout
         Align = MostLeft
@@ -382,6 +510,42 @@ object FrameMessage: TFrameMessage
             WrapMode = Fit
           end
         end
+        object RectangleFunc: TRectangle
+          Align = Top
+          Fill.Color = xFF48D8DD
+          Position.Y = 120.000000000000000000
+          Size.Width = 30.000000000000000000
+          Size.Height = 30.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Kind = None
+          XRadius = 2.000000000000000000
+          YRadius = 2.000000000000000000
+          object Path10: TPath
+            Align = Center
+            Data.Path = {
+              2300000000000000C3F59641B81E41410100000086EB4D41EC51AC4102000000
+              4EE44A41B0AEAE4102000000129C45412C14B04102000000010040410000B041
+              020000000D843E41EB1DB0410200000013013D41EB1DB0410200000020853B41
+              0000B04102000000B97534413BF9AE410200000024B52F4162ACAB4102000000
+              000030410000A84101000000000030410000704101000000713DDA4000007041
+              02000000CFE4B640AB007041020000005B3C9A4087AD614102000000053B9A40
+              3601504102000000903A9A4001F149410200000019AC9D40AB00444102000000
+              F628A44048E13E41010000007B143241A4701D4002000000E4C535412EC90340
+              02000000F3613D419238EF3F02000000E17A44410000004002000000468A4B41
+              2A36084002000000DB4A5041F19C224002000000000050410000404001000000
+              000050410000104101000000A47089410000104102000000CD46924154FF0F41
+              02000000EA70994178521E410200000040719941C9FE2F41020000005D719941
+              FF0E364102000000FB94984155FF3B4102000000C4F59641B81E414103000000
+              C3F59641B81E4141}
+            Fill.Color = claWhite
+            Locked = True
+            Size.Width = 20.000000000000000000
+            Size.Height = 20.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+            WrapMode = Fit
+          end
+        end
       end
       object LayoutAudio: TLayout
         Align = Left
@@ -434,7 +598,7 @@ object FrameMessage: TFrameMessage
         TabOrder = 0
         object ButtonCopy: TButton
           Align = Top
-          Hint = 'Copy'
+          Hint = 'Copy text'
           Margins.Right = 16.000000000000000000
           Size.Width = 30.000000000000000000
           Size.Height = 30.000000000000000000
@@ -557,7 +721,7 @@ object FrameMessage: TFrameMessage
         TabOrder = 4
         object ButtonCopyCompact: TButton
           Align = Right
-          Hint = 'Copy'
+          Hint = 'Copy text'
           Position.X = 491.000000000000000000
           Size.Width = 30.000000000000000000
           Size.Height = 30.000000000000000000

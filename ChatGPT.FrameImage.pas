@@ -92,9 +92,7 @@ begin
           RectangleImage.HitTest := True;
         end
         else
-        begin
           LabelError.Visible := True;
-        end;
       end);
   end;
 end;

@@ -11,7 +11,7 @@ uses
   OpenAI.Chat, System.Generics.Collections, OpenAI.Audio,
   OpenAI.Utils.ChatHistory, OpenAI.Images, ChatGPT.ChatSettings, System.JSON,
   FMX.Effects, FMX.ListBox, Skia, Skia.FMX, ChatGPT.SoundRecorder,
-  FMX.InertialMovement, System.RTLConsts;
+  FMX.InertialMovement, System.RTLConsts, OpenAI.Chat.Functions;
 
 type
   TButton = class(FMX.StdCtrls.TButton)
@@ -95,7 +95,6 @@ type
     PathImage: TPath;
     RectangleImageMode: TRectangle;
     RectangleTypeBG: TRectangle;
-    TimerUpdateTextSize: TTimer;
     LabelSendTip: TLabel;
     Layout5: TLayout;
     Label2: TLabel;
@@ -136,7 +135,6 @@ type
     procedure ButtonImageClick(Sender: TObject);
     procedure ButtonSettingsClick(Sender: TObject);
     procedure ButtonRetryClick(Sender: TObject);
-    procedure TimerUpdateTextSizeTimer(Sender: TObject);
     procedure ButtonScrollDownClick(Sender: TObject);
     procedure VertScrollBoxChatViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
     procedure TimerCheckRecordingTimer(Sender: TObject);
@@ -145,6 +143,7 @@ type
     procedure ButtonExample3Tap(Sender: TObject; const Point: TPointF);
     procedure MemoQueryKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure MemoQueryEnter(Sender: TObject);
+    procedure MemoQueryViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
   private
     FAPI: IOpenAI;
     FChatId: string;
@@ -167,6 +166,8 @@ type
     FTopP: Single;
     FAudioRecord: TAudioRecord;
     FRecordingStartTime: TDateTime;
+    FOnNeedFuncList: TOnNeedFuncList;
+    FUseFunctions: Boolean;
     function NewMessage(const Text: string; Role: TMessageKind; UseBuffer: Boolean = True; IsAudio: Boolean = False): TFrameMessage;
     function NewMessageImage(Role: TMessageKind; Images: TArray<string>): TFrameMessage;
     procedure ClearChat;
@@ -205,6 +206,14 @@ type
     function GenerateAudioFileName: string;
     procedure FOnStartRecord(Sender: TObject);
     procedure UpdateSendControls;
+    procedure SetOnNeedFuncList(const Value: TOnNeedFuncList);
+    function GetFuncs: TArray<IChatFunction>;
+    procedure ProcFunction(Func: TChatFunctionCall);
+    procedure RequestFunc(FuncResult: string);
+    function NewMessageFunc(const FuncName, FuncArgs: string): TFrameMessage;
+    procedure FOnExecuteFunc(Sender: TObject; const FuncName, FuncArgs: string; Callback: TProc<Boolean, string>);
+    procedure ExecuteFunc(const FuncName, FuncArgs: string; Callback: TProc<Boolean, string>);
+    procedure SetUseFunctions(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -227,6 +236,9 @@ type
     property LastRequest: TProc read FLastRequest write SetLastRequest;
     property MenuItem: TListBoxItem read FMenuItem write SetMenuItem;
     property IsFirstMessage: Boolean read FIsFirstMessage write FIsFirstMessage;
+    property OnNeedFuncList: TOnNeedFuncList read FOnNeedFuncList write SetOnNeedFuncList;
+    property UseFunctions: Boolean read FUseFunctions write SetUseFunctions;
+    procedure Init;
   end;
 
 const
@@ -289,6 +301,25 @@ begin
   end;
 end;
 
+function TFrameChat.NewMessageFunc(const FuncName, FuncArgs: string): TFrameMessage;
+begin
+  ChatToUp;
+  LayoutWelcome.Visible := False;
+  Result := TFrameMessage.Create(VertScrollBoxChat);
+  Result.SetMode(FMode);
+  Result.Position.Y := VertScrollBoxChat.ContentBounds.Height;
+  Result.Parent := VertScrollBoxChat;
+  Result.Align := TAlignLayout.MostTop;
+  Result.Id := '';
+  Result.OnDelete := FOnMessageDelete;
+  TFrameMessage(Result).MessageRole := TMessageKind.Func;
+  TFrameMessage(Result).FuncName := FuncName;
+  TFrameMessage(Result).FuncArgs := FuncArgs;
+  TFrameMessage(Result).FuncState := TMessageFuncState.Wait;
+  TFrameMessage(Result).OnFuncExecute := FOnExecuteFunc;
+  Result.StartAnimate;
+end;
+
 function TFrameChat.NewMessageImage(Role: TMessageKind; Images: TArray<string>): TFrameMessage;
 begin
   ChatToUp;
@@ -305,11 +336,69 @@ begin
   Result.StartAnimate;
 end;
 
+procedure TFrameChat.ExecuteFunc(const FuncName, FuncArgs: string; Callback: TProc<Boolean, string>);
+begin
+  var Funcs := GetFuncs;
+  for var Item in Funcs do
+    if Item.Name = FuncName then
+    begin
+      TTask.Run(
+        procedure
+        begin
+          var FuncResult := '';
+          var ErrorText: string;
+          try
+            try
+              FuncResult := Item.Execute(FuncArgs);
+            except
+              on E: Exception do
+              begin
+                ErrorText := E.Message;
+                FuncResult := '';
+              end;
+            end;
+            TThread.Queue(nil,
+              procedure
+              begin
+                Callback(not FuncResult.IsEmpty, ErrorText);
+                if not FuncResult.IsEmpty then
+                begin
+                  FBuffer.NewFunc(FuncName, FuncResult, TGUID.NewGuid.ToString);
+                  RequestFunc(FuncResult);
+                end;
+              end);
+          finally
+            //
+          end;
+        end);
+      Exit;
+    end;
+  Callback(False, 'Function not found');
+end;
+
+procedure TFrameChat.ProcFunction(Func: TChatFunctionCall);
+begin
+  FBuffer.NewAsistantFunc(Func.Name, Func.Arguments, TGUID.NewGuid.ToString);
+  var Funcs := GetFuncs;
+  for var Item in Funcs do
+    if Item.Name = Func.Name then
+    begin
+      NewMessageFunc(Func.Name, Func.Arguments);
+      Exit;
+    end;
+  ShowError('Function with name "' + Func.Name + '" not found');
+end;
+
 procedure TFrameChat.AppendMessages(Response: TChat);
 begin
   try
     for var Item in Response.Choices do
-      NewMessage(Item.Message.Content, TMessageKind.Assistant);
+    begin
+      if Item.FinishReason = TFinishReason.FunctionCall then
+        ProcFunction(Item.Message.FunctionCall)
+      else
+        NewMessage(Item.Message.Content, TMessageKind.Assistant);
+    end;
   finally
     Response.Free;
   end;
@@ -343,6 +432,7 @@ begin
     Result.AddPair('model', Model);
     Result.AddPair('is_image_mode', IsImageMode);
     Result.AddPair('draft', MemoQuery.Text);
+    Result.AddPair('use_functions', UseFunctions);
 
     for var Control in VertScrollBoxChat.Content.Controls do
       if Control is TFrameMessage then
@@ -351,6 +441,11 @@ begin
   except
     //
   end;
+end;
+
+procedure TFrameChat.FOnExecuteFunc(Sender: TObject; const FuncName, FuncArgs: string; Callback: TProc<Boolean, string>);
+begin
+  ExecuteFunc(FuncName, FuncArgs, Callback);
 end;
 
 procedure TFrameChat.FOnMessageDelete(Sender: TObject);
@@ -369,6 +464,21 @@ begin
   Result := TPath.Combine(FAudioCacheFolder, 'audio_record' + FormatDateTime('DDMMYYYY_HHNNSS', Now) + '.wav');
 end;
 
+procedure TFrameChat.Init;
+begin
+  Opacity := 0;
+  TAnimator.AnimateFloat(Self, 'Opacity', 1);
+  {$IFNDEF ANDROID OR IOS OR IOS64}
+  MemoQuery.SetFocus;
+  {$ENDIF}
+  TThread.ForceQueue(nil,
+    procedure
+    begin
+      MemoQuery.PrepareForPaint;
+      MemoQueryChange(nil);
+    end);
+end;
+
 procedure TFrameChat.LoadFromJson(JSON: TJSONObject);
 begin
   var ItemCount: Integer := 0;
@@ -384,7 +494,9 @@ begin
   MaxTokens := JSON.GetValue<Integer>('max_tokens', 0);
   MaxTokensQuery := JSON.GetValue<Integer>('max_tokens_query', 0);
   IsImageMode := JSON.GetValue('is_image_mode', False);
+  UseFunctions := JSON.GetValue('use_functions', False);
   MemoQuery.Text := JSON.GetValue('draft', '');
+  MemoQuery.SelStart := MemoQuery.Text.Length;
 
   var JArray: TJSONArray;
   if JSON.TryGetValue<TJSONArray>('items', JArray) then
@@ -396,6 +508,11 @@ begin
       Item.Role := TMessageRole.FromString(JItem.GetValue('role', 'user'));
       Item.Content := JItem.GetValue('content', '');
       Item.Tag := JItem.GetValue('id', TGUID.NewGuid.ToString);
+      Item.Name := JItem.GetValue('name', '');
+      var Func: TFunctionCallBuild;
+      Func.Name := JItem.GetValue('func_name', '');
+      Func.Arguments := JItem.GetValue('func_args', '');
+      Item.FunctionCall := Func;
 
       if not (IsAudio and (Item.Role = TMessageRole.User)) then
         FBuffer.Add(Item);
@@ -411,12 +528,19 @@ begin
           Frame.MessageRole := TMessageKind.User;
         TMessageRole.Assistant:
           Frame.MessageRole := TMessageKind.Assistant;
+        TMessageRole.Func:
+          Frame.MessageRole := TMessageKind.Func;
       end;
       Frame.OnDelete := FOnMessageDelete;
       Frame.Id := Item.Tag;
       Frame.Text := Item.Content;
       Frame.IsAudio := IsAudio;
       Frame.Images := JItem.GetValue<TArray<string>>('images', []);
+      Frame.FuncName := Item.FunctionCall.Name;
+      Frame.FuncArgs := Item.FunctionCall.Arguments;
+      Frame.FuncState := TMessageFuncState(JItem.GetValue('func_state', 0));
+      if not Frame.FuncName.IsEmpty then
+        Frame.OnFuncExecute := FOnExecuteFunc;
       Frame.SetMode(FMode);
       Frame.UpdateContentSize;
       Inc(ItemCount);
@@ -489,6 +613,7 @@ begin
       Frame.EditQueryMaxToken.Text := MaxTokensQuery.ToString;
       Frame.ComboEditModel.Text := Model;
       Frame.TrackBarTopP.Value := TopP * 10;
+      Frame.SwitchUseFunctions.IsChecked := UseFunctions;
     end,
     procedure(Frame: TFrameChatSettings; Success: Boolean)
     begin
@@ -503,6 +628,7 @@ begin
       MaxTokensQuery := StrToIntDef(Frame.EditQueryMaxToken.Text, 0);
       TopP := Frame.TrackBarTopP.Value / 10;
       Model := Frame.ComboEditModel.Text;
+      UseFunctions := Frame.SwitchUseFunctions.IsChecked;
     end);
 end;
 
@@ -699,7 +825,15 @@ begin
     RequestPrompt;
 end;
 
-procedure TFrameChat.RequestPrompt;
+function TFrameChat.GetFuncs: TArray<IChatFunction>;
+begin
+  if Assigned(FOnNeedFuncList) and FUseFunctions then
+    FOnNeedFuncList(Self, Result)
+  else
+    Result := [];
+end;
+
+procedure TFrameChat.RequestFunc(FuncResult: string);
 begin
   SetTyping(True);
   ScrollDown;
@@ -708,6 +842,7 @@ begin
     procedure
     begin
       try
+        var Funcs := GetFuncs;
         var Completions := API.Chat.Create(
           procedure(Params: TChatParams)
           begin
@@ -721,6 +856,74 @@ begin
             if FBuffer.MaxTokensForQuery <> 0 then
               Params.MaxTokens(FBuffer.MaxTokensForQuery);
             Params.Temperature(Temperature);
+            if Length(Funcs) > 0 then
+            begin
+              Params.Functions(Funcs);
+              Params.FunctionCall(TFunctionCall.Auto);
+            end;
+            Params.User(FChatId);
+          end);
+        TThread.Queue(nil,
+          procedure
+          begin
+            AppendMessages(Completions);
+          end);
+      except
+        on E: OpenAIException do
+        begin
+          ShowError(E.Message);
+          LastRequest :=
+            procedure
+            begin
+              RequestFunc(FuncResult);
+            end;
+        end;
+        on E: Exception do
+        begin
+          ShowError(E.Message);
+          LastRequest :=
+            procedure
+            begin
+              RequestFunc(FuncResult);
+            end;
+        end;
+      end;
+      TThread.Queue(nil,
+        procedure
+        begin
+          SetTyping(False);
+        end);
+    end, FPool);
+end;
+
+procedure TFrameChat.RequestPrompt;
+begin
+  SetTyping(True);
+  ScrollDown;
+  LastRequest := nil;
+  TTask.Run(
+    procedure
+    begin
+      try
+        var Funcs := GetFuncs;
+        var Completions := API.Chat.Create(
+          procedure(Params: TChatParams)
+          begin
+            if not Model.IsEmpty then
+              Params.Model(Model);
+            if PresencePenalty <> 0 then
+              Params.PresencePenalty(PresencePenalty);
+            if FrequencyPenalty <> 0 then
+              Params.FrequencyPenalty(FrequencyPenalty);
+            Params.Messages(FBuffer.ToArray);
+            if FBuffer.MaxTokensForQuery <> 0 then
+              Params.MaxTokens(FBuffer.MaxTokensForQuery);
+            Params.Temperature(Temperature);
+            if Length(Funcs) > 0 then
+            begin
+              Params.Functions(Funcs);
+              Params.FunctionCall(TFunctionCall.Auto);
+            end;
             Params.User(FChatId);
           end);
         TThread.Queue(nil,
@@ -826,6 +1029,7 @@ begin
   Name := '';
   VertScrollBoxChat.AniCalculations.Animation := True;
   MemoQuery.ScrollAnimation := TBehaviorBoolean.True;
+  (MemoQuery.Presentation as TStyledMemo).NeedSelectorPoints := True;
   PathStopRecord.Visible := False;
   PathAudio.Visible := False;
   PathSend.Visible := True;
@@ -856,9 +1060,9 @@ procedure TFrameChat.FlowLayoutWelcomeResize(Sender: TObject);
 begin
   var W: Single := 0;
   case Mode of
-    wmCompact:
+    TWindowMode.Compact:
       W := FlowLayoutWelcome.Width;
-    wmFull:
+    TWindowMode.Full:
       W := Trunc(FlowLayoutWelcome.Width / FlowLayoutWelcome.ControlsCount);
   end;
   for var Control in FlowLayoutWelcome.Controls do
@@ -948,6 +1152,11 @@ begin
 end;
 
 procedure TFrameChat.MemoQueryKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
+begin
+  MemoQueryChange(Sender);
+end;
+
+procedure TFrameChat.MemoQueryViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
 begin
   MemoQueryChange(Sender);
 end;
@@ -1126,7 +1335,7 @@ begin
     end;
 
   case FMode of
-    wmCompact:
+    TWindowMode.Compact:
       begin
         {$IFNDEF ANDROID OR IOS OR IOS64}
         LayoutSend.Margins.Right := 11;
@@ -1149,7 +1358,7 @@ begin
         RectangleSendBG.Fill.Kind := TBrushKind.Solid;
         RectangleSendBG.Fill.Color := $FF343541;
       end;
-    wmFull:
+    TWindowMode.Full:
       begin
         {$IFNDEF ANDROID OR IOS OR IOS64}
         LayoutSend.Margins.Right := 11;
@@ -1178,6 +1387,11 @@ end;
 procedure TFrameChat.SetModel(const Value: string);
 begin
   FModel := Value;
+end;
+
+procedure TFrameChat.SetOnNeedFuncList(const Value: TOnNeedFuncList);
+begin
+  FOnNeedFuncList := Value;
 end;
 
 procedure TFrameChat.SetPresencePenalty(const Value: Single);
@@ -1217,6 +1431,11 @@ begin
   LabelTyping.Visible := Value;
 end;
 
+procedure TFrameChat.SetUseFunctions(const Value: Boolean);
+begin
+  FUseFunctions := Value;
+end;
+
 procedure TFrameChat.TimerCheckRecordingTimer(Sender: TObject);
 begin
   if FAudioRecord.IsMicrophoneRecording then
@@ -1236,16 +1455,6 @@ begin
     LabelTyping.Text := '.'
   else
     LabelTyping.Text := LabelTyping.Text + '.';
-end;
-
-procedure TFrameChat.TimerUpdateTextSizeTimer(Sender: TObject);
-begin
-  TimerUpdateTextSize.Enabled := False;  {
-  var H: Single :=
-    LayoutSend.Padding.Top + LayoutSend.Padding.Bottom +
-    MemoQuery.ContentBounds.Height +
-    LayoutQuery.Padding.Top + LayoutQuery.Padding.Bottom;
-  LayoutSend.Height := Max(LayoutSend.TagFloat, Min(H, 400));    }
 end;
 
 { TButton }
@@ -1303,7 +1512,6 @@ end;
 
 type
   TControlHook = class(TControl)
-
   end;
 
 procedure TFixedScrollCalculations.DoChanged;
@@ -1313,7 +1521,7 @@ begin
   try
     inherited;
   finally
-  TControlHook(ScrollBox).FDisableAlign := False;
+    TControlHook(ScrollBox).FDisableAlign := False;
   end;
 end;
 

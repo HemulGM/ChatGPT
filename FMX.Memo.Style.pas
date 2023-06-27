@@ -388,7 +388,8 @@ type
     property NeedSelectorPoints: Boolean read FNeedSelectorPoints write SetNeedSelectorPoints;
     property ScrollToCaret: Boolean read FScrollToCaret write SetScrollToCaret;
     function GetWordAtPos(const X, Y: Single; out BeginWord, Line: Int64): string;
-    procedure UpdateVisibleLayoutParams;
+    procedure UpdateVisibleLayoutParams; overload;
+    procedure UpdateVisibleLayoutParams(const Index: Integer); overload;
     property LinesBackgroundColor: TDictionary<Integer, TAlphaColor> read FLinesBackgroundColor;
   end;
 
@@ -1310,11 +1311,9 @@ begin
     if FindPhraseBound(Model.Lines[CaretPos.Line], CaretPos.Pos, WordBeginIndex, WordEndIndex) and
       InRange(CaretPos.Pos, WordBeginIndex, WordEndIndex + 1) then
     begin
-      var SelStart := Model.PosToTextPos(TCaretPosition.Create(CaretPos.Line, WordBeginIndex - 1));
-      var SelLength := WordEndIndex - WordBeginIndex + 1;
       Line := CaretPos.Line;
       BeginWord := WordBeginIndex - 1;
-      Result := Model.Lines.Text.SubString(SelStart, SelLength);
+      Result := Model.Lines[Line].Substring(WordBeginIndex - 1, WordEndIndex - WordBeginIndex + 1);
     end;
   end;
 end;
@@ -1494,6 +1493,17 @@ begin
   finally
     Canvas.RestoreState(State);
   end;
+end;
+
+procedure TStyledMemo.UpdateVisibleLayoutParams(const Index: Integer);
+begin
+  if Index < 0 then
+    Exit;
+  if Index >= FLineObjects.Count then
+    Exit;
+  var Line := FLineObjects[Index];
+  if Line.Layout <> nil then
+    FLineObjects.UpdateLayoutParams(Line.Layout, Index);
 end;
 
 procedure TStyledMemo.UpdateVisibleLayoutParams;
@@ -3352,10 +3362,7 @@ begin
     begin
       Layout := FLines[I].Layout;
       if Layout = nil then
-      begin
-        Layout := CreateLayout(FMemo.Model.Lines[I], I);
-        Layout.TopLeft := FLines[I].Rect.TopLeft;
-      end;
+        Continue;
       try
         Point := TPointF.Create(EnsureRange(Pt.X, Layout.TextRect.Left, Layout.TextRect.Right), Pt.Y);
         LPos := Layout.PositionAtPoint(Point, RoundToWord);

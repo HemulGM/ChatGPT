@@ -14,7 +14,7 @@ type
     constructor Create(DefaultFont: TFont; DefaultColor: TAlphaColor); override;
     destructor Destroy; override;
     function ParseLine(const Line: string; out Output: string): TArray<TTextAttributedRangeData>;
-    function GetAttributesForLine(const Line: string): TArray<TTextAttributedRangeData>; override;
+    function GetAttributesForLine(const Line: string; const Index: Integer): TArray<TTextAttributedRangeData>; override;
   end;
 
 implementation
@@ -52,43 +52,46 @@ begin
   inherited;
 end;
 
-function TCodeSyntaxMD.GetAttributesForLine(const Line: string): TArray<TTextAttributedRangeData>;
+function TCodeSyntaxMD.GetAttributesForLine(const Line: string; const Index: Integer): TArray<TTextAttributedRangeData>;
 const
   Seps =[' ', '.', ',', '(', '[', ']', ':', '<', '>', '+', '-', '=', '*', '/', '&'];
 begin
-  var Buf: string := '';
-  var IsMono := False;
-  for var C := 0 to Line.Length do
-  begin
-    if Line.IsEmpty then
-      Continue;
-    if IsMono then
+  if FCached.TryGetValue(Index, Result) then
+    Exit;
+  try
+    var Buf: string := '';
+    var IsMono := False;
+    for var C := 0 to Line.Length do
     begin
-      if Line.Chars[C] = '`' then
+      if Line.IsEmpty then
+        Continue;
+      if IsMono then
       begin
-        Buf := Buf + Line.Chars[C];
-        IsMono := False;
-        if not Buf.IsEmpty then
+        if Line.Chars[C] = '`' then
         begin
-          Result := Result + [
-            TTextAttributedRangeData.Create(
-            TTextRange.Create(C - Buf.Length, Buf.Length + 1),
-            TTextAttribute.Create(FMonoKey.Font, FMonoKey.Color)
-            )];
-          Buf := '';
+          Buf := Buf + Line.Chars[C];
+          IsMono := False;
+          if not Buf.IsEmpty then
+          begin
+            Result := Result + [
+              TTextAttributedRangeData.Create(
+              TTextRange.Create(C - Buf.Length, Buf.Length + 1),
+              TTextAttribute.Create(FMonoKey.Font, FMonoKey.Color)
+              )];
+            Buf := '';
+          end;
+          Continue;
         end;
+        Buf := Buf + Line.Chars[C];
         Continue;
       end;
-      Buf := Buf + Line.Chars[C];
-      Continue;
-    end;
-    if Line.Chars[C] = '`' then
-    begin
-      Buf := '';
-      IsMono := True;
-      Buf := Buf + Line.Chars[C];
-      Continue;
-    end;
+      if Line.Chars[C] = '`' then
+      begin
+        Buf := '';
+        IsMono := True;
+        Buf := Buf + Line.Chars[C];
+        Continue;
+      end;
 
     {
     if (C = Line.Length) or CharInSet(Line.Chars[C], Seps) then
@@ -107,7 +110,10 @@ begin
       end;
     end
     else  }
-    Buf := Buf + Line.Chars[C];
+      Buf := Buf + Line.Chars[C];
+    end;
+  finally
+    FCached.AddOrSetValue(Index, Result);
   end;
 end;
 

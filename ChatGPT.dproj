@@ -383,6 +383,11 @@
         </DCCReference>
         <DCCReference Include="ChatGPT.SoundRecorder.pas"/>
         <DCCReference Include="ChatGPT.Android.pas"/>
+        <DCCReference Include="DelphiOpenAI\OpenAI.Chat.Functions.pas"/>
+        <DCCReference Include="DelphiOpenAI\OpenAI.Chat.Functions.Samples.pas"/>
+        <DCCReference Include="ChatGPT.GPTFunctions.pas"/>
+        <DCCReference Include="OWM_API\OWM.API.pas"/>
+        <DCCReference Include="OWM_API\OWM.Classes.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -757,6 +762,11 @@
                 <DeployFile LocalName="$(BDS)\lib\android\debug\mips\libnative-activity.so" Configuration="Release" Class="AndroidLibnativeMipsFile">
                     <Platform Name="Android64">
                         <RemoteName>libChatGPT.so</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(NDKBasePath)\prebuilt\android-arm\gdbserver\gdbserver" Configuration="Release" Class="AndroidGDBServer">
+                    <Platform Name="Android">
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

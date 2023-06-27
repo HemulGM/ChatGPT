@@ -277,18 +277,23 @@ procedure TFrameCode.UpdateLayout(Sender: TObject; Layout: TTextLayout; const In
 begin
   if not Assigned(Layout) then
     Exit;
-  Layout.ClearAttributes;
-  Layout.Padding.Top := 1;
-  Layout.Padding.Bottom := 1;
-  if Assigned(FCodeSyntax) then
+  Layout.BeginUpdate;
   try
-    for var Attr in FCodeSyntax.GetAttributesForLine(MemoCode.Lines[Index]) do
-      Layout.AddAttribute(Attr.Range, Attr.Attribute);
-  except
+    Layout.ClearAttributes;
+    Layout.Padding.Top := 1;
+    Layout.Padding.Bottom := 1;
+    if Assigned(FCodeSyntax) then
+    try
+      for var Attr in FCodeSyntax.GetAttributesForLine(MemoCode.Lines[Index], Index) do
+        Layout.AddAttribute(Attr.Range, Attr.Attribute);
+    except
     //
+    end;
+    if Index = FUnderMouse.WordLine then
+      Layout.AddAttribute(TTextRange.Create(FUnderMouse.WordStart, FUnderMouse.WordLength), FUnderMouseAttr);
+  finally
+    Layout.EndUpdate;
   end;
-  if Index = FUnderMouse.WordLine then
-    Layout.AddAttribute(TTextRange.Create(FUnderMouse.WordStart, FUnderMouse.WordLength), FUnderMouseAttr);
 end;
 {$ENDIF}
 

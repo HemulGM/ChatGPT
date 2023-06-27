@@ -2,17 +2,24 @@
 
 interface
 
+uses
+  System.SysUtils, OpenAI.Chat.Functions;
+
+{$SCOPEDENUMS ON}
+
 type
-  TWindowMode = (wmCompact, wmFull);
+  TWindowMode = (Compact, Full);
 
-  TPartType = (ptText, ptCode, ptSVG);
+  TPartType = (Text, Code, SVG);
 
-  TMessageKind = (User, Assistant, System, Error);
+  TMessageKind = (User, Assistant, System, Error, Func);
 
   TMessageKindHelper = record helper for TMessageKind
     function ToString: string;
     class function FromString(const Value: string): TMessageKind; static;
   end;
+
+  TMessageFuncState = (Wait, Success, Error);
 
   TPart = record
     PartType: TPartType;
@@ -26,6 +33,10 @@ type
     WordLine: Int64;
     Text: string;
   end;
+
+  TOnFuncExecute = procedure(Sender: TObject; const FuncName, FuncArgs: string; Callback: TProc<Boolean, string>) of object;
+
+  TOnNeedFuncList = procedure(Sender: TObject; out Items: TArray<IChatFunction>) of object;
 
 const
   MaxMessageWidth = 850;
@@ -77,6 +88,8 @@ begin
     Exit(TMessageKind.Assistant)
   else if Value = 'error' then
     Exit(TMessageKind.Error)
+  else if Value = 'function' then
+    Exit(TMessageKind.Func)
   else
     Result := TMessageKind.User;
 end;
@@ -92,6 +105,8 @@ begin
       Result := 'assistant';
     TMessageKind.Error:
       Result := 'error';
+    TMessageKind.Func:
+      Result := 'function';
   end;
 end;
 
