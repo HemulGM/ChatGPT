@@ -80,7 +80,10 @@ inherited FrameChatSettings: TFrameChatSettings
         ItemHeight = 36.000000000000000000
         Items.Strings = (
           'gpt-3.5-turbo'
+          'gpt-3.5-turbo-0613'
+          'gpt-3.5-turbo-16k'
           'gpt-4'
+          'gpt-4-0613'
           'gpt-4-32k')
         ItemIndex = 0
         Text = 'gpt-3.5-turbo'
@@ -253,7 +256,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
         Text = 'Query max tokens (default: 1024)'
-        TabOrder = 26
+        TabOrder = 25
         TabStop = False
       end
       object Label17: TLabel
@@ -384,7 +387,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
         Text = 'Model (default: gpt-3.5-turbo)'
-        TabOrder = 28
+        TabOrder = 27
         TabStop = False
       end
       object Label9: TLabel
@@ -401,7 +404,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
         Text = 'Model max tokens (default: 4096)'
-        TabOrder = 31
+        TabOrder = 30
         TabStop = False
       end
       object Layout3: TLayout
@@ -419,7 +422,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Max = 20.000000000000000000
           Orientation = Horizontal
           Size.Width = 360.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           Value = 10.000000000000000000
@@ -459,7 +462,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Min = -20.000000000000000000
           Orientation = Horizontal
           Size.Width = 360.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           OnTracking = TrackBarPPTracking
@@ -556,7 +559,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Min = -20.000000000000000000
           Orientation = Horizontal
           Size.Width = 360.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           OnTracking = TrackBarFPTracking
@@ -640,7 +643,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Max = 10.000000000000000000
           Orientation = Horizontal
           Size.Width = 360.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           Value = 10.000000000000000000
@@ -756,7 +759,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.FontColor = x78FFFFFF
         Text = 
           'In an API call, you can describe functions to gpt-3.5-turbo-0613' +
-          ' and gpt-4-0613'
+          ', gpt-3.5-turbo-16k and gpt-4-0613'
         TabOrder = 17
         TabStop = False
       end

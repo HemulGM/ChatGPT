@@ -249,7 +249,7 @@ inherited FrameSettings: TFrameSettings
           Max = 20.000000000000000000
           Orientation = Horizontal
           Size.Width = 360.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           Value = 10.000000000000000000
@@ -346,6 +346,7 @@ inherited FrameSettings: TFrameSettings
         Items.Strings = (
           'gpt-3.5-turbo'
           'gpt-3.5-turbo-0613'
+          'gpt-3.5-turbo-16k'
           'gpt-4'
           'gpt-4-0613'
           'gpt-4-32k')
@@ -433,7 +434,7 @@ inherited FrameSettings: TFrameSettings
           Min = -20.000000000000000000
           Orientation = Horizontal
           Size.Width = 360.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           OnTracking = TrackBarPPTracking
@@ -534,7 +535,7 @@ inherited FrameSettings: TFrameSettings
           Min = -20.000000000000000000
           Orientation = Horizontal
           Size.Width = 360.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           OnTracking = TrackBarFPTracking
@@ -1209,7 +1210,7 @@ inherited FrameSettings: TFrameSettings
           Max = 10.000000000000000000
           Orientation = Horizontal
           Size.Width = 360.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           Value = 10.000000000000000000
@@ -1335,8 +1336,8 @@ inherited FrameSettings: TFrameSettings
         Size.PlatformDefault = False
         StyleLookup = 'memostyle_normal'
         TabOrder = 53
-        Viewport.Width = 394.000000000000000000
-        Viewport.Height = 82.000000000000000000
+        Viewport.Width = 378.000000000000000000
+        Viewport.Height = 66.000000000000000000
       end
       object Label33: TLabel
         Align = Top
@@ -1415,7 +1416,7 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = x78FFFFFF
         Text = 
           'In an API call, you can describe functions to gpt-3.5-turbo-0613' +
-          ' and gpt-4-0613'
+          ', gpt-3.5-turbo-16k and gpt-4-0613'
         TabOrder = 17
         TabStop = False
       end
