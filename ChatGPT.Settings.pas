@@ -108,6 +108,9 @@ type
     SwitchUseFunctions: TSwitch;
     Label34: TLabel;
     Label35: TLabel;
+    Label36: TLabel;
+    Layout8: TLayout;
+    ButtonLoadedFunctions: TButton;
     procedure TrackBarTempTracking(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);
@@ -117,6 +120,7 @@ type
     procedure TrackBarPPTracking(Sender: TObject);
     procedure TrackBarFPTracking(Sender: TObject);
     procedure TrackBarTopPTracking(Sender: TObject);
+    procedure ButtonLoadedFunctionsClick(Sender: TObject);
   private
     FProcCallback: TProc<TFrameSettings, Boolean>;
     FLayoutClientWidth, FLayoutClientHeight: Single;
@@ -134,7 +138,7 @@ implementation
 
 uses
   ChatGPT.Main, System.Math, FMX.Ani, FMX.Presentation.Style,
-  FMX.Presentation.Factory, HGM.FMX.Ani;
+  FMX.Presentation.Factory, HGM.FMX.Ani, ChatGPT.LoadedFunctions;
 
 {$R *.fmx}
 
@@ -150,6 +154,11 @@ end;
 procedure TFrameSettings.ButtonGetTokenClick(Sender: TObject);
 begin
   OpenUrl('https://platform.openai.com/account/api-keys');
+end;
+
+procedure TFrameSettings.ButtonLoadedFunctionsClick(Sender: TObject);
+begin
+  TFrameLoadedFunctions.Execute(TControl(Parent));
 end;
 
 procedure TFrameSettings.ButtonOkClick(Sender: TObject);

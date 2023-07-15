@@ -50,9 +50,13 @@ uses
   ChatGPT.Android in 'ChatGPT.Android.pas',
   OpenAI.Chat.Functions in 'DelphiOpenAI\OpenAI.Chat.Functions.pas',
   OpenAI.Chat.Functions.Samples in 'DelphiOpenAI\OpenAI.Chat.Functions.Samples.pas',
-  ChatGPT.GPTFunctions in 'ChatGPT.GPTFunctions.pas',
+  ChatGPT.Functions in 'ChatGPT.Functions.pas',
   OWM.API in 'OWM_API\OWM.API.pas',
-  OWM.Classes in 'OWM_API\OWM.Classes.pas';
+  OWM.Classes in 'OWM_API\OWM.Classes.pas',
+  ChatGPT.Code.SQL in 'Code\ChatGPT.Code.SQL.pas',
+  ChatGPT.Functions.External in 'ChatGPT.Functions.External.pas',
+  ChatGPT.Functions.External.Intf in 'ChatGPT.Functions.External.Intf.pas',
+  ChatGPT.LoadedFunctions in 'ChatGPT.LoadedFunctions.pas' {FrameLoadedFunctions: TFrame};
 
 {$R *.res}
 

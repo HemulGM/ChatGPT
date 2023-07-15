@@ -117,8 +117,8 @@ object FrameMessage: TFrameMessage
                 02000000CDCC4C419A99E54103000000CDCC4C419A99E541}
               Fill.Color = xFFACACBE
               HitTest = False
-              Size.Width = 20.000000000000000000
-              Size.Height = 20.000000000000000000
+              Size.Width = 16.000000000000000000
+              Size.Height = 16.000000000000000000
               Size.PlatformDefault = False
               Stroke.Kind = None
               WrapMode = Fit
@@ -151,10 +151,11 @@ object FrameMessage: TFrameMessage
                 79E93F410000E0400300000079E93F410000E040}
               Fill.Color = xFFEA4141
               HitTest = False
-              Size.Width = 20.000000000000000000
-              Size.Height = 20.000000000000000000
+              Size.Width = 16.000000000000000000
+              Size.Height = 16.000000000000000000
               Size.PlatformDefault = False
               Stroke.Kind = None
+              Visible = False
               WrapMode = Fit
             end
             object PathWait: TPath
@@ -176,10 +177,11 @@ object FrameMessage: TFrameMessage
                 C3F59641B81E4141}
               Fill.Color = xFFACACBE
               HitTest = False
-              Size.Width = 20.000000000000000000
-              Size.Height = 20.000000000000000000
+              Size.Width = 16.000000000000000000
+              Size.Height = 16.000000000000000000
               Size.PlatformDefault = False
               Stroke.Kind = None
+              Visible = False
               WrapMode = Fit
             end
           end
@@ -675,7 +677,6 @@ object FrameMessage: TFrameMessage
           end
           object ButtonActions: TButton
             Align = Right
-            Hint = 'Copy'
             Margins.Right = -16.000000000000000000
             Position.X = 30.000000000000000000
             Size.Width = 16.000000000000000000

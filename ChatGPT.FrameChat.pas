@@ -437,7 +437,8 @@ begin
     for var Control in VertScrollBoxChat.Content.Controls do
       if Control is TFrameMessage then
         if not TFrameMessage(Control).IsError then
-          JArray.Add(TFrameMessage(Control).ToJsonObject);
+          if not (TFrameMessage(Control).MessageRole in [TMessageKind.Error, TMessageKind.Func]) then
+            JArray.Add(TFrameMessage(Control).ToJsonObject);
   except
     //
   end;

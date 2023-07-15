@@ -385,9 +385,17 @@
         <DCCReference Include="ChatGPT.Android.pas"/>
         <DCCReference Include="DelphiOpenAI\OpenAI.Chat.Functions.pas"/>
         <DCCReference Include="DelphiOpenAI\OpenAI.Chat.Functions.Samples.pas"/>
-        <DCCReference Include="ChatGPT.GPTFunctions.pas"/>
+        <DCCReference Include="ChatGPT.Functions.pas"/>
         <DCCReference Include="OWM_API\OWM.API.pas"/>
         <DCCReference Include="OWM_API\OWM.Classes.pas"/>
+        <DCCReference Include="Code\ChatGPT.Code.SQL.pas"/>
+        <DCCReference Include="ChatGPT.Functions.External.pas"/>
+        <DCCReference Include="ChatGPT.Functions.External.Intf.pas"/>
+        <DCCReference Include="ChatGPT.LoadedFunctions.pas">
+            <Form>FrameLoadedFunctions</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

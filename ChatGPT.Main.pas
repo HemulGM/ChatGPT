@@ -157,6 +157,7 @@ type
     property Model: string read FModel write SetModel;
     property Lang: string read FLang write SetLang;
     property CanShare: Boolean read FCanShare;
+    property GPTFuncList: TList<IChatFunction> read FGPTFuncList;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -177,13 +178,13 @@ const
 implementation
 
 uses
-  {$IFDEF MSWINDOWS}
-  DarkModeApi.FMX, FMX.Platform.Win,
-  {$ENDIF}
   FMX.Text, FMX.Ani, System.Math, System.Rtti, FMX.Utils, FMX.DialogService,
   System.Threading, System.Net.URLClient, System.IOUtils, ChatGPT.Settings,
   ChatGPT.Overlay, FMX.Styles, HGM.FMX.Ani, HGM.FMX.Image, OpenAI.API,
-  ChatGPT.About, FMX.Platform, FMX.MediaLibrary, ChatGPT.GPTFunctions;
+  {$IFDEF MSWINDOWS}
+  DarkModeApi.FMX, FMX.Platform.Win,
+  {$ENDIF}
+  ChatGPT.About, FMX.Platform, FMX.MediaLibrary, ChatGPT.Functions;
 
 {$R *.fmx}
 
@@ -767,7 +768,8 @@ end;
 
 procedure TFormMain.CreateGPTFunctions;
 begin
-  FGPTFuncList.Add(TChatFunctionWeather.Create);
+  //FGPTFuncList.Add(TChatFunctionWeather.Create);
+  FGPTFuncList.AddRange(LoadExternalFunctions);
 end;
 
 constructor TFormMain.Create(AOwner: TComponent);

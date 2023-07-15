@@ -1,36 +1,28 @@
-﻿unit ChatGPT.GPTFunctions;
+﻿unit func_weather;
 
 interface
 
 uses
-  OpenAI.Chat.Functions;
+  System.SysUtils, System.JSON, ChatGPT.Functions.External.Intf, OWM.API,
+  OWM.Classes;
 
 type
-  TChatFunctionWeather = class(TChatFunction)
+  TChatFunctionWeather = class(TInterfacedObject, IChatFunctionExternal)
     const
       OWM_APPID = '36994c7b370d2e4c0753e34696105d7c'; //I do not mind)
   protected
-    function GetDescription: string; override;
-    function GetName: string; override;
-    function GetParameters: string; override;
+    function GetDescription: WideString;
+    function GetName: WideString;
+    function GetParameters: WideString;
   public
-    constructor Create; override;
-    function Execute(const Args: string): string; override;
+    function Execute(const Args: WideString): WideString;
   end;
 
 implementation
 
-uses
-  System.JSON, System.SysUtils, OWM.API, OWM.Classes;
-
 { TChatFunctionWeather }
 
-constructor TChatFunctionWeather.Create;
-begin
-  inherited;
-end;
-
-function TChatFunctionWeather.Execute(const Args: string): string;
+function TChatFunctionWeather.Execute(const Args: WideString): WideString;
 var
   JSON: TJSONObject;
   Location: string;
@@ -89,17 +81,17 @@ begin
   end;
 end;
 
-function TChatFunctionWeather.GetDescription: string;
+function TChatFunctionWeather.GetDescription: WideString;
 begin
   Result := 'Get the current weather in a given location';
 end;
 
-function TChatFunctionWeather.GetName: string;
+function TChatFunctionWeather.GetName: WideString;
 begin
   Result := 'get_current_weather';
 end;
 
-function TChatFunctionWeather.GetParameters: string;
+function TChatFunctionWeather.GetParameters: WideString;
 begin
   Result :=
     '{' +

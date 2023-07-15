@@ -1,0 +1,131 @@
+inherited FrameLoadedFunctions: TFrameLoadedFunctions
+  Size.Width = 1035.000000000000000000
+  Size.Height = 811.000000000000000000
+  OnResize = FrameResize
+  OnResized = FrameResize
+  inherited RectangleBG: TRectangle
+    Size.Width = 1035.000000000000000000
+    Size.Height = 811.000000000000000000
+  end
+  object LayoutClient: TLayout
+    Align = Center
+    Padding.Left = 10.000000000000000000
+    Padding.Top = 10.000000000000000000
+    Padding.Right = 10.000000000000000000
+    Padding.Bottom = 10.000000000000000000
+    Size.Width = 440.000000000000000000
+    Size.Height = 566.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object RectangleFrame: TRectangle
+      Align = Contents
+      Fill.Color = xFF202123
+      Locked = True
+      Size.Width = 440.000000000000000000
+      Size.Height = 566.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      XRadius = 6.000000000000000000
+      YRadius = 6.000000000000000000
+    end
+    object Layout2: TLayout
+      Align = Bottom
+      Position.X = 10.000000000000000000
+      Position.Y = 510.000000000000000000
+      Size.Width = 420.000000000000000000
+      Size.Height = 46.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      object ButtonOk: TButton
+        Align = Right
+        Position.X = 340.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_menu'
+        TabOrder = 2
+        Text = 'OK'
+        OnClick = ButtonOkClick
+      end
+    end
+    object Label1: TLabel
+      Align = Top
+      AutoSize = True
+      StyledSettings = [Style]
+      Margins.Top = 10.000000000000000000
+      Position.X = 10.000000000000000000
+      Position.Y = 20.000000000000000000
+      Size.Width = 420.000000000000000000
+      Size.Height = 20.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.FontColor = xFFE9E9E9
+      TextSettings.WordWrap = False
+      Text = 'Loaded functions'
+      TabOrder = 53
+    end
+    object Label20: TLabel
+      Align = Top
+      AutoSize = True
+      StyledSettings = [Style]
+      Margins.Left = 5.000000000000000000
+      Margins.Top = 5.000000000000000000
+      Margins.Right = 5.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Position.X = 15.000000000000000000
+      Position.Y = 45.000000000000000000
+      Size.Width = 410.000000000000000000
+      Size.Height = 29.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.FontColor = x78FFFFFF
+      Text = 
+        'To load third-party functions, you must place the dynamic librar' +
+        'y in the "funcs" folder next to the program'#39's executable file'
+      TabOrder = 11
+      TabStop = False
+    end
+    object Rectangle1: TRectangle
+      Align = Client
+      Fill.Color = x78000000
+      Margins.Left = 6.000000000000000000
+      Margins.Top = 6.000000000000000000
+      Margins.Right = 6.000000000000000000
+      Margins.Bottom = 6.000000000000000000
+      Size.Width = 408.000000000000000000
+      Size.Height = 419.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      XRadius = 6.000000000000000000
+      YRadius = 6.000000000000000000
+      object ListBoxItems: TListBox
+        Align = Client
+        Margins.Left = 4.000000000000000000
+        Margins.Top = 4.000000000000000000
+        Margins.Right = 4.000000000000000000
+        Margins.Bottom = 4.000000000000000000
+        Size.Width = 400.000000000000000000
+        Size.Height = 411.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'transparentlistboxstyle'
+        TabOrder = 0
+        DisableFocusEffect = True
+        ItemHeight = 50.000000000000000000
+        DefaultItemStyles.ItemStyle = 'listboxitemstyle_func'
+        DefaultItemStyles.GroupHeaderStyle = ''
+        DefaultItemStyles.GroupFooterStyle = ''
+        Viewport.Width = 400.000000000000000000
+        Viewport.Height = 411.000000000000000000
+      end
+    end
+    object LabelEmpty: TLabel
+      Align = Center
+      StyledSettings = [Family, Size, Style]
+      TextSettings.FontColor = xFF6C6C6C
+      TextSettings.HorzAlign = Center
+      Text = 'List is empty'
+      TabOrder = 3
+    end
+  end
+end
