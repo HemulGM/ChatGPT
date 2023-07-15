@@ -32,6 +32,8 @@
 - Custom headers for third party APIs
 - Send message as assistant, user or system
 - Doesn't require a VPN
+- GPT functions (external load from "funcs" folder)
+- Syntax highlighting (pascal, python, json, sql, markdown)
 
 ## 🙌 List of planned features
 - Display of mathematical formulas
@@ -47,6 +49,7 @@ Skia - https://github.com/skia4delphi/skia4delphi
 
 SVGImageList - https://github.com/EtheaDev/SVGIconImageList
 
+And some submodules
 
 For the program to work, you need to place sk4d.dll of the desired architecture next to the executable file
 
