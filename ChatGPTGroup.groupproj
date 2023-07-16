@@ -12,6 +12,12 @@
         <Projects Include="FunctionsLib\gpt_function_owm.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="FunctionsLib\gpt_function_cmd.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="TProcessDelphi\demo-simple\demo.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -47,14 +53,32 @@
     <Target Name="gpt_function_owm:Make">
         <MSBuild Projects="FunctionsLib\gpt_function_owm.dproj" Targets="Make"/>
     </Target>
+    <Target Name="gpt_function_cmd">
+        <MSBuild Projects="FunctionsLib\gpt_function_cmd.dproj"/>
+    </Target>
+    <Target Name="gpt_function_cmd:Clean">
+        <MSBuild Projects="FunctionsLib\gpt_function_cmd.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="gpt_function_cmd:Make">
+        <MSBuild Projects="FunctionsLib\gpt_function_cmd.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="demo">
+        <MSBuild Projects="TProcessDelphi\demo-simple\demo.dproj"/>
+    </Target>
+    <Target Name="demo:Clean">
+        <MSBuild Projects="TProcessDelphi\demo-simple\demo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="demo:Make">
+        <MSBuild Projects="TProcessDelphi\demo-simple\demo.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ChatGPT;ChatGPT_Console;gpt_function_owm"/>
+        <CallTarget Targets="ChatGPT;ChatGPT_Console;gpt_function_owm;gpt_function_cmd;demo"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ChatGPT:Clean;ChatGPT_Console:Clean;gpt_function_owm:Clean"/>
+        <CallTarget Targets="ChatGPT:Clean;ChatGPT_Console:Clean;gpt_function_owm:Clean;gpt_function_cmd:Clean;demo:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ChatGPT:Make;ChatGPT_Console:Make;gpt_function_owm:Make"/>
+        <CallTarget Targets="ChatGPT:Make;ChatGPT_Console:Make;gpt_function_owm:Make;gpt_function_cmd:Make;demo:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

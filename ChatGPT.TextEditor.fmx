@@ -1,0 +1,110 @@
+inherited FrameTextEditor: TFrameTextEditor
+  Size.Width = 1035.000000000000000000
+  Size.Height = 811.000000000000000000
+  OnResize = FrameResize
+  OnResized = FrameResize
+  inherited RectangleBG: TRectangle
+    Size.Width = 1035.000000000000000000
+    Size.Height = 811.000000000000000000
+  end
+  object LayoutClient: TLayout
+    Align = Center
+    Padding.Left = 10.000000000000000000
+    Padding.Top = 10.000000000000000000
+    Padding.Right = 10.000000000000000000
+    Padding.Bottom = 10.000000000000000000
+    Size.Width = 440.000000000000000000
+    Size.Height = 566.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object RectangleFrame: TRectangle
+      Align = Contents
+      Fill.Color = xFF202123
+      Locked = True
+      Size.Width = 440.000000000000000000
+      Size.Height = 566.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      XRadius = 6.000000000000000000
+      YRadius = 6.000000000000000000
+    end
+    object LayoutActions: TLayout
+      Align = Bottom
+      Position.X = 10.000000000000000000
+      Position.Y = 510.000000000000000000
+      Size.Width = 420.000000000000000000
+      Size.Height = 46.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      object ButtonOk: TButton
+        Align = Right
+        Position.X = 260.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_menu'
+        TabOrder = 2
+        Text = 'OK'
+        OnClick = ButtonOkClick
+      end
+      object ButtonCancel: TButton
+        Align = Right
+        Position.X = 340.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_menu'
+        TabOrder = 3
+        Text = 'CANCEL'
+        OnClick = ButtonCancelClick
+      end
+    end
+    object LabelCaption: TLabel
+      Align = Top
+      AutoSize = True
+      StyledSettings = [Style]
+      Margins.Top = 10.000000000000000000
+      Position.X = 10.000000000000000000
+      Position.Y = 20.000000000000000000
+      Size.Width = 420.000000000000000000
+      Size.Height = 20.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.FontColor = xFFE9E9E9
+      TextSettings.WordWrap = False
+      Text = 'Loaded functions'
+      TabOrder = 49
+    end
+    object Rectangle1: TRectangle
+      Align = Client
+      Fill.Color = x78000000
+      Margins.Left = 6.000000000000000000
+      Margins.Top = 6.000000000000000000
+      Margins.Right = 6.000000000000000000
+      Margins.Bottom = 6.000000000000000000
+      Size.Width = 408.000000000000000000
+      Size.Height = 458.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      XRadius = 6.000000000000000000
+      YRadius = 6.000000000000000000
+      object MemoText: TMemo
+        Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+        DataDetectorTypes = []
+        StyledSettings = [Family, Style]
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = xFFEDEDED
+        TextSettings.WordWrap = True
+        Align = Client
+        Size.Width = 408.000000000000000000
+        Size.Height = 458.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'memostyle_clear'
+        TabOrder = 0
+        Viewport.Width = 398.000000000000000000
+        Viewport.Height = 458.000000000000000000
+      end
+    end
+  end
+end

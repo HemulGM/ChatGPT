@@ -111,6 +111,9 @@ type
     Label36: TLabel;
     Layout8: TLayout;
     ButtonLoadedFunctions: TButton;
+    Layout9: TLayout;
+    SwitchAutoExecFuncs: TSwitch;
+    Label37: TLabel;
     procedure TrackBarTempTracking(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);

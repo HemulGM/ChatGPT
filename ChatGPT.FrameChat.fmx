@@ -938,7 +938,7 @@ object FrameChat: TFrameChat
         OnKeyUp = MemoQueryKeyUp
         OnKeyDown = MemoQueryKeyDown
         OnViewportPositionChange = MemoQueryViewportPositionChange
-        Viewport.Width = 620.000000000000000000
+        Viewport.Width = 610.000000000000000000
         Viewport.Height = 26.000000000000000000
         object LabelSendTip: TLabel
           Align = Client
@@ -1600,13 +1600,57 @@ object FrameChat: TFrameChat
     Size.Height = 50.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 5
-    object LayoutRetry: TLayout
+    object LayoutScrollDown: TLayout
       Align = Client
       Locked = True
+      Padding.Top = 10.000000000000000000
+      Padding.Right = 30.000000000000000000
+      Padding.Bottom = 10.000000000000000000
       Size.Width = 890.000000000000000000
       Size.Height = 50.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 1
+      TabOrder = 4
+      object ButtonScrollDown: TButton
+        Align = Right
+        Position.X = 830.000000000000000000
+        Position.Y = 10.000000000000000000
+        Size.Width = 30.000000000000000000
+        Size.Height = 30.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'button_scrolldown'
+        TabOrder = 0
+        Text = 'button_scrolldown'
+        OnClick = ButtonScrollDownClick
+      end
+    end
+    object FlowLayoutActions: TFlowLayout
+      Align = Client
+      Size.Width = 890.000000000000000000
+      Size.Height = 50.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 5
+      Justify = Center
+      JustifyLastLine = Center
+      FlowDirection = LeftToRight
+      HorizontalGap = 10.000000000000000000
+      object ButtonContinue: TButton
+        Align = Center
+        Size.Width = 112.000000000000000000
+        Size.Height = 38.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_continue'
+        TabOrder = 1
+        Text = 'Continue'
+        TextSettings.HorzAlign = Leading
+        OnClick = ButtonContinueClick
+        object ShadowEffect2: TShadowEffect
+          Distance = 0.001000000047497451
+          Direction = 45.000000000000000000
+          Softness = 0.600000023841857900
+          Opacity = 0.600000023841857900
+          ShadowColor = xFF343541
+        end
+      end
       object ButtonRetry: TButton
         Align = Center
         Size.Width = 103.000000000000000000
@@ -1624,29 +1668,6 @@ object FrameChat: TFrameChat
           Opacity = 0.600000023841857900
           ShadowColor = xFF343541
         end
-      end
-    end
-    object LayoutScrollDown: TLayout
-      Align = Client
-      Locked = True
-      Padding.Top = 10.000000000000000000
-      Padding.Right = 30.000000000000000000
-      Padding.Bottom = 10.000000000000000000
-      Size.Width = 890.000000000000000000
-      Size.Height = 50.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 5
-      object ButtonScrollDown: TButton
-        Align = Right
-        Position.X = 830.000000000000000000
-        Position.Y = 10.000000000000000000
-        Size.Width = 30.000000000000000000
-        Size.Height = 30.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'button_scrolldown'
-        TabOrder = 0
-        Text = 'button_scrolldown'
-        OnClick = ButtonScrollDownClick
       end
     end
   end

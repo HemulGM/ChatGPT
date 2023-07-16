@@ -98,6 +98,7 @@ type
     FCanShare: Boolean;
     FGPTFuncList: TList<IChatFunction>;
     FUseFunctions: Boolean;
+    FAutoExecFuncs: Boolean;
     procedure SetMode(const Value: TWindowMode);
     procedure UpdateMode;
     procedure SelectChat(const ChatId: string);
@@ -135,6 +136,7 @@ type
     procedure FOnNeedFuncList(Sender: TObject; out Items: TArray<IChatFunction>);
     procedure CreateGPTFunctions;
     procedure SetUseFunctions(const Value: Boolean);
+    procedure SetAutoExecFuncs(const Value: Boolean);
   protected
     procedure CreateHandle; override;
   public
@@ -143,6 +145,7 @@ type
     procedure ShareBitmap(Bitmap: TBitmap);
     class function NextChatId: Integer; static;
     property UseFunctions: Boolean read FUseFunctions write SetUseFunctions;
+    property AutoExecFuncs: Boolean read FAutoExecFuncs write SetAutoExecFuncs;
     property OpenAI: TOpenAIComponent read FOpenAI;
     property Mode: TWindowMode read FMode write SetMode;
     property Token: string read FToken write SetToken;
@@ -525,6 +528,8 @@ begin
       Lang := JSON.GetValue('translate_lang', '');
       FSelectedChatId := JSON.GetValue('selected_chat', '');
       OpenAI.BaseURL := JSON.GetValue('base_url', OpenAI.BaseURL);
+      UseFunctions := JSON.GetValue<Boolean>('use_functions', False);
+      AutoExecFuncs := JSON.GetValue<Boolean>('auto_exec_funcs', False);
 
       if JSON.GetValue('on_top', False) then
         FormStyle := TFormStyle.StayOnTop
@@ -600,6 +605,8 @@ begin
     JSON.AddPair('model', Model);
 
     JSON.AddPair('on_top', FormStyle = TFormStyle.StayOnTop);
+    JSON.AddPair('use_functions', UseFunctions);
+    JSON.AddPair('auto_exec_funcs', AutoExecFuncs);
 
     JSON.AddPair('proxy_host', OpenAI.API.Client.ProxySettings.Host);
     JSON.AddPair('proxy_port', OpenAI.API.Client.ProxySettings.Port);
@@ -796,6 +803,8 @@ begin
     TStyleManager.UpdateScenes;
   end;
   {$ENDIF}
+  LayoutOverlay.Visible := True;
+  LayoutOverlay.BringToFront;
   ListBoxChatList.AniCalculations.Animation := True;
   FGPTFuncList := TList<IChatFunction>.Create;
   FOpenAI := TOpenAIComponent.Create(Self);
@@ -836,8 +845,6 @@ end;
 
 procedure TFormMain.OpenSettings;
 begin
-  LayoutOverlay.Visible := True;
-  LayoutOverlay.BringToFront;
   TFrameSettings.Execute(LayoutOverlay,
     procedure(Frame: TFrameSettings)
     begin
@@ -859,13 +866,13 @@ begin
       Frame.EditProxyPassword.Text := OpenAI.API.Client.ProxySettings.Password;
       Frame.LabelVersion.Text := 'Version: ' + VersionName;
       Frame.EditBaseUrl.Text := OpenAI.BaseURL;
-      Frame.SwitchOnTop.IsChecked := UseFunctions;
+      Frame.SwitchUseFunctions.IsChecked := UseFunctions;
+      Frame.SwitchAutoExecFuncs.IsChecked := UseFunctions;
       for var Head in OpenAI.API.CustomHeaders do
         Frame.MemoCustomHeaders.Lines.AddPair(Head.Name, Head.Value);
     end,
     procedure(Frame: TFrameSettings; Success: Boolean)
     begin
-      LayoutOverlay.Visible := False;
       if not Success then
         Exit;
       Token := Frame.EditToken.Text;
@@ -889,7 +896,8 @@ begin
         Frame.EditProxyPassword.Text);
       TBitmap.Client.ProxySettings := OpenAI.API.Client.ProxySettings;
       OpenAI.BaseURL := Frame.EditBaseUrl.Text;
-      UseFunctions := Frame.SwitchOnTop.IsChecked;
+      UseFunctions := Frame.SwitchUseFunctions.IsChecked;
+      AutoExecFuncs := Frame.SwitchAutoExecFuncs.IsChecked;
 
       var FHeaders: TNetHeaders;
       try
@@ -980,6 +988,11 @@ begin
         RectangleMenu.SendToBack;
       end;
   end;
+end;
+
+procedure TFormMain.SetAutoExecFuncs(const Value: Boolean);
+begin
+  FAutoExecFuncs := Value;
 end;
 
 procedure TFormMain.SetBaseUrl(const Value: string);

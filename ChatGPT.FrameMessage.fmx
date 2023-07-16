@@ -76,7 +76,9 @@ object FrameMessage: TFrameMessage
           end
           object LabelGPTFunc: TLabel
             Align = Client
+            Cursor = crHelp
             StyledSettings = [Family, Size, Style]
+            HitTest = True
             Margins.Left = 10.000000000000000000
             Size.Width = 370.000000000000000000
             Size.Height = 30.000000000000000000
@@ -85,14 +87,6 @@ object FrameMessage: TFrameMessage
             TextSettings.WordWrap = False
             Text = 'get_weather_info'
             TabOrder = 1
-          end
-          object AniIndicatorFunc: TAniIndicator
-            Align = Left
-            Position.X = 97.000000000000000000
-            Size.Width = 50.000000000000000000
-            Size.Height = 30.000000000000000000
-            Size.PlatformDefault = False
-            Visible = False
           end
           object LayoutFuncState: TLayout
             Align = Right
@@ -183,6 +177,12 @@ object FrameMessage: TFrameMessage
               Stroke.Kind = None
               Visible = False
               WrapMode = Fit
+            end
+            object AniIndicatorFunc: TAniIndicator
+              Align = Client
+              Size.Width = 30.000000000000000000
+              Size.Height = 30.000000000000000000
+              Size.PlatformDefault = False
             end
           end
         end
@@ -906,6 +906,7 @@ object FrameMessage: TFrameMessage
     end
     object MenuItemEdit: TMenuItem
       Text = 'Edit'
+      OnClick = MenuItemEditClick
     end
   end
 end

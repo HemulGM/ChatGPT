@@ -7,3 +7,6 @@
 [submodule "OWM_API"]
 	path = OWM_API
 	url = https://github.com/HemulGM/OWM_API
+[submodule "TProcessDelphi"]
+	path = TProcessDelphi
+	url = https://github.com/HemulGM/TProcessDelphi

@@ -59,6 +59,9 @@ type
     SwitchUseFunctions: TSwitch;
     Label34: TLabel;
     Label35: TLabel;
+    Layout9: TLayout;
+    SwitchAutoExecFuncs: TSwitch;
+    Label37: TLabel;
     procedure TrackBarTempTracking(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);

@@ -76,7 +76,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'combo_style'
-        TabOrder = 2
+        TabOrder = 3
         ItemHeight = 36.000000000000000000
         Items.Strings = (
           'gpt-3.5-turbo'
@@ -96,9 +96,9 @@ inherited FrameChatSettings: TFrameChatSettings
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'editstyle_clear'
-        TabOrder = 5
+        TabOrder = 6
         KeyboardType = Alphabet
-        Position.Y = 587.000000000000000000
+        Position.Y = 617.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 33.000000000000000000
@@ -139,10 +139,10 @@ inherited FrameChatSettings: TFrameChatSettings
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'editstyle_clear'
-        TabOrder = 3
+        TabOrder = 4
         KeyboardType = DecimalNumberPad
         FilterChar = '0123456789'
-        Position.Y = 367.000000000000000000
+        Position.Y = 397.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 33.000000000000000000
@@ -183,10 +183,10 @@ inherited FrameChatSettings: TFrameChatSettings
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'editstyle_clear'
-        TabOrder = 4
+        TabOrder = 5
         KeyboardType = DecimalNumberPad
         FilterChar = '0123456789'
-        Position.Y = 477.000000000000000000
+        Position.Y = 507.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 33.000000000000000000
@@ -239,7 +239,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.HorzAlign = Center
         TextSettings.WordWrap = False
         Text = 'Chat Settings'
-        TabOrder = 22
+        TabOrder = 23
         TabStop = False
       end
       object Label16: TLabel
@@ -248,7 +248,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 450.000000000000000000
+        Position.Y = 480.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -256,7 +256,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
         Text = 'Query max tokens (default: 1024)'
-        TabOrder = 25
+        TabOrder = 26
         TabStop = False
       end
       object Label17: TLabel
@@ -268,14 +268,14 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 410.000000000000000000
+        Position.Y = 440.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
         TextSettings.FontColor = x78FFFFFF
         Text = 'Limit of the selected model'
-        TabOrder = 13
+        TabOrder = 14
         TabStop = False
       end
       object Label18: TLabel
@@ -287,14 +287,14 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 520.000000000000000000
+        Position.Y = 550.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
         TextSettings.FontColor = x78FFFFFF
         Text = 'Max number of tokens per request'
-        TabOrder = 10
+        TabOrder = 11
         TabStop = False
       end
       object Label19: TLabel
@@ -316,7 +316,7 @@ inherited FrameChatSettings: TFrameChatSettings
           'GPT-4 is currently in a limited beta and only accessible to thos' +
           'e who have been granted access. Please join the waitlist to get ' +
           'access when capacity is available.'
-        TabOrder = 12
+        TabOrder = 13
         TabStop = False
       end
       object Label2: TLabel
@@ -325,7 +325,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 560.000000000000000000
+        Position.Y = 590.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -334,7 +334,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Translate to English from your lang'
-        TabOrder = 20
+        TabOrder = 21
         TabStop = False
       end
       object Label3: TLabel
@@ -343,7 +343,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 640.000000000000000000
+        Position.Y = 670.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -352,7 +352,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Temperature (default: 1.0)'
-        TabOrder = 14
+        TabOrder = 15
         TabStop = False
       end
       object Label4: TLabel
@@ -361,7 +361,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 692.000000000000000000
+        Position.Y = 722.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
@@ -370,7 +370,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Text = 
           'The higher, the more creativity will be in the answers (less acc' +
           'urate)'
-        TabOrder = 11
+        TabOrder = 12
         TabStop = False
       end
       object Label8: TLabel
@@ -387,7 +387,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
         Text = 'Model (default: gpt-3.5-turbo)'
-        TabOrder = 27
+        TabOrder = 28
         TabStop = False
       end
       object Label9: TLabel
@@ -396,7 +396,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 340.000000000000000000
+        Position.Y = 370.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -404,16 +404,16 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
         Text = 'Model max tokens (default: 4096)'
-        TabOrder = 30
+        TabOrder = 31
         TabStop = False
       end
       object Layout3: TLayout
         Align = Top
-        Position.Y = 662.000000000000000000
+        Position.Y = 692.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 6
+        TabOrder = 7
         TabStop = False
         object TrackBarTemp: TTrackBar
           Align = Client
@@ -422,7 +422,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Max = 20.000000000000000000
           Orientation = Horizontal
           Size.Width = 360.000000000000000000
-          Size.Height = 20.000000000000000000
+          Size.Height = 19.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           Value = 10.000000000000000000
@@ -448,11 +448,11 @@ inherited FrameChatSettings: TFrameChatSettings
       end
       object Layout1: TLayout
         Align = Top
-        Position.Y = 754.000000000000000000
+        Position.Y = 784.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 7
+        TabOrder = 8
         TabStop = False
         object TrackBarPP: TTrackBar
           Align = Client
@@ -491,7 +491,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 732.000000000000000000
+        Position.Y = 762.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -500,7 +500,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Presence penalty (default: 0.0)'
-        TabOrder = 24
+        TabOrder = 25
         TabStop = False
       end
       object Label11: TLabel
@@ -512,7 +512,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 784.000000000000000000
+        Position.Y = 814.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
@@ -522,7 +522,7 @@ inherited FrameChatSettings: TFrameChatSettings
           'Number between -2.0 and 2.0. Positive values penalize new tokens' +
           ' based on whether they appear in the text so far, increasing the' +
           ' model'#39's likelihood to talk about new topics.'
-        TabOrder = 19
+        TabOrder = 20
         TabStop = False
       end
       object Label15: TLabel
@@ -531,7 +531,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 853.000000000000000000
+        Position.Y = 883.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -540,16 +540,16 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Frequency penalty (default: 0.0)'
-        TabOrder = 21
+        TabOrder = 22
         TabStop = False
       end
       object Layout5: TLayout
         Align = Top
-        Position.Y = 875.000000000000000000
+        Position.Y = 905.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 8
+        TabOrder = 9
         TabStop = False
         object TrackBarFP: TTrackBar
           Align = Client
@@ -591,7 +591,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 905.000000000000000000
+        Position.Y = 935.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
@@ -601,7 +601,7 @@ inherited FrameChatSettings: TFrameChatSettings
           'Number between -2.0 and 2.0. Positive values penalize new tokens' +
           ' based on their existing frequency in the text so far, decreasin' +
           'g the model'#39's likelihood to repeat the same line verbatim.'
-        TabOrder = 16
+        TabOrder = 17
         TabStop = False
       end
       object Label28: TLabel
@@ -613,7 +613,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 1026.000000000000000000
+        Position.Y = 1056.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 73.000000000000000000
         Size.PlatformDefault = False
@@ -625,16 +625,16 @@ inherited FrameChatSettings: TFrameChatSettings
           'op_p probability mass. So 0.1 means only the tokens comprising t' +
           'he top 10% probability mass are considered.'#13#10'We generally recomm' +
           'end altering this or temperature but not both.'
-        TabOrder = 15
+        TabOrder = 16
         TabStop = False
       end
       object Layout6: TLayout
         Align = Top
-        Position.Y = 996.000000000000000000
+        Position.Y = 1026.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 9
+        TabOrder = 10
         TabStop = False
         object TrackBarTopP: TTrackBar
           Align = Client
@@ -673,7 +673,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 974.000000000000000000
+        Position.Y = 1004.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -682,7 +682,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Top P (default: 1.0)'
-        TabOrder = 18
+        TabOrder = 19
         TabStop = False
       end
       object LabelAppearance: TLabel
@@ -712,7 +712,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Size.Width = 394.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 1
+        TabOrder = 2
         TabStop = False
         object SwitchUseFunctions: TSwitch
           Align = Right
@@ -751,7 +751,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 286.000000000000000000
+        Position.Y = 316.000000000000000000
         Size.Width = 384.000000000000000000
         Size.Height = 29.000000000000000000
         Size.PlatformDefault = False
@@ -760,8 +760,46 @@ inherited FrameChatSettings: TFrameChatSettings
         Text = 
           'In an API call, you can describe functions to gpt-3.5-turbo-0613' +
           ', gpt-3.5-turbo-16k and gpt-4-0613'
-        TabOrder = 17
+        TabOrder = 18
         TabStop = False
+      end
+      object Layout9: TLayout
+        Align = Top
+        Padding.Top = 4.000000000000000000
+        Padding.Bottom = 4.000000000000000000
+        Position.Y = 276.000000000000000000
+        Size.Width = 394.000000000000000000
+        Size.Height = 30.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        TabStop = False
+        object SwitchAutoExecFuncs: TSwitch
+          Align = Right
+          IsChecked = False
+          Margins.Top = 2.000000000000000000
+          Margins.Bottom = 2.000000000000000000
+          Position.X = 349.000000000000000000
+          Position.Y = 6.000000000000000000
+          Size.Width = 45.000000000000000000
+          Size.Height = 18.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 1
+        end
+        object Label37: TLabel
+          Align = Client
+          AutoSize = True
+          StyledSettings = [Style]
+          Size.Width = 349.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+          TextSettings.Font.Family = 'Roboto'
+          TextSettings.Font.Size = 14.000000000000000000
+          TextSettings.FontColor = xB4FFFFFF
+          TextSettings.WordWrap = False
+          Text = 'Auto execution of functions'
+          TabOrder = 0
+          TabStop = False
+        end
       end
     end
   end

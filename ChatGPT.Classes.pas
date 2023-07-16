@@ -10,7 +10,7 @@ uses
 type
   TWindowMode = (Compact, Full);
 
-  TPartType = (Text, Code, SVG);
+  TPartType = (Text, Code);
 
   TMessageKind = (User, Assistant, System, Error, Func);
 
@@ -19,7 +19,7 @@ type
     class function FromString(const Value: string): TMessageKind; static;
   end;
 
-  TMessageFuncState = (Wait, Success, Error);
+  TMessageFuncState = (Wait, Success, Error, Executing);
 
   TPart = record
     PartType: TPartType;
@@ -37,6 +37,8 @@ type
   TOnFuncExecute = procedure(Sender: TObject; const FuncName, FuncArgs: string; Callback: TProc<Boolean, string>) of object;
 
   TOnNeedFuncList = procedure(Sender: TObject; out Items: TArray<IChatFunction>) of object;
+
+  TOnTextUpdated = procedure(Sender: TObject; const MessageId, Text: string) of object;
 
 const
   MaxMessageWidth = 850;

@@ -109,7 +109,6 @@ type
     ButtonSettings: TButton;
     Path9: TPath;
     LayoutButtom: TLayout;
-    LayoutRetry: TLayout;
     ButtonRetry: TButton;
     ShadowEffect1: TShadowEffect;
     LayoutScrollDown: TLayout;
@@ -120,6 +119,9 @@ type
     PathStopRecord: TPath;
     TimerCheckRecording: TTimer;
     LabelRecordingTime: TLabel;
+    ButtonContinue: TButton;
+    ShadowEffect2: TShadowEffect;
+    FlowLayoutActions: TFlowLayout;
     procedure LayoutSendResize(Sender: TObject);
     procedure MemoQueryChange(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
@@ -144,6 +146,7 @@ type
     procedure MemoQueryKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
     procedure MemoQueryEnter(Sender: TObject);
     procedure MemoQueryViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
+    procedure ButtonContinueClick(Sender: TObject);
   private
     FAPI: IOpenAI;
     FChatId: string;
@@ -168,6 +171,8 @@ type
     FRecordingStartTime: TDateTime;
     FOnNeedFuncList: TOnNeedFuncList;
     FUseFunctions: Boolean;
+    FAutoExecFuncs: Boolean;
+    procedure DoOnUpdateChatItems;
     function NewMessage(const Text: string; Role: TMessageKind; UseBuffer: Boolean = True; IsAudio: Boolean = False): TFrameMessage;
     function NewMessageImage(Role: TMessageKind; Images: TArray<string>): TFrameMessage;
     procedure ClearChat;
@@ -211,9 +216,11 @@ type
     procedure ProcFunction(Func: TChatFunctionCall);
     procedure RequestFunc(FuncResult: string);
     function NewMessageFunc(const FuncName, FuncArgs: string): TFrameMessage;
+    procedure FOnMessageTextUpdated(Sender: TObject; const MessageId, Text: string);
     procedure FOnExecuteFunc(Sender: TObject; const FuncName, FuncArgs: string; Callback: TProc<Boolean, string>);
     procedure ExecuteFunc(const FuncName, FuncArgs: string; Callback: TProc<Boolean, string>);
     procedure SetUseFunctions(const Value: Boolean);
+    procedure SetAutoExecFuncs(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -238,6 +245,7 @@ type
     property IsFirstMessage: Boolean read FIsFirstMessage write FIsFirstMessage;
     property OnNeedFuncList: TOnNeedFuncList read FOnNeedFuncList write SetOnNeedFuncList;
     property UseFunctions: Boolean read FUseFunctions write SetUseFunctions;
+    property AutoExecFuncs: Boolean read FAutoExecFuncs write SetAutoExecFuncs;
     procedure Init;
   end;
 
@@ -312,12 +320,16 @@ begin
   Result.Align := TAlignLayout.MostTop;
   Result.Id := '';
   Result.OnDelete := FOnMessageDelete;
+  Result.OnTextUpdated := FOnMessageTextUpdated;
   TFrameMessage(Result).MessageRole := TMessageKind.Func;
   TFrameMessage(Result).FuncName := FuncName;
   TFrameMessage(Result).FuncArgs := FuncArgs;
   TFrameMessage(Result).FuncState := TMessageFuncState.Wait;
   TFrameMessage(Result).OnFuncExecute := FOnExecuteFunc;
   Result.StartAnimate;
+  DoOnUpdateChatItems;
+  if AutoExecFuncs then
+    TFrameMessage(Result).ExecuteFunc;
 end;
 
 function TFrameChat.NewMessageImage(Role: TMessageKind; Images: TArray<string>): TFrameMessage;
@@ -331,9 +343,11 @@ begin
   Result.Align := TAlignLayout.MostTop;
   Result.Id := '';
   Result.OnDelete := FOnMessageDelete;
+  Result.OnTextUpdated := FOnMessageTextUpdated;
   TFrameMessage(Result).MessageRole := Role;
   TFrameMessage(Result).Images := Images;
   Result.StartAnimate;
+  DoOnUpdateChatItems;
 end;
 
 procedure TFrameChat.ExecuteFunc(const FuncName, FuncArgs: string; Callback: TProc<Boolean, string>);
@@ -393,12 +407,10 @@ procedure TFrameChat.AppendMessages(Response: TChat);
 begin
   try
     for var Item in Response.Choices do
-    begin
       if Item.FinishReason = TFinishReason.FunctionCall then
         ProcFunction(Item.Message.FunctionCall)
       else
         NewMessage(Item.Message.Content, TMessageKind.Assistant);
-    end;
   finally
     Response.Free;
   end;
@@ -433,6 +445,7 @@ begin
     Result.AddPair('is_image_mode', IsImageMode);
     Result.AddPair('draft', MemoQuery.Text);
     Result.AddPair('use_functions', UseFunctions);
+    Result.AddPair('auto_exec_funcs', AutoExecFuncs);
 
     for var Control in VertScrollBoxChat.Content.Controls do
       if Control is TFrameMessage then
@@ -458,6 +471,15 @@ begin
   FBuffer.DeleteByTag(Frame.Id);
   if VertScrollBoxChat.Content.ControlsCount <= 3 then
     LayoutWelcome.Visible := True;
+end;
+
+procedure TFrameChat.FOnMessageTextUpdated(Sender: TObject; const MessageId, Text: string);
+var
+  Frame: TFrameMessage absolute Sender;
+begin
+  if not (Sender is TFrameMessage) then
+    Exit;
+  FBuffer.SetContentByTag(MessageId, Text);
 end;
 
 function TFrameChat.GenerateAudioFileName: string;
@@ -496,6 +518,7 @@ begin
   MaxTokensQuery := JSON.GetValue<Integer>('max_tokens_query', 0);
   IsImageMode := JSON.GetValue('is_image_mode', False);
   UseFunctions := JSON.GetValue('use_functions', False);
+  AutoExecFuncs := JSON.GetValue('auto_exec_funcs', False);
   MemoQuery.Text := JSON.GetValue('draft', '');
   MemoQuery.SelStart := MemoQuery.Text.Length;
 
@@ -533,6 +556,7 @@ begin
           Frame.MessageRole := TMessageKind.Func;
       end;
       Frame.OnDelete := FOnMessageDelete;
+      Frame.OnTextUpdated := FOnMessageTextUpdated;
       Frame.Id := Item.Tag;
       Frame.Text := Item.Content;
       Frame.IsAudio := IsAudio;
@@ -546,6 +570,7 @@ begin
       Frame.UpdateContentSize;
       Inc(ItemCount);
     end;
+  DoOnUpdateChatItems;
   if ItemCount > 0 then
   begin
     LayoutWelcome.Visible := False;
@@ -615,6 +640,7 @@ begin
       Frame.ComboEditModel.Text := Model;
       Frame.TrackBarTopP.Value := TopP * 10;
       Frame.SwitchUseFunctions.IsChecked := UseFunctions;
+      Frame.SwitchAutoExecFuncs.IsChecked := AutoExecFuncs;
     end,
     procedure(Frame: TFrameChatSettings; Success: Boolean)
     begin
@@ -630,6 +656,7 @@ begin
       TopP := Frame.TrackBarTopP.Value / 10;
       Model := Frame.ComboEditModel.Text;
       UseFunctions := Frame.SwitchUseFunctions.IsChecked;
+      AutoExecFuncs := Frame.SwitchAutoExecFuncs.IsChecked;
     end);
 end;
 
@@ -658,6 +685,11 @@ begin
       ShowError(E.Message);
   end;
   {$ENDIF}
+end;
+
+procedure TFrameChat.ButtonContinueClick(Sender: TObject);
+begin
+  RequestPrompt;
 end;
 
 procedure TFrameChat.RequestAudio(const AudioFile: string);
@@ -1000,6 +1032,7 @@ begin
     VertScrollBoxChat.Content.Controls[0].Free;
   LayoutTyping.Parent := VertScrollBoxChat;
   LayoutWelcome.Parent := VertScrollBoxChat;
+  DoOnUpdateChatItems;
 end;
 
 procedure TFrameChat.FOnStartRecord(Sender: TObject);
@@ -1055,6 +1088,11 @@ begin
   FPool.Free;
   FBuffer.Free;
   inherited;
+end;
+
+procedure TFrameChat.DoOnUpdateChatItems;
+begin
+  ButtonContinue.Visible := FBuffer.Count > 0;
 end;
 
 procedure TFrameChat.FlowLayoutWelcomeResize(Sender: TObject);
@@ -1241,9 +1279,11 @@ begin
   Result.IsAudio := IsAudio;
   Result.Text := AppendText;
   Result.OnDelete := FOnMessageDelete;
+  Result.OnTextUpdated := FOnMessageTextUpdated;
   Result.SetMode(FMode);
   Result.UpdateContentSize;
   Result.StartAnimate;
+  DoOnUpdateChatItems;
 end;
 
 function TFrameChat.ProcText(const Text: string; FromUser: Boolean): string;
@@ -1264,6 +1304,11 @@ end;
 procedure TFrameChat.SetAPI(const Value: IOpenAI);
 begin
   FAPI := Value;
+end;
+
+procedure TFrameChat.SetAutoExecFuncs(const Value: Boolean);
+begin
+  FAutoExecFuncs := Value;
 end;
 
 procedure TFrameChat.SetChatId(const Value: string);
@@ -1299,7 +1344,7 @@ end;
 procedure TFrameChat.SetLastRequest(const Value: TProc);
 begin
   FLastRequest := Value;
-  LayoutRetry.Visible := Assigned(FLastRequest);
+  ButtonRetry.Visible := Assigned(FLastRequest);
 end;
 
 procedure TFrameChat.SetMaxTokens(const Value: Integer);
@@ -1421,6 +1466,7 @@ begin
   ButtonSend.Enabled := not Value;
   TimerTyping.Enabled := Value;
   LayoutTyping.Visible := Value;
+  FlowLayoutActions.Enabled := not Value;
   if LayoutTyping.Visible then
   begin
     LayoutTyping.Margins.Top := 40;

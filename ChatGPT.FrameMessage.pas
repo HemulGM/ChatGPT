@@ -61,6 +61,7 @@ type
     procedure ButtonDeleteClick(Sender: TObject);
     procedure ButtonActionsClick(Sender: TObject);
     procedure ButtonExecuteFuncClick(Sender: TObject);
+    procedure MenuItemEditClick(Sender: TObject);
   private
     FText: string;
     FIsError: Boolean;
@@ -74,6 +75,7 @@ type
     FFuncArgs: string;
     FOnFuncExecute: TOnFuncExecute;
     FFuncState: TMessageFuncState;
+    FOnTextUpdated: TOnTextUpdated;
     procedure SetText(const Value: string);
     procedure SetIsError(const Value: Boolean);
     procedure ParseText(const Value: string);
@@ -85,16 +87,16 @@ type
     procedure UpdateMode;
     procedure CreateCodePart(Part: TPart);
     procedure CreatePartText(Part: TPart);
-    procedure CreatePartSVG(Part: TPart);
     procedure SetOnDelete(const Value: TNotifyEvent);
     procedure UpdateMessageRole;
     procedure SetMessageRole(const Value: TMessageKind);
     procedure SetFuncArgs(const Value: string);
     procedure SetFuncName(const Value: string);
-    procedure ExecuteFunc;
     procedure SetOnFuncExecute(const Value: TOnFuncExecute);
     procedure AfterExecuteFunc(Result: Boolean; Error: string);
     procedure SetFuncState(const Value: TMessageFuncState);
+    procedure UpdateBufferText(const Id, Text: string);
+    procedure SetOnTextUpdated(const Value: TOnTextUpdated);
   public
     procedure UpdateContentSize;
     property Id: string read FId write SetId;
@@ -108,9 +110,11 @@ type
     property FuncState: TMessageFuncState read FFuncState write SetFuncState;
     procedure SetMode(const Value: TWindowMode);
     procedure StartAnimate;
+    procedure ExecuteFunc;
     constructor Create(AOwner: TComponent); override;
     property OnDelete: TNotifyEvent read FOnDelete write SetOnDelete;
     property OnFuncExecute: TOnFuncExecute read FOnFuncExecute write SetOnFuncExecute;
+    property OnTextUpdated: TOnTextUpdated read FOnTextUpdated write SetOnTextUpdated;
     function ToJsonObject: TJSONObject;
   end;
 
@@ -125,7 +129,8 @@ implementation
 
 uses
   System.Math, FMX.Platform, FMX.Memo.Style, FMX.Ani, ChatGPT.FrameCode,
-  ChatGPT.FrameSVG, ChatGPT.FramePlainText, ChatGPT.FrameUIMessage;
+  ChatGPT.FrameSVG, ChatGPT.FramePlainText, ChatGPT.FrameUIMessage,
+  ChatGPT.TextEditor, ChatGPT.Main;
 
 {$R *.fmx}
 
@@ -180,7 +185,6 @@ end;
 
 procedure TFrameMessage.AfterExecuteFunc(Result: Boolean; Error: string);
 begin
-  AniIndicatorFunc.Visible := False;
   LayoutFuncState.Hint := '';
   LayoutFuncState.HitTest := False;
   if Result then
@@ -189,7 +193,7 @@ begin
   begin
     FuncState := TMessageFuncState.Error;
     LayoutFuncState.Hint := Error;
-  LayoutFuncState.HitTest := True;
+    LayoutFuncState.HitTest := True;
   end;
 end;
 
@@ -197,8 +201,7 @@ procedure TFrameMessage.ExecuteFunc;
 begin
   if Assigned(FOnFuncExecute) then
   begin
-    AniIndicatorFunc.Visible := True;
-    AniIndicatorFunc.Enabled := True;
+    FuncState := TMessageFuncState.Executing;
     FOnFuncExecute(Self, FFuncName, FFuncArgs, AfterExecuteFunc);
   end;
 end;
@@ -299,9 +302,35 @@ begin
   UpdateContentSize;
 end;
 
+procedure TFrameMessage.UpdateBufferText(const Id, Text: string);
+begin
+  if Assigned(FOnTextUpdated) then
+    FOnTextUpdated(Self, Id, Text);
+end;
+
+procedure TFrameMessage.MenuItemEditClick(Sender: TObject);
+begin
+  FormMain.LayoutOverlay.BringToFront;
+  TFrameTextEditor.Execute(FormMain.LayoutOverlay,
+    procedure(Frame: TFrameTextEditor)
+    begin
+      Frame.LabelCaption.Text := 'Message edit';
+      Frame.MemoText.Text := Text;
+    end,
+    procedure(Frame: TFrameTextEditor; Success: Boolean)
+    begin
+      if Success then
+      begin
+        Text := Frame.MemoText.Text;
+        UpdateBufferText(Id, Text);
+      end;
+    end);
+end;
+
 procedure TFrameMessage.SetFuncArgs(const Value: string);
 begin
   FFuncArgs := Value;
+  LabelGPTFunc.Hint := 'Arsg: '#13#10 + Value;
 end;
 
 procedure TFrameMessage.SetFuncName(const Value: string);
@@ -314,6 +343,9 @@ end;
 procedure TFrameMessage.SetFuncState(const Value: TMessageFuncState);
 begin
   FFuncState := Value;
+  AniIndicatorFunc.Visible := Value = TMessageFuncState.Executing;
+  AniIndicatorFunc.Enabled := AniIndicatorFunc.Visible;
+  ButtonExecuteFunc.Enabled := Value in [TMessageFuncState.Error, TMessageFuncState.Wait];
   PathSuccess.Visible := Value = TMessageFuncState.Success;
   PathError.Visible := Value = TMessageFuncState.Error;
   PathWait.Visible := Value = TMessageFuncState.Wait;
@@ -380,6 +412,11 @@ end;
 procedure TFrameMessage.SetOnFuncExecute(const Value: TOnFuncExecute);
 begin
   FOnFuncExecute := Value;
+end;
+
+procedure TFrameMessage.SetOnTextUpdated(const Value: TOnTextUpdated);
+begin
+  FOnTextUpdated := Value;
 end;
 
 procedure TFrameMessage.ParseText(const Value: string);
@@ -524,70 +561,61 @@ begin
     Frame.MemoText.FontColor := ColorUser;
 end;
 
-procedure TFrameMessage.CreatePartSVG(Part: TPart);
-begin
-  var Frame := TFrameSVG.Create(LayoutContentText, Part.Content);
-  Frame.Parent := LayoutContentText;
-  Frame.Align := TAlignLayout.None;
-  Frame.Position.Y := 10000;
-  Frame.Align := TAlignLayout.Top;
-end;
-
 procedure TFrameMessage.BuildContent(Parts: TList<TPart>);
 begin
-  for var Part in Parts do
-  begin
-    //SVG
-    var PosS := Part.Content.IndexOf('<svg');
-    if PosS >= 0 then
+  LayoutContentText.BeginUpdate;
+  try
+    FlowLayoutImages.Parent := nil;
+    LayoutFunc.Parent := nil;
+    while LayoutContentText.ControlsCount > 0 do
+      LayoutContentText.Controls[0].Free;
+    FlowLayoutImages.Parent := LayoutContentText;
+    LayoutFunc.Parent := LayoutContentText;
+    for var Part in Parts do
     begin
-      var PosE := Part.Content.IndexOf('</svg>');
-      if PosE >= 0 then
+      //SVG check
+      var PosS := Part.Content.IndexOf('<svg');
+      if PosS >= 0 then
       begin
-        var SvgText := Part.Content.Substring(PosS, PosE - PosS + 6);
-        if not SvgText.IsEmpty then
-        try
-          var Frame := TFrameSVG.Create(LayoutContentText, SvgText);
-          Frame.Parent := LayoutContentText;
-          Frame.Align := TAlignLayout.None;
-          Frame.Position.Y := 10000;
-          Frame.Align := TAlignLayout.Top;
-        except
-          // not insert
+        var PosE := Part.Content.IndexOf('</svg>');
+        if PosE >= 0 then
+        begin
+          var SvgText := Part.Content.Substring(PosS, PosE - PosS + 6);
+          if not SvgText.IsEmpty then
+          try
+            var Frame := TFrameSVG.Create(LayoutContentText, SvgText);
+            Frame.Parent := LayoutContentText;
+            Frame.Align := TAlignLayout.None;
+            Frame.Position.Y := 10000;
+            Frame.Align := TAlignLayout.Top;
+          except
+            // not insert
+          end;
         end;
       end;
-    end;
 
-    // Code
-    if Part.PartType = TPartType.Code then
-    begin
-      CreateCodePart(Part);
-      Continue;
-    end;
+      // Code
+      if Part.PartType = TPartType.Code then
+      begin
+        CreateCodePart(Part);
+        Continue;
+      end;
 
-    // Text
-    if Part.PartType = TPartType.Text then
-    begin
-      CreatePartText(Part);
-      Continue;
+      // Text
+      if Part.PartType = TPartType.Text then
+      begin
+        CreatePartText(Part);
+        Continue;
+      end;
     end;
-
-    // Text
-    if Part.PartType = TPartType.SVG then
-    begin
-      CreatePartSVG(Part);
-      Continue;
-    end;
+  finally
+    LayoutContentText.EndUpdate;
   end;
 end;
 
 procedure TFrameMessage.SetText(const Value: string);
 begin
-  if not Value.IsEmpty then
-    FText := Value
-  else
-    FText := '';
-  FText := FText.Trim([' ', #13, #10]);
+  FText := Value.Trim([' ', #13, #10]);
   MenuItemEdit.Enabled := not FText.IsEmpty;
   UpdateMode;
   ParseText(FText);
