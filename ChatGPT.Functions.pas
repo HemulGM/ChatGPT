@@ -9,6 +9,12 @@ uses
   System.SysUtils, System.Generics.Collections, OpenAI.Chat.Functions,
   ChatGPT.Functions.external, ChatGPT.Functions.external.Intf;
 
+const
+  LibExtMask = {$IFDEF MSWINDOWS} '*.dll'; {$ENDIF}
+                {$IFDEF LINUX}  '*.so';  {$ENDIF}
+                {$IFDEF MACOS}  '*.o';  {$ENDIF}
+                {$IFDEF ANDROID}  '*.so';  {$ENDIF}
+
 type
   TGPTFunctionsFunc = function: TArray<IChatFunctionExternal>;
 
@@ -26,7 +32,7 @@ function LoadExternalFunctions: TArray<IChatFunction>;
 begin
   if TDirectory.Exists('funcs') then
   begin
-    for var Lib in TDirectory.GetFiles('funcs', '*.dll') do
+    for var Lib in TDirectory.GetFiles('funcs', LibExtMask) do
     try
       var LibHandle := LoadLibrary(PChar(Lib));
       try

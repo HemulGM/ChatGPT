@@ -56,6 +56,8 @@ type
     PathSuccess: TPath;
     PathError: TPath;
     PathWait: TPath;
+    ButtonEditCompact: TButton;
+    Path11: TPath;
     procedure FrameResize(Sender: TObject);
     procedure ButtonCopyClick(Sender: TObject);
     procedure ButtonDeleteClick(Sender: TObject);

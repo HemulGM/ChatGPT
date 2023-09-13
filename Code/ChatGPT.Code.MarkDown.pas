@@ -75,7 +75,7 @@ begin
           begin
             Result := Result + [
               TTextAttributedRangeData.Create(
-              TTextRange.Create(C - Buf.Length, Buf.Length + 1),
+              TTextRange.Create(C - Buf.Length + 1, Buf.Length),
               TTextAttribute.Create(FMonoKey.Font, FMonoKey.Color)
               )];
             Buf := '';

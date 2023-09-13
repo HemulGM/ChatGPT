@@ -5,7 +5,7 @@
 interface
 
 uses
-  System.SysUtils, System.Types, System.IOUtils, System.Permissions,
+  System.SysUtils, System.Types, System.IOUtils,
   System.Messaging, FMX.Dialogs;
 
 type
@@ -25,9 +25,10 @@ procedure OpenFileDialog(const MimeType: string; Proc: TProc<string>);
 implementation
 
 uses
-  Androidapi.Helpers, Androidapi.JNI.Os, Androidapi.JNI.GraphicsContentViewText,
-  Androidapi.JNI.JavaTypes, Androidapi.JNI.Webkit, Androidapi.JNI.Net,
-  Androidapi.JNI.App, Androidapi.JNI.Support, FMX.Platform.Android;
+  System.Permissions,Androidapi.Helpers, Androidapi.JNI.Os,
+  Androidapi.JNI.GraphicsContentViewText, Androidapi.JNI.JavaTypes,
+  Androidapi.JNI.Webkit, Androidapi.JNI.Net, Androidapi.JNI.App,
+  Androidapi.JNI.Support, FMX.Platform.Android;
 
 constructor TDialog.Create;
 begin

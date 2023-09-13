@@ -1,34 +1,35 @@
 object FrameChat: TFrameChat
   Align = Contents
-  Size.Width = 890.000000000000000000
-  Size.Height = 800.000000000000000000
+  Size.Width = 1006.000000000000000000
+  Size.Height = 786.000000000000000000
   Size.PlatformDefault = False
   object RectangleBG: TRectangle
     Align = Contents
     Fill.Color = xFF343541
     Locked = True
-    Size.Width = 890.000000000000000000
-    Size.Height = 800.000000000000000000
+    HitTest = False
+    Size.Width = 1006.000000000000000000
+    Size.Height = 786.000000000000000000
     Size.PlatformDefault = False
     Stroke.Kind = None
   end
   object VertScrollBoxChat: TVertScrollBox
     Align = Contents
     Padding.Bottom = 160.000000000000000000
-    Size.Width = 890.000000000000000000
-    Size.Height = 800.000000000000000000
+    Size.Width = 1006.000000000000000000
+    Size.Height = 786.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
     OnViewportPositionChange = VertScrollBoxChatViewportPositionChange
-    Viewport.Width = 874.000000000000000000
-    Viewport.Height = 800.000000000000000000
+    Viewport.Width = 990.000000000000000000
+    Viewport.Height = 786.000000000000000000
     object LayoutTyping: TLayout
       Align = Top
       Padding.Left = 16.000000000000000000
       Padding.Top = 16.000000000000000000
       Padding.Right = 16.000000000000000000
       Padding.Bottom = 16.000000000000000000
-      Size.Width = 874.000000000000000000
+      Size.Width = 990.000000000000000000
       Size.Height = 62.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 0
@@ -38,7 +39,7 @@ object FrameChat: TFrameChat
         Align = Contents
         Fill.Color = x14FFFFFF
         Locked = True
-        Size.Width = 874.000000000000000000
+        Size.Width = 990.000000000000000000
         Size.Height = 62.000000000000000000
         Size.PlatformDefault = False
         Stroke.Kind = None
@@ -46,7 +47,7 @@ object FrameChat: TFrameChat
       object LayoutTypingContent: TLayout
         Align = HorzCenter
         Locked = True
-        Position.X = 59.000000000000000000
+        Position.X = 117.000000000000000000
         Position.Y = 16.000000000000000000
         Size.Width = 755.000000000000000000
         Size.Height = 30.000000000000000000
@@ -207,7 +208,7 @@ object FrameChat: TFrameChat
       Align = Top
       Locked = True
       Position.Y = 62.000000000000000000
-      Size.Width = 874.000000000000000000
+      Size.Width = 990.000000000000000000
       Size.Height = 619.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 3
@@ -220,7 +221,7 @@ object FrameChat: TFrameChat
         Margins.Top = 188.000000000000000000
         Margins.Bottom = 64.000000000000000000
         Position.Y = 188.000000000000000000
-        Size.Width = 874.000000000000000000
+        Size.Width = 990.000000000000000000
         Size.Height = 48.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Size = 36.000000000000000000
@@ -228,13 +229,14 @@ object FrameChat: TFrameChat
         TextSettings.FontColor = xFFECECF1
         TextSettings.HorzAlign = Center
         TextSettings.WordWrap = False
+        TextSettings.Trimming = None
         Text = 'ChatGPT'
-        TabOrder = 0
+        TabOrder = 2
       end
       object FlowLayoutWelcome: TFlowLayout
         Align = HorzCenter
         Locked = True
-        Position.X = 125.000000000000000000
+        Position.X = 183.000000000000000000
         Position.Y = 300.000000000000000000
         Size.Width = 624.000000000000000000
         Size.Height = 319.000000000000000000
@@ -834,8 +836,8 @@ object FrameChat: TFrameChat
     Padding.Top = 10.000000000000000000
     Padding.Bottom = 40.000000000000000000
     Margins.Right = 11.000000000000000000
-    Position.Y = 700.000000000000000000
-    Size.Width = 879.000000000000000000
+    Position.Y = 686.000000000000000000
+    Size.Width = 995.000000000000000000
     Size.Height = 100.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 1
@@ -846,7 +848,7 @@ object FrameChat: TFrameChat
       Locked = True
       HitTest = False
       LineType = Top
-      Size.Width = 879.000000000000000000
+      Size.Width = 995.000000000000000000
       Size.Height = 100.000000000000000000
       Size.PlatformDefault = False
       Stroke.Color = x33FFFFFF
@@ -857,7 +859,7 @@ object FrameChat: TFrameChat
       Fill.Gradient.Points = <
         item
           Color = xFF343541
-          Offset = 0.000000000000000000
+          Offset = 0.217391297221183800
         end
         item
           Color = x00353740
@@ -869,7 +871,7 @@ object FrameChat: TFrameChat
       Fill.Gradient.StopPosition.Y = 0.000000000000000000
       Locked = True
       HitTest = False
-      Size.Width = 879.000000000000000000
+      Size.Width = 995.000000000000000000
       Size.Height = 100.000000000000000000
       Size.PlatformDefault = False
       Stroke.Kind = None
@@ -880,7 +882,7 @@ object FrameChat: TFrameChat
         Opacity = 0.699999988079071000
         Margins.Bottom = 4.000000000000000000
         Position.Y = 82.000000000000000000
-        Size.Width = 879.000000000000000000
+        Size.Width = 995.000000000000000000
         Size.Height = 14.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -888,6 +890,7 @@ object FrameChat: TFrameChat
         TextSettings.FontColor = xAFFFFFFF
         TextSettings.HorzAlign = Center
         TextSettings.WordWrap = False
+        TextSettings.Trimming = None
         Text = 'by HemulGM'
         TabOrder = 0
       end
@@ -898,13 +901,13 @@ object FrameChat: TFrameChat
       Padding.Top = 12.000000000000000000
       Padding.Right = 16.000000000000000000
       Padding.Bottom = 12.000000000000000000
-      Position.X = 55.000000000000000000
+      Position.X = 113.000000000000000000
       Position.Y = 10.000000000000000000
       Size.Width = 768.000000000000000000
       Size.Height = 50.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
-      object Rectangle2: TRectangle
+      object RectangleMemoBG: TRectangle
         Align = Contents
         Fill.Color = xFF40414F
         Locked = True
@@ -938,17 +941,18 @@ object FrameChat: TFrameChat
         OnKeyUp = MemoQueryKeyUp
         OnKeyDown = MemoQueryKeyDown
         OnViewportPositionChange = MemoQueryViewportPositionChange
-        Viewport.Width = 610.000000000000000000
+        Viewport.Width = 620.000000000000000000
         Viewport.Height = 26.000000000000000000
         object LabelSendTip: TLabel
           Align = Client
           StyledSettings = [Family, Style]
           Opacity = 0.800000011920929000
-          Size.Width = 610.000000000000000000
-          Size.Height = 26.000000000000000000
+          Size.Width = 50.000000000000000000
+          Size.Height = 50.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Size = 16.000000000000000000
           TextSettings.FontColor = xFFACACBE
+          TextSettings.Trimming = None
           Text = 'Send a message.'
           TabOrder = 0
         end
@@ -973,12 +977,13 @@ object FrameChat: TFrameChat
             CanFocus = False
             Hint = 
               'Submit an audio recording for recognition. Will be taken into ac' +
-              'count in the context of communication with GPT'
+              'count in the context of communication with GPT (Whisper)'
             Size.Width = 26.000000000000000000
             Size.Height = 26.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_clearmini'
             TabOrder = 2
+            TextSettings.Trimming = None
             ParentShowHint = False
             ShowHint = True
             OnClick = ButtonAudioClick
@@ -1016,6 +1021,7 @@ object FrameChat: TFrameChat
             StyleLookup = 'buttonstyle_clearmini'
             TabOrder = 4
             Text = 'ButtonSend'
+            TextSettings.Trimming = None
             OnClick = ButtonSendClick
             object PathSend: TPath
               Align = Center
@@ -1115,6 +1121,7 @@ object FrameChat: TFrameChat
           object ButtonImage: TButton
             Align = Right
             CanFocus = False
+            Hint = 'Image generation mode on demand (DALL-E)'
             Position.X = 26.000000000000000000
             Size.Width = 26.000000000000000000
             Size.Height = 26.000000000000000000
@@ -1122,11 +1129,12 @@ object FrameChat: TFrameChat
             StyleLookup = 'buttonstyle_clearmini'
             TabOrder = 3
             Text = 'ButtonSend'
+            TextSettings.Trimming = None
             OnClick = ButtonImageClick
             object RectangleImageMode: TRectangle
               Align = Client
               Fill.Kind = None
-              Hint = 'Image generation mode on demand. Used by DALL-E.'
+              Locked = True
               HitTest = False
               Size.Width = 26.000000000000000000
               Size.Height = 26.000000000000000000
@@ -1193,6 +1201,7 @@ object FrameChat: TFrameChat
         TextSettings.FontColor = xFFACACBE
         TextSettings.HorzAlign = Center
         TextSettings.WordWrap = False
+        TextSettings.Trimming = None
         Text = '...'
         TabOrder = 2
       end
@@ -1210,13 +1219,14 @@ object FrameChat: TFrameChat
         object ButtonSettings: TButton
           Align = Bottom
           CanFocus = False
-          Hint = 'Chat settings'
+          Hint = 'Current chat settings'
           Size.Width = 26.000000000000000000
           Size.Height = 26.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 0
           Text = 'ButtonTranslate'
+          TextSettings.Trimming = None
           OnClick = ButtonSettingsClick
           object Path9: TPath
             Align = Center
@@ -1572,6 +1582,7 @@ object FrameChat: TFrameChat
           TextSettings.Font.Size = 14.000000000000000000
           TextSettings.FontColor = xFFECECF1
           TextSettings.WordWrap = False
+          TextSettings.Trimming = None
           Text = '0:00'
           TabOrder = 1
         end
@@ -1595,53 +1606,39 @@ object FrameChat: TFrameChat
   object LayoutButtom: TLayout
     Align = Bottom
     Locked = True
-    Position.Y = 650.000000000000000000
-    Size.Width = 890.000000000000000000
+    Position.Y = 636.000000000000000000
+    Size.Width = 1006.000000000000000000
     Size.Height = 50.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 5
-    object LayoutScrollDown: TLayout
-      Align = Client
-      Locked = True
-      Padding.Top = 10.000000000000000000
-      Padding.Right = 30.000000000000000000
-      Padding.Bottom = 10.000000000000000000
-      Size.Width = 890.000000000000000000
-      Size.Height = 50.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 4
-      object ButtonScrollDown: TButton
-        Align = Right
-        Position.X = 830.000000000000000000
-        Position.Y = 10.000000000000000000
-        Size.Width = 30.000000000000000000
-        Size.Height = 30.000000000000000000
-        Size.PlatformDefault = False
-        StyleLookup = 'button_scrolldown'
-        TabOrder = 0
-        Text = 'button_scrolldown'
-        OnClick = ButtonScrollDownClick
-      end
-    end
     object FlowLayoutActions: TFlowLayout
       Align = Client
-      Size.Width = 890.000000000000000000
+      ClipChildren = True
+      HitTest = False
+      Padding.Left = 40.000000000000000000
+      Padding.Top = 6.000000000000000000
+      Padding.Right = 40.000000000000000000
+      Margins.Left = 20.000000000000000000
+      Margins.Right = 20.000000000000000000
+      Size.Width = 966.000000000000000000
       Size.Height = 50.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 5
       Justify = Center
       JustifyLastLine = Center
       FlowDirection = LeftToRight
       HorizontalGap = 10.000000000000000000
+      VerticalGap = 10.000000000000000000
       object ButtonContinue: TButton
         Align = Center
+        Hint = 'Continue chat. Request an addition or continuation'
         Size.Width = 112.000000000000000000
         Size.Height = 38.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'buttonstyle_continue'
-        TabOrder = 1
+        TabOrder = 2
         Text = 'Continue'
         TextSettings.HorzAlign = Leading
+        TextSettings.Trimming = None
         OnClick = ButtonContinueClick
         object ShadowEffect2: TShadowEffect
           Distance = 0.001000000047497451
@@ -1651,8 +1648,56 @@ object FrameChat: TFrameChat
           ShadowColor = xFF343541
         end
       end
+      object ButtonExportImport: TButton
+        Align = Center
+        Hint = 'Import or export chat'
+        Size.Width = 156.000000000000000000
+        Size.Height = 38.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_import_export'
+        TabOrder = 1
+        Text = 'Import && Export'
+        TextSettings.Trimming = None
+        OnClick = ButtonExportImportClick
+        object ShadowEffect3: TShadowEffect
+          Distance = 0.001000000047497451
+          Direction = 45.000000000000000000
+          Softness = 0.600000023841857900
+          Opacity = 0.600000023841857900
+          ShadowColor = xFF343541
+        end
+        object Rectangle2: TRectangle
+          Anchors = [akTop, akRight]
+          Fill.Color = xFFC40000
+          HitTest = False
+          Position.X = 127.000000000000000000
+          Position.Y = -3.000000000000000000
+          Size.Width = 37.000000000000000000
+          Size.Height = 13.000000000000000000
+          Size.PlatformDefault = False
+          Stroke.Kind = None
+          XRadius = 4.000000000000000000
+          YRadius = 4.000000000000000000
+          object Label3: TLabel
+            Align = Client
+            StyledSettings = [Style]
+            Size.Width = 37.000000000000000000
+            Size.Height = 13.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 9.000000000000000000
+            TextSettings.FontColor = claWhite
+            TextSettings.HorzAlign = Center
+            TextSettings.WordWrap = False
+            TextSettings.Trimming = None
+            Text = 'beta'
+            TabOrder = 0
+          end
+        end
+      end
       object ButtonRetry: TButton
         Align = Center
+        Hint = 'Resend request'
         Size.Width = 103.000000000000000000
         Size.Height = 38.000000000000000000
         Size.PlatformDefault = False
@@ -1660,6 +1705,7 @@ object FrameChat: TFrameChat
         TabOrder = 0
         Text = '  Retry'
         TextSettings.HorzAlign = Leading
+        TextSettings.Trimming = None
         OnClick = ButtonRetryClick
         object ShadowEffect1: TShadowEffect
           Distance = 0.001000000047497451
@@ -1670,11 +1716,58 @@ object FrameChat: TFrameChat
         end
       end
     end
+    object LayoutScrollDown: TLayout
+      Align = Client
+      Locked = True
+      Padding.Top = 10.000000000000000000
+      Padding.Right = 30.000000000000000000
+      Padding.Bottom = 10.000000000000000000
+      Size.Width = 1006.000000000000000000
+      Size.Height = 50.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      object ButtonScrollDown: TButton
+        Align = Right
+        Hint = 'Scroll down'
+        Position.X = 946.000000000000000000
+        Position.Y = 10.000000000000000000
+        Size.Width = 30.000000000000000000
+        Size.Height = 30.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'button_scrolldown'
+        TabOrder = 0
+        Text = 'button_scrolldown'
+        TextSettings.Trimming = None
+        OnClick = ButtonScrollDownClick
+      end
+    end
   end
   object TimerCheckRecording: TTimer
     Enabled = False
     OnTimer = TimerCheckRecordingTimer
     Left = 632
     Top = 152
+  end
+  object Rectangle1: TRectangle
+    Position.X = 20.000000000000000000
+    Position.Y = 70.000000000000000000
+    Size.Width = 190.000000000000000000
+    Size.Height = 97.000000000000000000
+    Size.PlatformDefault = False
+    Visible = False
+    object LabelTest: TLabel
+      Align = Client
+      Margins.Left = 4.000000000000000000
+      Margins.Top = 4.000000000000000000
+      Margins.Right = 4.000000000000000000
+      Margins.Bottom = 4.000000000000000000
+      Size.Width = 182.000000000000000000
+      Size.Height = 89.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.VertAlign = Leading
+      TextSettings.Trimming = None
+      Text = 'LabelTest'
+      TabOrder = 0
+    end
   end
 end

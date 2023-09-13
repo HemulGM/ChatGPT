@@ -33,11 +33,12 @@ inherited FrameSettings: TFrameSettings
       Align = Client
       Padding.Right = 10.000000000000000000
       Padding.Bottom = 10.000000000000000000
-      Size.Width = 420.000000000000000000
+      Margins.Right = -10.000000000000000000
+      Size.Width = 430.000000000000000000
       Size.Height = 706.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 1
-      Viewport.Width = 404.000000000000000000
+      Viewport.Width = 414.000000000000000000
       Viewport.Height = 706.000000000000000000
       object EditLangSrc: TEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
@@ -47,7 +48,7 @@ inherited FrameSettings: TFrameSettings
         KeyboardType = Alphabet
         Position.Y = 1362.000000000000000000
         Margins.Top = 5.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         TextPrompt = 'Example: "ru" or "de"'
@@ -89,7 +90,7 @@ inherited FrameSettings: TFrameSettings
         TabOrder = 7
         Position.Y = 226.000000000000000000
         Margins.Top = 5.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         TextPrompt = 'sk-rBYbw....'
@@ -131,7 +132,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 10.000000000000000000
         Position.Y = 10.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 25.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -140,7 +141,7 @@ inherited FrameSettings: TFrameSettings
         TextSettings.HorzAlign = Center
         TextSettings.WordWrap = False
         Text = 'Settings'
-        TabOrder = 55
+        TabOrder = 56
       end
       object Label2: TLabel
         Align = Top
@@ -149,7 +150,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 1335.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -166,7 +167,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 1459.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -187,7 +188,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 1511.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -195,7 +196,7 @@ inherited FrameSettings: TFrameSettings
         Text = 
           'The higher, the more creativity will be in the answers (less acc' +
           'urate)'
-        TabOrder = 33
+        TabOrder = 34
         TabStop = False
       end
       object Label5: TLabel
@@ -205,7 +206,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 199.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -223,7 +224,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 30.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 764.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -237,10 +238,10 @@ inherited FrameSettings: TFrameSettings
       object Layout3: TLayout
         Align = Top
         Position.Y = 1481.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 32
+        TabOrder = 33
         TabStop = False
         object TrackBarTemp: TTrackBar
           Align = Client
@@ -248,7 +249,7 @@ inherited FrameSettings: TFrameSettings
           Frequency = 1.000000000000000000
           Max = 20.000000000000000000
           Orientation = Horizontal
-          Size.Width = 360.000000000000000000
+          Size.Width = 370.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
@@ -259,7 +260,7 @@ inherited FrameSettings: TFrameSettings
           Align = Right
           StyledSettings = [Style]
           Margins.Left = 6.000000000000000000
-          Position.X = 366.000000000000000000
+          Position.X = 376.000000000000000000
           Size.Width = 28.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
@@ -277,7 +278,7 @@ inherited FrameSettings: TFrameSettings
         Align = Top
         Margins.Top = 10.000000000000000000
         Position.Y = 269.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 46.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 9
@@ -308,7 +309,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 1405.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 29.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -327,7 +328,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 801.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -353,7 +354,7 @@ inherited FrameSettings: TFrameSettings
         ItemIndex = 0
         Text = 'gpt-3.5-turbo'
         Position.Y = 823.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
       end
@@ -364,7 +365,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 1115.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -383,7 +384,7 @@ inherited FrameSettings: TFrameSettings
         FilterChar = '0123456789'
         Position.Y = 1142.000000000000000000
         Margins.Top = 5.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         TextPrompt = 'Example: 4096'
@@ -421,10 +422,10 @@ inherited FrameSettings: TFrameSettings
       object Layout1: TLayout
         Align = Top
         Position.Y = 1573.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 35
+        TabOrder = 36
         TabStop = False
         object TrackBarPP: TTrackBar
           Align = Client
@@ -433,7 +434,7 @@ inherited FrameSettings: TFrameSettings
           Max = 20.000000000000000000
           Min = -20.000000000000000000
           Orientation = Horizontal
-          Size.Width = 360.000000000000000000
+          Size.Width = 370.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
@@ -443,7 +444,7 @@ inherited FrameSettings: TFrameSettings
           Align = Right
           StyledSettings = [Style]
           Margins.Left = 6.000000000000000000
-          Position.X = 366.000000000000000000
+          Position.X = 376.000000000000000000
           Size.Width = 28.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
@@ -467,7 +468,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 1603.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -476,7 +477,7 @@ inherited FrameSettings: TFrameSettings
           'Number between -2.0 and 2.0. Positive values penalize new tokens' +
           ' based on whether they appear in the text so far, increasing the' +
           ' model'#39's likelihood to talk about new topics.'
-        TabOrder = 36
+        TabOrder = 37
         TabStop = False
       end
       object Label12: TLabel
@@ -486,7 +487,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 1551.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -494,7 +495,7 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Presence penalty (default: 0.0)'
-        TabOrder = 34
+        TabOrder = 35
         TabStop = False
       end
       object Label13: TLabel
@@ -507,7 +508,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 1724.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -516,16 +517,16 @@ inherited FrameSettings: TFrameSettings
           'Number between -2.0 and 2.0. Positive values penalize new tokens' +
           ' based on their existing frequency in the text so far, decreasin' +
           'g the model'#39's likelihood to repeat the same line verbatim.'
-        TabOrder = 39
+        TabOrder = 40
         TabStop = False
       end
       object Layout5: TLayout
         Align = Top
         Position.Y = 1694.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 38
+        TabOrder = 39
         TabStop = False
         object TrackBarFP: TTrackBar
           Align = Client
@@ -534,7 +535,7 @@ inherited FrameSettings: TFrameSettings
           Max = 20.000000000000000000
           Min = -20.000000000000000000
           Orientation = Horizontal
-          Size.Width = 360.000000000000000000
+          Size.Width = 370.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
@@ -544,7 +545,7 @@ inherited FrameSettings: TFrameSettings
           Align = Right
           StyledSettings = [Style]
           Margins.Left = 6.000000000000000000
-          Position.X = 366.000000000000000000
+          Position.X = 376.000000000000000000
           Size.Width = 28.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
@@ -565,7 +566,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 1672.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -573,7 +574,7 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Frequency penalty (default: 0.0)'
-        TabOrder = 37
+        TabOrder = 38
         TabStop = False
       end
       object Label16: TLabel
@@ -583,7 +584,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 1225.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -602,7 +603,7 @@ inherited FrameSettings: TFrameSettings
         FilterChar = '0123456789'
         Position.Y = 1252.000000000000000000
         Margins.Top = 5.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         TextPrompt = 'Example: 1024'
@@ -647,7 +648,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 1185.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -666,7 +667,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 1295.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -685,7 +686,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 866.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -704,7 +705,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 30.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 75.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -722,7 +723,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 382.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -740,7 +741,7 @@ inherited FrameSettings: TFrameSettings
         TabOrder = 11
         Position.Y = 409.000000000000000000
         Margins.Top = 5.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         object ClearEditButton5: TClearEditButton
@@ -784,7 +785,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 452.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -805,7 +806,7 @@ inherited FrameSettings: TFrameSettings
         KeyboardType = URL
         Position.Y = 538.000000000000000000
         Margins.Top = 5.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         TextPrompt = 'https://api.openai.com/v1'
@@ -847,7 +848,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 511.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -865,7 +866,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 30.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 162.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -881,7 +882,7 @@ inherited FrameSettings: TFrameSettings
         Padding.Top = 4.000000000000000000
         Padding.Bottom = 4.000000000000000000
         Position.Y = 102.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 3
@@ -891,7 +892,7 @@ inherited FrameSettings: TFrameSettings
           IsChecked = False
           Margins.Top = 2.000000000000000000
           Margins.Bottom = 2.000000000000000000
-          Position.X = 349.000000000000000000
+          Position.X = 359.000000000000000000
           Position.Y = 6.000000000000000000
           Size.Width = 45.000000000000000000
           Size.Height = 18.000000000000000000
@@ -902,7 +903,7 @@ inherited FrameSettings: TFrameSettings
           Align = Client
           AutoSize = True
           StyledSettings = [Style]
-          Size.Width = 349.000000000000000000
+          Size.Width = 359.000000000000000000
           Size.Height = 22.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Roboto'
@@ -921,7 +922,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 30.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 1953.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -929,7 +930,7 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xFFE9E9E9
         TextSettings.WordWrap = False
         Text = 'Proxy (default: System proxy)'
-        TabOrder = 45
+        TabOrder = 46
         TabStop = False
       end
       object Label24: TLabel
@@ -939,7 +940,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 1990.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -947,17 +948,17 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Server (required)'
-        TabOrder = 47
+        TabOrder = 48
         TabStop = False
       end
       object EditProxyServer: TEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'editstyle_clear'
-        TabOrder = 48
+        TabOrder = 49
         Position.Y = 2017.000000000000000000
         Margins.Top = 5.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         TextPrompt = 'http or https://...'
@@ -966,7 +967,7 @@ inherited FrameSettings: TFrameSettings
           Cursor = crArrow
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
-          Size.Height = 50.000000000000000000
+          Size.Height = 29.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 0
@@ -999,7 +1000,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 2060.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -1007,19 +1008,19 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Port'
-        TabOrder = 49
+        TabOrder = 50
         TabStop = False
       end
       object EditProxyPort: TEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'editstyle_clear'
-        TabOrder = 50
+        TabOrder = 51
         KeyboardType = DecimalNumberPad
         FilterChar = '0123456789'
         Position.Y = 2087.000000000000000000
         Margins.Top = 5.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         object ClearEditButton8: TClearEditButton
@@ -1027,7 +1028,7 @@ inherited FrameSettings: TFrameSettings
           Cursor = crArrow
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
-          Size.Height = 50.000000000000000000
+          Size.Height = 29.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 0
@@ -1057,10 +1058,10 @@ inherited FrameSettings: TFrameSettings
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'editstyle_clear'
-        TabOrder = 52
+        TabOrder = 53
         Position.Y = 2157.000000000000000000
         Margins.Top = 5.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         object ClearEditButton9: TClearEditButton
@@ -1068,7 +1069,7 @@ inherited FrameSettings: TFrameSettings
           Cursor = crArrow
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
-          Size.Height = 50.000000000000000000
+          Size.Height = 29.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 0
@@ -1101,7 +1102,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 2130.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -1109,17 +1110,17 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Username'
-        TabOrder = 51
+        TabOrder = 52
         TabStop = False
       end
       object EditProxyPassword: TEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Top
         StyleLookup = 'editstyle_clear'
-        TabOrder = 54
+        TabOrder = 55
         Position.Y = 2227.000000000000000000
         Margins.Top = 5.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         object ClearEditButton10: TClearEditButton
@@ -1127,7 +1128,7 @@ inherited FrameSettings: TFrameSettings
           Cursor = crArrow
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
-          Size.Height = 50.000000000000000000
+          Size.Height = 29.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 0
@@ -1160,7 +1161,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 2200.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -1168,7 +1169,7 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Password'
-        TabOrder = 53
+        TabOrder = 54
         TabStop = False
       end
       object Label28: TLabel
@@ -1181,7 +1182,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 1845.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 73.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -1192,16 +1193,16 @@ inherited FrameSettings: TFrameSettings
           'op_p probability mass. So 0.1 means only the tokens comprising t' +
           'he top 10% probability mass are considered.'#13#10'We generally recomm' +
           'end altering this or temperature but not both.'
-        TabOrder = 43
+        TabOrder = 44
         TabStop = False
       end
       object Layout6: TLayout
         Align = Top
         Position.Y = 1815.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 41
+        TabOrder = 42
         TabStop = False
         object TrackBarTopP: TTrackBar
           Align = Client
@@ -1209,7 +1210,7 @@ inherited FrameSettings: TFrameSettings
           Frequency = 1.000000000000000000
           Max = 10.000000000000000000
           Orientation = Horizontal
-          Size.Width = 360.000000000000000000
+          Size.Width = 370.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
@@ -1220,7 +1221,7 @@ inherited FrameSettings: TFrameSettings
           Align = Right
           StyledSettings = [Style]
           Margins.Left = 6.000000000000000000
-          Position.X = 366.000000000000000000
+          Position.X = 376.000000000000000000
           Size.Width = 28.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
@@ -1241,7 +1242,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 1793.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -1249,7 +1250,7 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Top P (default: 1.0)'
-        TabOrder = 40
+        TabOrder = 41
         TabStop = False
       end
       object Label29: TLabel
@@ -1259,7 +1260,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 30.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 2320.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -1267,7 +1268,7 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xFFE9E9E9
         TextSettings.WordWrap = False
         Text = 'Info'
-        TabOrder = 44
+        TabOrder = 45
         TabStop = False
       end
       object LabelVersion: TLabel
@@ -1277,7 +1278,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 2357.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -1285,7 +1286,7 @@ inherited FrameSettings: TFrameSettings
         TextSettings.FontColor = xB4FFFFFF
         TextSettings.WordWrap = False
         Text = 'Version: '
-        TabOrder = 46
+        TabOrder = 47
         TabStop = False
       end
       object Label31: TLabel
@@ -1298,13 +1299,13 @@ inherited FrameSettings: TFrameSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 2270.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
         TextSettings.FontColor = x78FFFFFF
         Text = 'Proxy is not used if Server is empty'
-        TabOrder = 42
+        TabOrder = 43
         TabStop = False
       end
       object Label32: TLabel
@@ -1314,7 +1315,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 581.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -1331,12 +1332,12 @@ inherited FrameSettings: TFrameSettings
         Align = Top
         Margins.Top = 5.000000000000000000
         Position.Y = 608.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 82.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'memostyle_normal'
-        TabOrder = 56
-        Viewport.Width = 394.000000000000000000
+        TabOrder = 57
+        Viewport.Width = 404.000000000000000000
         Viewport.Height = 82.000000000000000000
       end
       object Label33: TLabel
@@ -1349,7 +1350,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 700.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 29.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -1366,7 +1367,7 @@ inherited FrameSettings: TFrameSettings
         Padding.Bottom = 4.000000000000000000
         Margins.Top = 20.000000000000000000
         Position.Y = 935.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 2
@@ -1376,7 +1377,7 @@ inherited FrameSettings: TFrameSettings
           IsChecked = False
           Margins.Top = 2.000000000000000000
           Margins.Bottom = 2.000000000000000000
-          Position.X = 349.000000000000000000
+          Position.X = 359.000000000000000000
           Position.Y = 6.000000000000000000
           Size.Width = 45.000000000000000000
           Size.Height = 18.000000000000000000
@@ -1387,7 +1388,7 @@ inherited FrameSettings: TFrameSettings
           Align = Client
           AutoSize = True
           StyledSettings = [Style]
-          Size.Width = 349.000000000000000000
+          Size.Width = 359.000000000000000000
           Size.Height = 22.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Roboto'
@@ -1409,7 +1410,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 1005.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 29.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -1427,7 +1428,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Top = 30.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 345.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -1442,7 +1443,7 @@ inherited FrameSettings: TFrameSettings
         Align = Top
         Margins.Top = 10.000000000000000000
         Position.Y = 1049.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 46.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 8
@@ -1467,7 +1468,7 @@ inherited FrameSettings: TFrameSettings
         Padding.Top = 4.000000000000000000
         Padding.Bottom = 4.000000000000000000
         Position.Y = 965.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
@@ -1477,7 +1478,7 @@ inherited FrameSettings: TFrameSettings
           IsChecked = False
           Margins.Top = 2.000000000000000000
           Margins.Bottom = 2.000000000000000000
-          Position.X = 349.000000000000000000
+          Position.X = 359.000000000000000000
           Position.Y = 6.000000000000000000
           Size.Width = 45.000000000000000000
           Size.Height = 18.000000000000000000
@@ -1488,7 +1489,7 @@ inherited FrameSettings: TFrameSettings
           Align = Client
           AutoSize = True
           StyledSettings = [Style]
-          Size.Width = 349.000000000000000000
+          Size.Width = 359.000000000000000000
           Size.Height = 22.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Roboto'
@@ -1499,6 +1500,14 @@ inherited FrameSettings: TFrameSettings
           TabOrder = 0
           TabStop = False
         end
+      end
+      object Layout10: TLayout
+        Align = Top
+        Position.Y = 2379.000000000000000000
+        Size.Width = 404.000000000000000000
+        Size.Height = 20.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 32
       end
     end
     object Layout2: TLayout

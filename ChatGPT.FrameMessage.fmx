@@ -728,7 +728,7 @@ object FrameMessage: TFrameMessage
           Size.Height = 30.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
-          TabOrder = 2
+          TabOrder = 3
           OnClick = ButtonCopyClick
           object Path5: TPath
             Align = Center
@@ -883,6 +883,38 @@ object FrameMessage: TFrameMessage
               00001041146B9441020000000000104100009041010000000000104100002041
               0200000000001041D72917410200000029D60841000010410200000000000041
               00001041030000000000004100001041}
+            Fill.Color = xFFACACBE
+            Locked = True
+            HitTest = False
+            Margins.Left = 2.000000000000000000
+            Size.Width = 13.000000000000000000
+            Size.Height = 13.000000000000000000
+            Size.PlatformDefault = False
+            Stroke.Kind = None
+            WrapMode = Fit
+          end
+        end
+        object ButtonEditCompact: TButton
+          Align = Right
+          Hint = 'Copy text'
+          Position.X = 461.000000000000000000
+          Size.Width = 30.000000000000000000
+          Size.Height = 30.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'buttonstyle_clearmini'
+          TabOrder = 2
+          OnClick = MenuItemEditClick
+          object Path11: TPath
+            Align = Center
+            Data.Path = {
+              1500000000000000000000003333634101000000000000000000904101000000
+              333373400000904101000000CDCC6C41CDCCDC40010000000000304166664640
+              0100000000000000333363410100000000000000333363410300000000000000
+              33336341000000009A998D410000804002000000CDCC90416666664002000000
+              CDCC904100004040020000009A998D416666264001000000666676419A99993E
+              0200000000007041CDCCCCBD0200000066666641CDCCCCBD0200000000006041
+              9A99993E0100000033334341666606400100000000008041CDCCBC4001000000
+              9A998D4100008040010000009A998D4100008040030000009A998D4100008040}
             Fill.Color = xFFACACBE
             Locked = True
             HitTest = False

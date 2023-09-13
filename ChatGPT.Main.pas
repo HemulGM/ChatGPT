@@ -169,7 +169,7 @@ const
   URL_FAQ = 'https://help.openai.com/en/collections/3742473-chatgpt';
 
 const
-  VersionName = '1.0.16';
+  VersionName = '1.0.17';
 
 var
   FormMain: TFormMain;
@@ -782,6 +782,10 @@ end;
 constructor TFormMain.Create(AOwner: TComponent);
 begin
   inherited;
+  TAnimation.AniFrameRate := 300;
+  ListBoxChatList.AniCalculations.Animation := True;
+  ListBoxChatList.AniCalculations.Interval := 1;
+  ListBoxChatList.AniCalculations.Averaging := True;
   {$IFDEF NEW_MEMO}
   var Style := StyleBook.Style;
   if Assigned(Style) then

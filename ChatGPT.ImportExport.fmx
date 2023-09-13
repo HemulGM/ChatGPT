@@ -1,0 +1,404 @@
+inherited FrameImportExport: TFrameImportExport
+  Size.Width = 772.000000000000000000
+  Size.Height = 703.000000000000000000
+  OnResize = FrameResize
+  OnResized = FrameResize
+  inherited RectangleBG: TRectangle
+    Size.Width = 772.000000000000000000
+    Size.Height = 703.000000000000000000
+  end
+  object LayoutClient: TLayout
+    Align = Center
+    Padding.Left = 10.000000000000000000
+    Padding.Top = 10.000000000000000000
+    Padding.Right = 10.000000000000000000
+    Padding.Bottom = 10.000000000000000000
+    Size.Width = 440.000000000000000000
+    Size.Height = 589.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object RectangleFrame: TRectangle
+      Align = Contents
+      Fill.Color = xFF202123
+      Locked = True
+      Size.Width = 440.000000000000000000
+      Size.Height = 589.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Kind = None
+      XRadius = 6.000000000000000000
+      YRadius = 6.000000000000000000
+    end
+    object LayoutActions: TLayout
+      Align = Bottom
+      Position.X = 10.000000000000000000
+      Position.Y = 533.000000000000000000
+      Size.Width = 420.000000000000000000
+      Size.Height = 46.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      object ButtonOk: TButton
+        Align = Right
+        Position.X = 260.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_menu'
+        TabOrder = 2
+        Text = 'OK'
+        OnClick = ButtonOkClick
+      end
+      object ButtonCancel: TButton
+        Align = Right
+        Position.X = 340.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 46.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'buttonstyle_menu'
+        TabOrder = 3
+        Text = 'CANCEL'
+        OnClick = ButtonCancelClick
+      end
+    end
+    object LabelCaption: TLabel
+      Align = Top
+      AutoSize = True
+      StyledSettings = [Style]
+      Margins.Top = 10.000000000000000000
+      Position.X = 10.000000000000000000
+      Position.Y = 20.000000000000000000
+      Size.Width = 420.000000000000000000
+      Size.Height = 20.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Roboto'
+      TextSettings.Font.Size = 16.000000000000000000
+      TextSettings.FontColor = xFFE9E9E9
+      TextSettings.WordWrap = False
+      Text = 'Import && Export'
+      TabOrder = 48
+    end
+    object VertScrollBox: TVertScrollBox
+      Align = Client
+      Padding.Right = 10.000000000000000000
+      Padding.Bottom = 10.000000000000000000
+      Margins.Right = -10.000000000000000000
+      Size.Width = 430.000000000000000000
+      Size.Height = 493.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 21
+      Viewport.Width = 430.000000000000000000
+      Viewport.Height = 493.000000000000000000
+      object Layout1: TLayout
+        Align = Top
+        Margins.Left = 10.000000000000000000
+        Margins.Top = 20.000000000000000000
+        Margins.Right = 10.000000000000000000
+        Margins.Bottom = 20.000000000000000000
+        Position.X = 10.000000000000000000
+        Position.Y = 20.000000000000000000
+        Size.Width = 400.000000000000000000
+        Size.Height = 456.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 4
+        object RadioButtonImport: TRadioButton
+          Align = Top
+          Margins.Top = 10.000000000000000000
+          Position.Y = 163.000000000000000000
+          Size.Width = 400.000000000000000000
+          Size.Height = 19.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'radiobuttonstyle_md'
+          TabOrder = 0
+          Text = 'Import'
+          OnChange = RadioButtonExportChange
+        end
+        object RadioButtonExport: TRadioButton
+          Align = Top
+          IsChecked = True
+          Margins.Top = 10.000000000000000000
+          Position.Y = 10.000000000000000000
+          Size.Width = 400.000000000000000000
+          Size.Height = 19.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'radiobuttonstyle_md'
+          TabOrder = 46
+          Text = 'Export'
+          OnChange = RadioButtonExportChange
+        end
+        object LayoutExport: TLayout
+          Align = Top
+          Margins.Left = 10.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Position.X = 10.000000000000000000
+          Position.Y = 29.000000000000000000
+          Size.Width = 380.000000000000000000
+          Size.Height = 124.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 49
+          object Label17: TLabel
+            Align = Top
+            AutoSize = True
+            StyledSettings = [Style]
+            Margins.Left = 5.000000000000000000
+            Margins.Top = 10.000000000000000000
+            Margins.Right = 5.000000000000000000
+            Margins.Bottom = 5.000000000000000000
+            Position.X = 5.000000000000000000
+            Position.Y = 90.000000000000000000
+            Size.Width = 370.000000000000000000
+            Size.Height = 15.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.FontColor = x78FFFFFF
+            Text = '*.txt, *.json'
+            TabOrder = 13
+            TabStop = False
+          end
+          object EditExport: TEdit
+            Touch.InteractiveGestures = [LongTap, DoubleTap]
+            Align = Top
+            StyleLookup = 'editstyle_clear'
+            TabOrder = 4
+            Position.Y = 47.000000000000000000
+            Margins.Top = 5.000000000000000000
+            Size.Width = 380.000000000000000000
+            Size.Height = 33.000000000000000000
+            Size.PlatformDefault = False
+            object ClearEditButtonExport: TClearEditButton
+              CanFocus = False
+              Cursor = crArrow
+              Hint = 'Clear'
+              Position.X = 28.000000000000000000
+              Size.Width = 28.000000000000000000
+              Size.Height = 29.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'buttonstyle_clearmini'
+              TabOrder = 0
+              Text = 'buttonstyle_clearmini'
+              object Path2: TPath
+                Align = Center
+                Data.Path = {
+                  0E00000000000000000060413333B33F010000009A9949410000000001000000
+                  0000E0403333B340010000003333B33F0000000001000000000000003333B33F
+                  010000003333B3400000E04001000000000000009A994941010000003333B33F
+                  00006041010000000000E04066660641010000009A9949410000604101000000
+                  000060419A99494101000000666606410000E04001000000000060413333B33F
+                  03000000000060413333B33F}
+                Fill.Color = xFFACACBE
+                Locked = True
+                HitTest = False
+                Margins.Left = 2.000000000000000000
+                Size.Width = 13.000000000000000000
+                Size.Height = 13.000000000000000000
+                Size.PlatformDefault = False
+                Stroke.Kind = None
+                WrapMode = Fit
+              end
+            end
+            object EditButtonExportFile: TEditButton
+              CanFocus = False
+              Cursor = crArrow
+              Size.Width = 28.000000000000000000
+              Size.Height = 29.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'editbuttonstyle'
+              TabOrder = 1
+              Text = 'editbuttonstyle'
+              OnClick = EditButtonExportFileClick
+              object Path1: TPath
+                Align = Center
+                Data.Path = {
+                  2F0000000000000066260F446626874301000000CC4CEE436626E74302000000
+                  9A99EB439A99EC4302000000CD0CE6430000F04302000000CD8CDF430000F043
+                  01000000000080420000F043020000003433E5410000F0430200000000000000
+                  85ABE14302000000000000000000D04301000000000000000000C04202000000
+                  00000000D7A37242020000003333E54100000042020000000000804200000042
+                  0100000000803543000000420200000052784643000000420200000000C05643
+                  CFF71A42020000008FC2624300004B420100000033F389430000C04201000000
+                  0000D0430000C04202000000CDACE1430000C042020000000000F043EC51F942
+                  020000000000F04300002043010000000000F04300004043010000000000D843
+                  00004043010000000000D84300002043020000000000D8430E2D174302000000
+                  3769D44300001043020000000000D04300001043010000000000804300001043
+                  01000000CDCC40434861A94202000000CDCC3D43EC51A34202000000CDCC3943
+                  0000A04202000000008035430000A04201000000000080420000A04202000000
+                  52B85C420000A0420200000000004042295CAE4202000000000040420000C042
+                  01000000000040420000C04301000000EC51EE4233B37143020000003333F942
+                  CDCC66430200000033B307430000604302000000CDCC13430000604301000000
+                  000008440000604302000000CDEC0D440000604302000000CDCC114400007943
+                  0200000066260F44662687430300000066260F4466268743}
+                Fill.Color = xFFACACBE
+                Locked = True
+                HitTest = False
+                Margins.Left = 2.000000000000000000
+                Size.Width = 13.000000000000000000
+                Size.Height = 13.000000000000000000
+                Size.PlatformDefault = False
+                Stroke.Kind = None
+                WrapMode = Fit
+              end
+            end
+          end
+          object Label9: TLabel
+            Align = Top
+            AutoSize = True
+            StyledSettings = [Style]
+            Margins.Top = 20.000000000000000000
+            Margins.Bottom = 5.000000000000000000
+            Position.Y = 20.000000000000000000
+            Size.Width = 380.000000000000000000
+            Size.Height = 17.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xB4FFFFFF
+            Text = 'File name'
+            TabOrder = 31
+            TabStop = False
+          end
+        end
+        object LayoutImport: TLayout
+          Align = Top
+          Margins.Left = 10.000000000000000000
+          Margins.Right = 10.000000000000000000
+          Position.X = 10.000000000000000000
+          Position.Y = 182.000000000000000000
+          Size.Width = 380.000000000000000000
+          Size.Height = 124.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 48
+          object Label1: TLabel
+            Align = Top
+            AutoSize = True
+            StyledSettings = [Style]
+            Margins.Left = 5.000000000000000000
+            Margins.Top = 10.000000000000000000
+            Margins.Right = 5.000000000000000000
+            Margins.Bottom = 5.000000000000000000
+            Position.X = 5.000000000000000000
+            Position.Y = 90.000000000000000000
+            Size.Width = 370.000000000000000000
+            Size.Height = 15.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.FontColor = x78FFFFFF
+            Text = '*.json'
+            TabOrder = 13
+            TabStop = False
+          end
+          object EditImport: TEdit
+            Touch.InteractiveGestures = [LongTap, DoubleTap]
+            Align = Top
+            StyleLookup = 'editstyle_clear'
+            TabOrder = 4
+            Position.Y = 47.000000000000000000
+            Margins.Top = 5.000000000000000000
+            Size.Width = 380.000000000000000000
+            Size.Height = 33.000000000000000000
+            Size.PlatformDefault = False
+            object ClearEditButtonImport: TClearEditButton
+              CanFocus = False
+              Cursor = crArrow
+              Hint = 'Clear'
+              Position.X = 28.000000000000000000
+              Size.Width = 28.000000000000000000
+              Size.Height = 29.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'buttonstyle_clearmini'
+              TabOrder = 0
+              Text = 'buttonstyle_clearmini'
+              object Path3: TPath
+                Align = Center
+                Data.Path = {
+                  0E00000000000000000060413333B33F010000009A9949410000000001000000
+                  0000E0403333B340010000003333B33F0000000001000000000000003333B33F
+                  010000003333B3400000E04001000000000000009A994941010000003333B33F
+                  00006041010000000000E04066660641010000009A9949410000604101000000
+                  000060419A99494101000000666606410000E04001000000000060413333B33F
+                  03000000000060413333B33F}
+                Fill.Color = xFFACACBE
+                Locked = True
+                HitTest = False
+                Margins.Left = 2.000000000000000000
+                Size.Width = 13.000000000000000000
+                Size.Height = 13.000000000000000000
+                Size.PlatformDefault = False
+                Stroke.Kind = None
+                WrapMode = Fit
+              end
+            end
+            object EditButtonImportFile: TEditButton
+              CanFocus = False
+              Cursor = crArrow
+              Size.Width = 28.000000000000000000
+              Size.Height = 29.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'editbuttonstyle'
+              TabOrder = 1
+              Text = 'editbuttonstyle'
+              OnClick = EditButtonImportFileClick
+              object Path4: TPath
+                Align = Center
+                Data.Path = {
+                  2F0000000000000066260F446626874301000000CC4CEE436626E74302000000
+                  9A99EB439A99EC4302000000CD0CE6430000F04302000000CD8CDF430000F043
+                  01000000000080420000F043020000003433E5410000F0430200000000000000
+                  85ABE14302000000000000000000D04301000000000000000000C04202000000
+                  00000000D7A37242020000003333E54100000042020000000000804200000042
+                  0100000000803543000000420200000052784643000000420200000000C05643
+                  CFF71A42020000008FC2624300004B420100000033F389430000C04201000000
+                  0000D0430000C04202000000CDACE1430000C042020000000000F043EC51F942
+                  020000000000F04300002043010000000000F04300004043010000000000D843
+                  00004043010000000000D84300002043020000000000D8430E2D174302000000
+                  3769D44300001043020000000000D04300001043010000000000804300001043
+                  01000000CDCC40434861A94202000000CDCC3D43EC51A34202000000CDCC3943
+                  0000A04202000000008035430000A04201000000000080420000A04202000000
+                  52B85C420000A0420200000000004042295CAE4202000000000040420000C042
+                  01000000000040420000C04301000000EC51EE4233B37143020000003333F942
+                  CDCC66430200000033B307430000604302000000CDCC13430000604301000000
+                  000008440000604302000000CDEC0D440000604302000000CDCC114400007943
+                  0200000066260F44662687430300000066260F4466268743}
+                Fill.Color = xFFACACBE
+                Locked = True
+                HitTest = False
+                Margins.Left = 2.000000000000000000
+                Size.Width = 13.000000000000000000
+                Size.Height = 13.000000000000000000
+                Size.PlatformDefault = False
+                Stroke.Kind = None
+                WrapMode = Fit
+              end
+            end
+          end
+          object Label2: TLabel
+            Align = Top
+            AutoSize = True
+            StyledSettings = [Style]
+            Margins.Top = 20.000000000000000000
+            Margins.Bottom = 5.000000000000000000
+            Position.Y = 20.000000000000000000
+            Size.Width = 380.000000000000000000
+            Size.Height = 17.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.Font.Size = 14.000000000000000000
+            TextSettings.FontColor = xB4FFFFFF
+            Text = 'File name'
+            TabOrder = 31
+            TabStop = False
+          end
+        end
+      end
+    end
+  end
+  object SaveDialogExport: TSaveDialog
+    DefaultExt = '.json'
+    Filter = 'JSON|*.json|Text|*.txt'
+    Left = 664
+    Top = 176
+  end
+  object OpenDialogImport: TOpenDialog
+    DefaultExt = '.json'
+    Filter = 'JSON|*.json'
+    Left = 664
+    Top = 328
+  end
+end

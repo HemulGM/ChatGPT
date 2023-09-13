@@ -31,6 +31,7 @@ object FrameCode: TFrameCode
       TextSettings.Font.Size = 11.500000000000000000
       TextSettings.FontColor = xFFD9D9E3
       TextSettings.WordWrap = False
+      TextSettings.Trimming = None
       Text = 'language'
       TabOrder = 0
     end
@@ -98,6 +99,7 @@ object FrameCode: TFrameCode
         TextSettings.FontColor = xFFD9D9E3
         TextSettings.HorzAlign = Trailing
         TextSettings.WordWrap = False
+        TextSettings.Trimming = None
         Text = 'Copy code'
         TabOrder = 0
         OnResize = LabelCopyResize
@@ -150,8 +152,8 @@ object FrameCode: TFrameCode
       OnMouseMove = MemoCodeMouseMove
       OnMouseWheel = MemoCodeMouseWheel
       OnMouseLeave = MemoCodeMouseLeave
-      Viewport.Width = 555.000000000000000000
-      Viewport.Height = 335.000000000000000000
+      Viewport.Width = 565.000000000000000000
+      Viewport.Height = 345.000000000000000000
     end
   end
   object TimerMouseOver: TTimer

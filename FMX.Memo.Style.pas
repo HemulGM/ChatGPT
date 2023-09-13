@@ -3008,7 +3008,7 @@ begin
     end;
   end;
   if FContent <> nil then
-    Result.TopLeft := ConvertLocalPointFrom(FContent, Result.TopLeft);
+    Result.TopLeft :=  ConvertLocalPointFrom(FContent, Result.TopLeft);
 end;
 
 function TStyledMemo.GetSelectionRegion: TRegion;

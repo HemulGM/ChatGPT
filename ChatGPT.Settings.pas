@@ -114,6 +114,7 @@ type
     Layout9: TLayout;
     SwitchAutoExecFuncs: TSwitch;
     Label37: TLabel;
+    Layout10: TLayout;
     procedure TrackBarTempTracking(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);
@@ -184,6 +185,8 @@ begin
   FLayoutClientWidth := LayoutClient.Width;
   FLayoutClientHeight := LayoutClient.Height;
   VertScrollBoxContent.AniCalculations.Animation := True;
+  VertScrollBoxContent.AniCalculations.Interval := 1;
+  VertScrollBoxContent.AniCalculations.Averaging := True;
   VertScrollBoxContent.ViewportPosition := TPoint.Zero;
 end;
 

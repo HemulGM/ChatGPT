@@ -63,7 +63,7 @@ inherited FrameLoadedFunctions: TFrameLoadedFunctions
       TextSettings.FontColor = xFFE9E9E9
       TextSettings.WordWrap = False
       Text = 'Loaded functions'
-      TabOrder = 53
+      TabOrder = 49
     end
     object Label20: TLabel
       Align = Top
@@ -83,7 +83,7 @@ inherited FrameLoadedFunctions: TFrameLoadedFunctions
       Text = 
         'To load third-party functions, you must place the dynamic librar' +
         'y in the "funcs" folder next to the program'#39's executable file'
-      TabOrder = 11
+      TabOrder = 9
       TabStop = False
     end
     object Rectangle1: TRectangle
@@ -121,9 +121,14 @@ inherited FrameLoadedFunctions: TFrameLoadedFunctions
     end
     object LabelEmpty: TLabel
       Align = Center
+      AutoSize = True
       StyledSettings = [Family, Size, Style]
+      Size.Width = 66.000000000000000000
+      Size.Height = 16.000000000000000000
+      Size.PlatformDefault = False
       TextSettings.FontColor = xFF6C6C6C
       TextSettings.HorzAlign = Center
+      TextSettings.WordWrap = False
       Text = 'List is empty'
       TabOrder = 3
     end

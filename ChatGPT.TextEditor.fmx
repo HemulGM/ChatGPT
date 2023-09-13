@@ -73,7 +73,7 @@ inherited FrameTextEditor: TFrameTextEditor
       TextSettings.Font.Size = 16.000000000000000000
       TextSettings.FontColor = xFFE9E9E9
       TextSettings.WordWrap = False
-      Text = 'Loaded functions'
+      Text = 'Title'
       TabOrder = 49
     end
     object Rectangle1: TRectangle

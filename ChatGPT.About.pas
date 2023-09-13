@@ -77,6 +77,8 @@ begin
   FLayoutClientWidth := LayoutClient.Width;
   FLayoutClientHeight := LayoutClient.Height;
   VertScrollBoxContent.AniCalculations.Animation := True;
+  VertScrollBoxContent.AniCalculations.Interval := 1;
+  VertScrollBoxContent.AniCalculations.Averaging := True;
   VertScrollBoxContent.ViewportPosition := TPoint.Zero;
 end;
 

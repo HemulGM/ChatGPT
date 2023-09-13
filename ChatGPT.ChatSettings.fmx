@@ -66,11 +66,13 @@ inherited FrameChatSettings: TFrameChatSettings
     object VertScrollBox: TVertScrollBox
       Align = Client
       Padding.Right = 10.000000000000000000
-      Size.Width = 420.000000000000000000
+      Padding.Bottom = 10.000000000000000000
+      Margins.Right = -10.000000000000000000
+      Size.Width = 430.000000000000000000
       Size.Height = 578.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 21
-      Viewport.Width = 404.000000000000000000
+      Viewport.Width = 414.000000000000000000
       Viewport.Height = 578.000000000000000000
       object ComboEditModel: TComboEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
@@ -88,7 +90,7 @@ inherited FrameChatSettings: TFrameChatSettings
         ItemIndex = 0
         Text = 'gpt-3.5-turbo'
         Position.Y = 134.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
       end
@@ -100,7 +102,7 @@ inherited FrameChatSettings: TFrameChatSettings
         KeyboardType = Alphabet
         Position.Y = 617.000000000000000000
         Margins.Top = 5.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         TextPrompt = 'Example: "ru" or "de"'
@@ -144,7 +146,7 @@ inherited FrameChatSettings: TFrameChatSettings
         FilterChar = '0123456789'
         Position.Y = 397.000000000000000000
         Margins.Top = 5.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         TextPrompt = 'Example: 4096'
@@ -188,7 +190,7 @@ inherited FrameChatSettings: TFrameChatSettings
         FilterChar = '0123456789'
         Position.Y = 507.000000000000000000
         Margins.Top = 5.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         TextPrompt = 'Example: 1024'
@@ -230,7 +232,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 10.000000000000000000
         Position.Y = 10.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 25.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -249,7 +251,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 480.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -269,7 +271,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 440.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -288,7 +290,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 550.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -307,7 +309,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 177.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -326,7 +328,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 590.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -344,7 +346,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 670.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -362,7 +364,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 722.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -380,7 +382,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 112.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -397,20 +399,20 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 370.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
         TextSettings.Font.Size = 14.000000000000000000
         TextSettings.FontColor = xB4FFFFFF
         Text = 'Model max tokens (default: 4096)'
-        TabOrder = 31
+        TabOrder = 30
         TabStop = False
       end
       object Layout3: TLayout
         Align = Top
         Position.Y = 692.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 7
@@ -421,8 +423,8 @@ inherited FrameChatSettings: TFrameChatSettings
           Frequency = 1.000000000000000000
           Max = 20.000000000000000000
           Orientation = Horizontal
-          Size.Width = 360.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Width = 370.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           Value = 10.000000000000000000
@@ -432,7 +434,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Align = Right
           StyledSettings = [Style]
           Margins.Left = 6.000000000000000000
-          Position.X = 366.000000000000000000
+          Position.X = 376.000000000000000000
           Size.Width = 28.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
@@ -449,7 +451,7 @@ inherited FrameChatSettings: TFrameChatSettings
       object Layout1: TLayout
         Align = Top
         Position.Y = 784.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 8
@@ -461,7 +463,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Max = 20.000000000000000000
           Min = -20.000000000000000000
           Orientation = Horizontal
-          Size.Width = 360.000000000000000000
+          Size.Width = 370.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
@@ -471,7 +473,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Align = Right
           StyledSettings = [Style]
           Margins.Left = 6.000000000000000000
-          Position.X = 366.000000000000000000
+          Position.X = 376.000000000000000000
           Size.Width = 28.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
@@ -492,7 +494,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 762.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -513,7 +515,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 814.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -532,7 +534,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 883.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -546,7 +548,7 @@ inherited FrameChatSettings: TFrameChatSettings
       object Layout5: TLayout
         Align = Top
         Position.Y = 905.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 9
@@ -558,7 +560,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Max = 20.000000000000000000
           Min = -20.000000000000000000
           Orientation = Horizontal
-          Size.Width = 360.000000000000000000
+          Size.Width = 370.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
@@ -568,7 +570,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Align = Right
           StyledSettings = [Style]
           Margins.Left = 6.000000000000000000
-          Position.X = 366.000000000000000000
+          Position.X = 376.000000000000000000
           Size.Width = 28.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
@@ -592,7 +594,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 935.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -614,7 +616,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 1056.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 73.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -631,7 +633,7 @@ inherited FrameChatSettings: TFrameChatSettings
       object Layout6: TLayout
         Align = Top
         Position.Y = 1026.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 10
@@ -642,7 +644,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Frequency = 1.000000000000000000
           Max = 10.000000000000000000
           Orientation = Horizontal
-          Size.Width = 360.000000000000000000
+          Size.Width = 370.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
@@ -653,7 +655,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Align = Right
           StyledSettings = [Style]
           Margins.Left = 6.000000000000000000
-          Position.X = 366.000000000000000000
+          Position.X = 376.000000000000000000
           Size.Width = 28.000000000000000000
           Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
@@ -674,7 +676,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 1004.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -692,7 +694,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Top = 30.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.Y = 75.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -709,7 +711,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Padding.Bottom = 4.000000000000000000
         Margins.Top = 20.000000000000000000
         Position.Y = 246.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 2
@@ -719,7 +721,7 @@ inherited FrameChatSettings: TFrameChatSettings
           IsChecked = False
           Margins.Top = 2.000000000000000000
           Margins.Bottom = 2.000000000000000000
-          Position.X = 349.000000000000000000
+          Position.X = 359.000000000000000000
           Position.Y = 6.000000000000000000
           Size.Width = 45.000000000000000000
           Size.Height = 18.000000000000000000
@@ -730,7 +732,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Align = Client
           AutoSize = True
           StyledSettings = [Style]
-          Size.Width = 349.000000000000000000
+          Size.Width = 359.000000000000000000
           Size.Height = 22.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Roboto'
@@ -752,7 +754,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
         Position.Y = 316.000000000000000000
-        Size.Width = 384.000000000000000000
+        Size.Width = 394.000000000000000000
         Size.Height = 29.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
@@ -768,7 +770,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Padding.Top = 4.000000000000000000
         Padding.Bottom = 4.000000000000000000
         Position.Y = 276.000000000000000000
-        Size.Width = 394.000000000000000000
+        Size.Width = 404.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
@@ -778,7 +780,7 @@ inherited FrameChatSettings: TFrameChatSettings
           IsChecked = False
           Margins.Top = 2.000000000000000000
           Margins.Bottom = 2.000000000000000000
-          Position.X = 349.000000000000000000
+          Position.X = 359.000000000000000000
           Position.Y = 6.000000000000000000
           Size.Width = 45.000000000000000000
           Size.Height = 18.000000000000000000
@@ -789,7 +791,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Align = Client
           AutoSize = True
           StyledSettings = [Style]
-          Size.Width = 349.000000000000000000
+          Size.Width = 359.000000000000000000
           Size.Height = 22.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Family = 'Roboto'
@@ -800,6 +802,14 @@ inherited FrameChatSettings: TFrameChatSettings
           TabOrder = 0
           TabStop = False
         end
+      end
+      object Layout2: TLayout
+        Align = Top
+        Position.Y = 1134.000000000000000000
+        Size.Width = 404.000000000000000000
+        Size.Height = 20.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 32
       end
     end
   end

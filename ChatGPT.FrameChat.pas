@@ -2,13 +2,17 @@
 
 interface
 
+{$IFDEF ANDROID OR IOS OR IOS64}
+  {$DEFINE MOBILE}
+{$ENDIF}
+
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Layouts, FMX.Memo.Types, FMX.Controls.Presentation,
   FMX.Memo.Style, FMX.ScrollBox, FMX.Memo, OpenAI, OpenAI.Completions,
-  ChatGPT.FrameMessage, ChatGPT.Classes, System.Threading, FMX.Edit, FMX.ImgList,
-  OpenAI.Chat, System.Generics.Collections, OpenAI.Audio,
+  FMX.Edit.Style, ChatGPT.FrameMessage, ChatGPT.Classes, System.Threading,
+  FMX.Edit, FMX.ImgList, OpenAI.Chat, System.Generics.Collections, OpenAI.Audio,
   OpenAI.Utils.ChatHistory, OpenAI.Images, ChatGPT.ChatSettings, System.JSON,
   FMX.Effects, FMX.ListBox, Skia, Skia.FMX, ChatGPT.SoundRecorder,
   FMX.InertialMovement, System.RTLConsts, OpenAI.Chat.Functions;
@@ -53,7 +57,7 @@ type
     RectangleSendBG: TRectangle;
     MemoQuery: TMemo;
     LayoutQuery: TLayout;
-    Rectangle2: TRectangle;
+    RectangleMemoBG: TRectangle;
     LayoutSendControls: TLayout;
     LayoutTyping: TLayout;
     TimerTyping: TTimer;
@@ -122,6 +126,12 @@ type
     ButtonContinue: TButton;
     ShadowEffect2: TShadowEffect;
     FlowLayoutActions: TFlowLayout;
+    ButtonExportImport: TButton;
+    ShadowEffect3: TShadowEffect;
+    Rectangle1: TRectangle;
+    LabelTest: TLabel;
+    Rectangle2: TRectangle;
+    Label3: TLabel;
     procedure LayoutSendResize(Sender: TObject);
     procedure MemoQueryChange(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
@@ -147,6 +157,7 @@ type
     procedure MemoQueryEnter(Sender: TObject);
     procedure MemoQueryViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
     procedure ButtonContinueClick(Sender: TObject);
+    procedure ButtonExportImportClick(Sender: TObject);
   private
     FAPI: IOpenAI;
     FChatId: string;
@@ -259,9 +270,9 @@ uses
   FMX.Ani, System.Math, OpenAI.API, ChatGPT.Translate, System.IOUtils,
   ChatGPT.Main, ChatGPT.Overlay, FMX.BehaviorManager, HGM.FMX.Ani,
   {$IFDEF ANDROID}
-  ChatGPT.Android,
+  ChatGPT.Android, FMX.Platform.UI.Android,
   {$ENDIF}
-  System.DateUtils;
+  System.DateUtils, ChatGPT.ImportExport, FMX.Text;
 
 {$R *.fmx}
 
@@ -491,7 +502,7 @@ procedure TFrameChat.Init;
 begin
   Opacity := 0;
   TAnimator.AnimateFloat(Self, 'Opacity', 1);
-  {$IFNDEF ANDROID OR IOS OR IOS64}
+  {$IFNDEF MOBILE}
   MemoQuery.SetFocus;
   {$ENDIF}
   TThread.ForceQueue(nil,
@@ -506,21 +517,23 @@ procedure TFrameChat.LoadFromJson(JSON: TJSONObject);
 begin
   var ItemCount: Integer := 0;
   var LastRoleIsUser: Boolean := False;
-  FChatId := JSON.GetValue('chat_id', TGUID.NewGuid.ToString);
-  FTitle := JSON.GetValue('title', '');
-  FTemperature := JSON.GetValue('temperature', 0.0);
-  FLangSrc := JSON.GetValue('user_lang', '');
-  FrequencyPenalty := JSON.GetValue<Single>('frequency_penalty', 0.0);
-  PresencePenalty := JSON.GetValue<Single>('presence_penalty', 0.0);
-  TopP := JSON.GetValue<Single>('top_p', 0.0);
-  Model := JSON.GetValue('model', '');
-  MaxTokens := JSON.GetValue<Integer>('max_tokens', 0);
-  MaxTokensQuery := JSON.GetValue<Integer>('max_tokens_query', 0);
-  IsImageMode := JSON.GetValue('is_image_mode', False);
-  UseFunctions := JSON.GetValue('use_functions', False);
-  AutoExecFuncs := JSON.GetValue('auto_exec_funcs', False);
-  MemoQuery.Text := JSON.GetValue('draft', '');
+  if FChatId.IsEmpty then
+    FChatId := JSON.GetValue('chat_id', TGUID.NewGuid.ToString);
+  FTitle := JSON.GetValue('title', FTitle);
+  FTemperature := JSON.GetValue('temperature', FTemperature);
+  FLangSrc := JSON.GetValue('user_lang', FLangSrc);
+  FrequencyPenalty := JSON.GetValue<Single>('frequency_penalty', FrequencyPenalty);
+  PresencePenalty := JSON.GetValue<Single>('presence_penalty', PresencePenalty);
+  TopP := JSON.GetValue<Single>('top_p', TopP);
+  Model := JSON.GetValue('model', Model);
+  MaxTokens := JSON.GetValue<Integer>('max_tokens', MaxTokens);
+  MaxTokensQuery := JSON.GetValue<Integer>('max_tokens_query', MaxTokensQuery);
+  IsImageMode := JSON.GetValue('is_image_mode', IsImageMode);
+  UseFunctions := JSON.GetValue('use_functions', UseFunctions);
+  AutoExecFuncs := JSON.GetValue('auto_exec_funcs', AutoExecFuncs);
+  MemoQuery.Text := JSON.GetValue('draft', MemoQuery.Text);
   MemoQuery.SelStart := MemoQuery.Text.Length;
+  MemoQuery.SelLength := 0;
 
   var JArray: TJSONArray;
   if JSON.TryGetValue<TJSONArray>('items', JArray) then
@@ -769,6 +782,59 @@ end;
 procedure TFrameChat.ButtonExample3Tap(Sender: TObject; const Point: TPointF);
 begin
   ButtonExample3Click(Sender);
+end;
+
+procedure TFrameChat.ButtonExportImportClick(Sender: TObject);
+begin
+  TFrameImportExport.Execute(Self,
+    procedure(Frame: TFrameImportExport)
+    begin
+      Frame.Mode := FMode;
+    end,
+    procedure(Frame: TFrameImportExport; Success: Boolean)
+    begin
+      if not Success then
+        Exit;
+      if Frame.RadioButtonExport.IsChecked then
+      begin
+        if Frame.EditExport.Text.EndsWith('.json') then
+        begin
+          var JSON := SaveAsJson;
+          if Assigned(JSON) then
+          try
+            TFile.WriteAllText(Frame.EditExport.Text, JSON.ToJSON, TEncoding.UTF8);
+          finally
+            JSON.Free;
+          end;
+        end
+        else
+        begin
+          var Stream := TFile.Create(Frame.EditExport.Text);
+          try
+            for var Control in VertScrollBoxChat.Content.Controls do
+              if Control is TFrameMessage then
+                if not TFrameMessage(Control).IsError then
+                begin
+                  var Buff := TEncoding.UTF8.GetBytes(TFrameMessage(Control).MessageRole.ToString + #13#10 + TFrameMessage(Control).Text + #13#10 + #13#10 + #13#10);
+                  Stream.WriteBuffer(Buff, Length(Buff));
+                end;
+          finally
+            Stream.Free;
+          end;
+        end;
+      end
+      else
+      begin
+        var JSON := TJSONObject.ParseJSONValue(TFile.ReadAllText(Frame.EditImport.Text, TEncoding.UTF8));
+        if Assigned(JSON) then
+        try
+          LoadFromJson(JSON as TJSONObject);
+          UpdateMenuTitle(FTitle);
+        finally
+          JSON.Free;
+        end;
+      end;
+    end);
 end;
 
 procedure TFrameChat.ButtonImageClick(Sender: TObject);
@@ -1062,17 +1128,21 @@ begin
   Temperature := 0.2;
   Name := '';
   VertScrollBoxChat.AniCalculations.Animation := True;
+  VertScrollBoxChat.AniCalculations.Interval := 1;
+  VertScrollBoxChat.AniCalculations.Averaging := True;
+
   MemoQuery.ScrollAnimation := TBehaviorBoolean.True;
-  (MemoQuery.Presentation as TStyledMemo).NeedSelectorPoints := True;
   PathStopRecord.Visible := False;
   PathAudio.Visible := False;
   PathSend.Visible := True;
   LayoutAudioRecording.Visible := False;
 
-  {$IFDEF ANDROID OR IOS OR IOS64}
+  {$IFDEF MOBILE}
   ButtonExample1.OnClick := nil;
   ButtonExample2.OnClick := nil;
   ButtonExample3.OnClick := nil;
+  (MemoQuery.Presentation as TStyledMemo).NeedSelectorPoints := True;
+  ButtonExportImport.Visible := False;
   {$ENDIF}
 
   SetTyping(False);
@@ -1137,7 +1207,7 @@ end;
 procedure TFrameChat.LayoutSendResize(Sender: TObject);
 begin
   LayoutQuery.Width := Min(768, LayoutSend.Width - 48);
-  VertScrollBoxChat.Padding.Bottom := LayoutSend.Height;
+  VertScrollBoxChat.Padding.Bottom := LayoutSend.Height + LayoutButtom.Height + 20;
 end;
 
 procedure TFrameChat.LayoutTypingResize(Sender: TObject);
@@ -1165,6 +1235,19 @@ begin
   TAnimator.DetachPropertyAnimation(LayoutSend, 'Height');
   TAnimator.AnimateFloat(LayoutSend, 'Height', Max(LayoutSend.TagFloat, Min(H, 400)), 0.1);
   MemoQuery.ShowScrollBars := H > 400;
+
+  {$IFDEF MOBILE}
+  if LabelSendTip.Visible then
+  begin
+    LayoutChatSettings.Visible := True;
+    RectangleMemoBG.Margins.Left := 15;
+  end
+  else
+  begin
+    LayoutChatSettings.Visible := False;
+    RectangleMemoBG.Margins.Left := -11;
+  end;
+  {$ENDIF}
   UpdateSendControls;
 end;
 
@@ -1383,14 +1466,13 @@ begin
   case FMode of
     TWindowMode.Compact:
       begin
-        {$IFNDEF ANDROID OR IOS OR IOS64}
+        {$IFNDEF MOBILE}
         LayoutSend.Margins.Right := 11;
         {$ELSE}
         LayoutSend.Margins.Right := 0;
         {$ENDIF}
         LabelWelcomeTitle.Margins.Top := 20;
         LayoutSend.TagFloat := 100;
-        VertScrollBoxChat.Padding.Bottom := 100;
         LayoutSend.Height := 100;
         LayoutButtom.Margins.Bottom := 0;
         LineBorder.Visible := True;
@@ -1403,10 +1485,11 @@ begin
         LayoutSend.Padding.Rect := TRectF.Create(0, 10, 0, 40);
         RectangleSendBG.Fill.Kind := TBrushKind.Solid;
         RectangleSendBG.Fill.Color := $FF343541;
+        ButtonExportImport.Width := ButtonExportImport.Height;
       end;
     TWindowMode.Full:
       begin
-        {$IFNDEF ANDROID OR IOS OR IOS64}
+        {$IFNDEF MOBILE}
         LayoutSend.Margins.Right := 11;
         {$ELSE}
         LayoutSend.Margins.Right := 0;
@@ -1414,7 +1497,6 @@ begin
         LabelWelcomeTitle.Margins.Top := 188;
         LayoutSend.TagFloat := 170;
         LayoutButtom.Margins.Bottom := -70;
-        VertScrollBoxChat.Padding.Bottom := 170;
         LayoutSend.Height := 170;
         LineBorder.Visible := False;
         PathExaCompact.Visible := False;
@@ -1425,6 +1507,7 @@ begin
         PathLimFull.Visible := True;
         LayoutSend.Padding.Rect := TRectF.Create(0, 80, 0, 40);
         RectangleSendBG.Fill.Kind := TBrushKind.Gradient;
+        ButtonExportImport.Width := 165;
       end;
   end;
   FlowLayoutWelcomeResize(nil);
@@ -1476,6 +1559,7 @@ begin
     TAnimator.AnimateFloat(LayoutTyping, 'Opacity', 1);
   end;
   LabelTyping.Visible := Value;
+  LabelTyping.Left := LayoutSendControls.Position.X - 5;
 end;
 
 procedure TFrameChat.SetUseFunctions(const Value: Boolean);
