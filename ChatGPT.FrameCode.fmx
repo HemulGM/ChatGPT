@@ -16,10 +16,11 @@ object FrameCode: TFrameCode
     Padding.Top = 6.000000000000000000
     Padding.Right = 16.000000000000000000
     Padding.Bottom = 6.000000000000000000
+    Sides = [Top, Left, Right]
     Size.Width = 575.000000000000000000
     Size.Height = 32.000000000000000000
     Size.PlatformDefault = False
-    Stroke.Kind = None
+    Stroke.Color = xFF1A1922
     XRadius = 6.000000000000000000
     YRadius = 6.000000000000000000
     object LabelLanguage: TLabel
@@ -152,8 +153,8 @@ object FrameCode: TFrameCode
       OnMouseMove = MemoCodeMouseMove
       OnMouseWheel = MemoCodeMouseWheel
       OnMouseLeave = MemoCodeMouseLeave
-      Viewport.Width = 565.000000000000000000
-      Viewport.Height = 345.000000000000000000
+      Viewport.Width = 555.000000000000000000
+      Viewport.Height = 335.000000000000000000
     end
   end
   object TimerMouseOver: TTimer

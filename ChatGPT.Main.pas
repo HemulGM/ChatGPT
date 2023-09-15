@@ -83,7 +83,6 @@ type
     FMode: TWindowMode;
     FToken: string;
     FTemperature: Single;
-    FLang: string;
     FChatsFileName: string;
     FSettingsFileName: string;
     FSelectedChatId: string;
@@ -99,6 +98,7 @@ type
     FGPTFuncList: TList<IChatFunction>;
     FUseFunctions: Boolean;
     FAutoExecFuncs: Boolean;
+    FTimeout: Integer;
     procedure SetMode(const Value: TWindowMode);
     procedure UpdateMode;
     procedure SelectChat(const ChatId: string);
@@ -118,7 +118,6 @@ type
     procedure LoadSettings;
     procedure SaveSettings;
     procedure SetToken(const Value: string);
-    procedure SetLang(const Value: string);
     procedure SetTemperature(const Value: Single);
     function GetSettingsFileName: string;
     function GetChatsFileName: string;
@@ -137,6 +136,7 @@ type
     procedure CreateGPTFunctions;
     procedure SetUseFunctions(const Value: Boolean);
     procedure SetAutoExecFuncs(const Value: Boolean);
+    procedure SetTimeout(const Value: Integer);
   protected
     procedure CreateHandle; override;
   public
@@ -150,6 +150,7 @@ type
     property Mode: TWindowMode read FMode write SetMode;
     property Token: string read FToken write SetToken;
     property Temperature: Single read FTemperature write SetTemperature;
+    property Timeout: Integer read FTimeout write SetTimeout;
     property Organization: string read FOrganization write SetOrganization;
     property BaseUrl: string read FBaseUrl write SetBaseUrl;
     property MaxTokens: Integer read FMaxTokens write SetMaxTokens;
@@ -158,7 +159,6 @@ type
     property FrequencyPenalty: Single read FFrequencyPenalty write SetFrequencyPenalty;
     property TopP: Single read FTopP write SetTopP;
     property Model: string read FModel write SetModel;
-    property Lang: string read FLang write SetLang;
     property CanShare: Boolean read FCanShare;
     property GPTFuncList: TList<IChatFunction> read FGPTFuncList;
     constructor Create(AOwner: TComponent); override;
@@ -167,9 +167,10 @@ type
 
 const
   URL_FAQ = 'https://help.openai.com/en/collections/3742473-chatgpt';
+  DEFAULT_TIMEOUT = 120000;
 
 const
-  VersionName = '1.0.17';
+  VersionName = '1.0.18';
 
 var
   FormMain: TFormMain;
@@ -238,7 +239,6 @@ end;
 
 procedure TFormMain.ButtonAboutClick(Sender: TObject);
 begin
-  LayoutOverlay.Visible := True;
   LayoutOverlay.BringToFront;
   TFrameAbout.Execute(LayoutOverlay,
     procedure(Frame: TFrameAbout)
@@ -247,7 +247,7 @@ begin
     end,
     procedure(Frame: TFrameAbout; Success: Boolean)
     begin
-      LayoutOverlay.Visible := False;
+      //
     end);
 end;
 
@@ -442,8 +442,9 @@ begin
   if TFMXObjectHelper.FindNearestParentOfClass<TListBoxItemChat>(Button, ListItem) then
   begin
     ChatId := ListItem.ChatId;
-    TDialogService.MessageDialog('Delete "' + ListItem.Text + '"?', TMsgDlgType.mtConfirmation,
-      [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo], TMsgDlgBtn.mbNo, 0,
+    TDialogService.MessageDialog('Delete "' + ListItem.Text + '"?',
+      TMsgDlgType.mtConfirmation, [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo],
+      TMsgDlgBtn.mbNo, 0,
       procedure(const AResult: TModalResult)
       begin
         if AResult = mrYes then
@@ -497,7 +498,6 @@ begin
   Model := '';
   MaxTokens := 0;
   MaxTokensQuery := 0;
-  Lang := '';
   FSelectedChatId := '';
 end;
 
@@ -525,9 +525,8 @@ begin
       Model := JSON.GetValue('model', '');
       MaxTokens := JSON.GetValue<Integer>('max_tokens', 0);
       MaxTokensQuery := JSON.GetValue<Integer>('max_tokens_query', 0);
-      Lang := JSON.GetValue('translate_lang', '');
       FSelectedChatId := JSON.GetValue('selected_chat', '');
-      OpenAI.BaseURL := JSON.GetValue('base_url', OpenAI.BaseURL);
+      OpenAI.BaseUrl := JSON.GetValue('base_url', OpenAI.BaseUrl);
       UseFunctions := JSON.GetValue<Boolean>('use_functions', False);
       AutoExecFuncs := JSON.GetValue<Boolean>('auto_exec_funcs', False);
 
@@ -538,7 +537,7 @@ begin
 
       OpenAI.API.Client.ProxySettings := TProxySettings.Create(
         JSON.GetValue('proxy_host', ''),
-        JSON.GetValue<integer>('proxy_port', 0),
+        JSON.GetValue<Integer>('proxy_port', 0),
         JSON.GetValue('proxy_username', ''),
         JSON.GetValue('proxy_password', ''));
       TBitmap.Client.ProxySettings := OpenAI.API.Client.ProxySettings;
@@ -594,7 +593,6 @@ begin
   try
     JSON.AddPair('api_key', Token);
     JSON.AddPair('temperature', TJSONNumber.Create(Temperature));
-    JSON.AddPair('translate_lang', Lang);
     JSON.AddPair('selected_chat', FSelectedChatId);
 
     JSON.AddPair('frequency_penalty', TJSONNumber.Create(FrequencyPenalty));
@@ -613,7 +611,7 @@ begin
     JSON.AddPair('proxy_username', OpenAI.API.Client.ProxySettings.UserName);
     JSON.AddPair('proxy_password', OpenAI.API.Client.ProxySettings.Password);
 
-    JSON.AddPair('base_url', OpenAI.BaseURL);
+    JSON.AddPair('base_url', OpenAI.BaseUrl);
 
     JSON.AddPair('width', Width);
     JSON.AddPair('height', Height);
@@ -759,13 +757,14 @@ begin
       SelFrame.ChatId := ItemList.ChatId;
       SelFrame.Title := ItemList.Text;
       SelFrame.Temperature := Temperature;
+      SelFrame.TopP := TopP;
       SelFrame.PresencePenalty := PresencePenalty;
       SelFrame.FrequencyPenalty := FrequencyPenalty;
       SelFrame.Model := Model;
       SelFrame.MaxTokens := MaxTokens;
       SelFrame.MaxTokensQuery := MaxTokensQuery;
-      SelFrame.LangSrc := Lang;
       SelFrame.UseFunctions := UseFunctions;
+      SelFrame.AutoExecFuncs := AutoExecFuncs;
     end;
     SelFrame.MenuItem := ItemList;
     SelFrame.Visible := True;
@@ -775,7 +774,7 @@ end;
 
 procedure TFormMain.CreateGPTFunctions;
 begin
-  //FGPTFuncList.Add(TChatFunctionWeather.Create);
+  // FGPTFuncList.Add(TChatFunctionWeather.Create);
   FGPTFuncList.AddRange(LoadExternalFunctions);
 end;
 
@@ -786,6 +785,7 @@ begin
   ListBoxChatList.AniCalculations.Animation := True;
   ListBoxChatList.AniCalculations.Interval := 1;
   ListBoxChatList.AniCalculations.Averaging := True;
+  ListBoxChatList.DisableDisappear := True;
   {$IFDEF NEW_MEMO}
   var Style := StyleBook.Style;
   if Assigned(Style) then
@@ -812,14 +812,16 @@ begin
   ListBoxChatList.AniCalculations.Animation := True;
   FGPTFuncList := TList<IChatFunction>.Create;
   FOpenAI := TOpenAIComponent.Create(Self);
+  FOpenAI.API.Client.ConnectionTimeout := 30000;
+
   CreateGPTFunctions;
   Defaults;
   FCanShare := GetCanShare;
   Clear;
   FMode := TWindowMode.Full;
   UpdateMode;
+  TimeOut := DEFAULT_TIMEOUT;
   Temperature := 0;
-  Lang := '';
   Token := '';
 end;
 
@@ -849,18 +851,28 @@ end;
 
 procedure TFormMain.OpenSettings;
 begin
+  LayoutOverlay.BringToFront;
   TFrameSettings.Execute(LayoutOverlay,
     procedure(Frame: TFrameSettings)
     begin
       Frame.Mode := FMode;
       Frame.EditToken.Text := Token;
       Frame.EditOrg.Text := Organization;
-      Frame.EditLangSrc.Text := Lang;
       Frame.TrackBarTemp.Value := Temperature * 10;
       Frame.TrackBarPP.Value := PresencePenalty * 10;
       Frame.TrackBarFP.Value := FrequencyPenalty * 10;
-      Frame.EditMaxTokens.Text := MaxTokens.ToString;
-      Frame.EditQueryMaxToken.Text := MaxTokensQuery.ToString;
+      if MaxTokens <> 0 then
+        Frame.EditMaxTokens.Text := MaxTokens.ToString
+      else
+        Frame.EditMaxTokens.Text := '';
+      if MaxTokensQuery <> 0 then
+        Frame.EditQueryMaxToken.Text := MaxTokensQuery.ToString
+      else
+        Frame.EditQueryMaxToken.Text := '';
+      if (Timeout <> 0) and (Timeout <> DEFAULT_TIMEOUT) then
+        Frame.EditTimeout.Text := Timeout.ToString
+      else
+        Frame.EditTimeout.Text := '';
       Frame.ComboEditModel.Text := Model;
       Frame.TrackBarTopP.Value := TopP * 10;
       Frame.SwitchOnTop.IsChecked := FormStyle = TFormStyle.StayOnTop;
@@ -869,7 +881,7 @@ begin
       Frame.EditProxyUsername.Text := OpenAI.API.Client.ProxySettings.UserName;
       Frame.EditProxyPassword.Text := OpenAI.API.Client.ProxySettings.Password;
       Frame.LabelVersion.Text := 'Version: ' + VersionName;
-      Frame.EditBaseUrl.Text := OpenAI.BaseURL;
+      Frame.EditBaseUrl.Text := OpenAI.BaseUrl;
       Frame.SwitchUseFunctions.IsChecked := UseFunctions;
       Frame.SwitchAutoExecFuncs.IsChecked := UseFunctions;
       for var Head in OpenAI.API.CustomHeaders do
@@ -881,13 +893,13 @@ begin
         Exit;
       Token := Frame.EditToken.Text;
       Organization := Frame.EditOrg.Text;
-      Lang := Frame.EditLangSrc.Text;
       Temperature := Frame.TrackBarTemp.Value / 10;
       PresencePenalty := Frame.TrackBarPP.Value / 10;
       FrequencyPenalty := Frame.TrackBarFP.Value / 10;
       TopP := Frame.TrackBarTopP.Value / 10;
       MaxTokens := StrToIntDef(Frame.EditMaxTokens.Text, 0);
       MaxTokensQuery := StrToIntDef(Frame.EditQueryMaxToken.Text, 0);
+      Timeout := StrToIntDef(Frame.EditTimeout.Text, DEFAULT_TIMEOUT);
       Model := Frame.ComboEditModel.Text;
       if Frame.SwitchOnTop.IsChecked then
         FormStyle := TFormStyle.StayOnTop
@@ -899,7 +911,7 @@ begin
         Frame.EditProxyUsername.Text,
         Frame.EditProxyPassword.Text);
       TBitmap.Client.ProxySettings := OpenAI.API.Client.ProxySettings;
-      OpenAI.BaseURL := Frame.EditBaseUrl.Text;
+      OpenAI.BaseUrl := Frame.EditBaseUrl.Text;
       UseFunctions := Frame.SwitchUseFunctions.IsChecked;
       AutoExecFuncs := Frame.SwitchAutoExecFuncs.IsChecked;
 
@@ -919,8 +931,8 @@ begin
       end;
       OpenAI.API.CustomHeaders := FHeaders;
 
-      if OpenAI.BaseURL.IsEmpty then
-        OpenAI.BaseURL := TOpenAIAPI.URL_BASE;
+      if OpenAI.BaseUrl.IsEmpty then
+        OpenAI.BaseUrl := TOpenAIAPI.URL_BASE;
       {$IFDEF MSWINDOWS}
       SetWindowColorModeAsSystem;
       {$ENDIF}
@@ -947,16 +959,16 @@ procedure TFormMain.FormVirtualKeyboardHidden(Sender: TObject; KeyboardVisible: 
 begin
   TAnimator.AnimateFloat(Self, 'Padding.Bottom', 0);
   TAnimator.AnimateFloat(LayoutOverlay, 'Margins.Bottom', 0);
-  //Padding.Bottom := 0;
-  //LayoutOverlay.Margins.Bottom := 0;
+  // Padding.Bottom := 0;
+  // LayoutOverlay.Margins.Bottom := 0;
 end;
 
 procedure TFormMain.FormVirtualKeyboardShown(Sender: TObject; KeyboardVisible: Boolean; const Bounds: TRect);
 begin
   TAnimator.AnimateFloat(Self, 'Padding.Bottom', Bounds.Height);
   TAnimator.AnimateFloat(LayoutOverlay, 'Margins.Bottom', Bounds.Height);
-  //LayoutOverlay.Margins.Bottom := Bounds.Height;
-  //Padding.Bottom := Bounds.Height;
+  // LayoutOverlay.Margins.Bottom := Bounds.Height;
+  // Padding.Bottom := Bounds.Height;
 end;
 
 procedure TFormMain.UpdateMode;
@@ -1002,17 +1014,12 @@ end;
 procedure TFormMain.SetBaseUrl(const Value: string);
 begin
   FBaseUrl := Value;
-  OpenAI.BaseURL := FBaseUrl;
+  OpenAI.BaseUrl := FBaseUrl;
 end;
 
 procedure TFormMain.SetFrequencyPenalty(const Value: Single);
 begin
   FFrequencyPenalty := Value;
-end;
-
-procedure TFormMain.SetLang(const Value: string);
-begin
-  FLang := Value;
 end;
 
 procedure TFormMain.SetMaxTokens(const Value: Integer);
@@ -1052,6 +1059,15 @@ end;
 procedure TFormMain.SetTemperature(const Value: Single);
 begin
   FTemperature := Value;
+end;
+
+procedure TFormMain.SetTimeout(const Value: Integer);
+begin
+  FTimeout := Value;
+  if Value <= 0 then
+    FTimeout := DEFAULT_TIMEOUT;
+  FOpenAI.API.Client.ResponseTimeout := FTimeout;
+  FOpenAI.API.Client.SendTimeout := FTimeout;
 end;
 
 procedure TFormMain.SetToken(const Value: string);

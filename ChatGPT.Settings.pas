@@ -18,10 +18,6 @@ type
     LayoutClient: TLayout;
     RectangleFrame: TRectangle;
     Label1: TLabel;
-    EditLangSrc: TEdit;
-    ClearEditButton1: TClearEditButton;
-    Path4: TPath;
-    Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
     Layout2: TLayout;
@@ -38,7 +34,6 @@ type
     Layout4: TLayout;
     ButtonGetToken: TButton;
     VertScrollBoxContent: TVertScrollBox;
-    Label7: TLabel;
     Label8: TLabel;
     ComboEditModel: TComboEdit;
     Label9: TLabel;
@@ -115,6 +110,12 @@ type
     SwitchAutoExecFuncs: TSwitch;
     Label37: TLabel;
     Layout10: TLayout;
+    Label2: TLabel;
+    EditTimeout: TEdit;
+    ClearEditButton1: TClearEditButton;
+    Path4: TPath;
+    Label7: TLabel;
+    Label38: TLabel;
     procedure TrackBarTempTracking(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);

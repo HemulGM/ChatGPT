@@ -164,7 +164,6 @@ type
     FPool: TThreadPool;
     FTitle: string;
     FMode: TWindowMode;
-    FLangSrc: string;
     FIsTyping: Boolean;
     FBuffer: TChatHistory;
     FIsImageMode: Boolean;
@@ -196,8 +195,6 @@ type
     procedure ScrollDown(Animate: Boolean = False);
     procedure SetTitle(const Value: string);
     procedure SetMode(const Value: TWindowMode);
-    function ProcText(const Text: string; FromUser: Boolean): string;
-    procedure SetLangSrc(const Value: string);
     procedure AppendAudio(Response: TAudioText);
     procedure SetIsImageMode(const Value: Boolean);
     procedure SendRequestImage;
@@ -242,7 +239,6 @@ type
     property ChatId: string read FChatId write SetChatId;
     property Title: string read FTitle write SetTitle;
     property Mode: TWindowMode read FMode write SetMode;
-    property LangSrc: string read FLangSrc write SetLangSrc;
     property Temperature: Single read FTemperature write SetTemperature;
     property MaxTokens: Integer read FMaxTokens write SetMaxTokens;
     property MaxTokensQuery: Integer read FMaxTokensQuery write SetMaxTokensQuery;
@@ -263,12 +259,14 @@ type
 const
   MAX_TOKENS = 1024;
   MODEL_TOKENS_LIMIT = 4096;
+  ErrorHintTimeout = 'If the error is due to a timeout, you can increase the response timeout in the general program settings.';
 
 implementation
 
 uses
   FMX.Ani, System.Math, OpenAI.API, ChatGPT.Translate, System.IOUtils,
   ChatGPT.Main, ChatGPT.Overlay, FMX.BehaviorManager, HGM.FMX.Ani,
+  System.Net.HttpClient,
   {$IFDEF ANDROID}
   ChatGPT.Android, FMX.Platform.UI.Android,
   {$ENDIF}
@@ -443,7 +441,6 @@ begin
     var JArray := TJSONArray.Create;
     Result.AddPair('chat_id', FChatId);
     Result.AddPair('temperature', TJSONNumber.Create(FTemperature));
-    Result.AddPair('user_lang', FLangSrc);
     Result.AddPair('title', FTitle);
     Result.AddPair('items', JArray);
 
@@ -521,7 +518,6 @@ begin
     FChatId := JSON.GetValue('chat_id', TGUID.NewGuid.ToString);
   FTitle := JSON.GetValue('title', FTitle);
   FTemperature := JSON.GetValue('temperature', FTemperature);
-  FLangSrc := JSON.GetValue('user_lang', FLangSrc);
   FrequencyPenalty := JSON.GetValue<Single>('frequency_penalty', FrequencyPenalty);
   PresencePenalty := JSON.GetValue<Single>('presence_penalty', PresencePenalty);
   TopP := JSON.GetValue<Single>('top_p', TopP);
@@ -644,12 +640,17 @@ begin
     procedure(Frame: TFrameChatSettings)
     begin
       Frame.Mode := FMode;
-      Frame.EditLangSrc.Text := LangSrc;
       Frame.TrackBarTemp.Value := Temperature * 10;
       Frame.TrackBarPP.Value := PresencePenalty * 10;
       Frame.TrackBarFP.Value := FrequencyPenalty * 10;
-      Frame.EditMaxTokens.Text := MaxTokens.ToString;
-      Frame.EditQueryMaxToken.Text := MaxTokensQuery.ToString;
+      if MaxTokens <> 0 then
+        Frame.EditMaxTokens.Text := MaxTokens.ToString
+      else
+        Frame.EditMaxTokens.Text := '';
+      if MaxTokensQuery <> 0 then
+        Frame.EditQueryMaxToken.Text := MaxTokensQuery.ToString
+      else
+        Frame.EditQueryMaxToken.Text := '';
       Frame.ComboEditModel.Text := Model;
       Frame.TrackBarTopP.Value := TopP * 10;
       Frame.SwitchUseFunctions.IsChecked := UseFunctions;
@@ -660,7 +661,6 @@ begin
       MemoQuery.SetFocus;
       if not Success then
         Exit;
-      LangSrc := Frame.EditLangSrc.Text;
       Temperature := Frame.TrackBarTemp.Value / 10;
       PresencePenalty := Frame.TrackBarPP.Value / 10;
       FrequencyPenalty := Frame.TrackBarFP.Value / 10;
@@ -872,7 +872,7 @@ begin
         var Images := API.Image.Create(
           procedure(Params: TImageCreateParams)
           begin
-            Params.Prompt(ProcText(Prompt, True));
+            Params.Prompt(Prompt);
             Params.ResponseFormat(TImageResponseFormat.Url);
             Params.N(4);
             Params.Size(TImageSize.x512);
@@ -1038,7 +1038,10 @@ begin
         end;
         on E: Exception do
         begin
+          if E is ENetHTTPClientException then
+            E.Message := E.Message + #13#10 + ErrorHintTimeout;
           ShowError(E.Message);
+
           LastRequest := RequestPrompt;
         end;
       end;
@@ -1124,7 +1127,6 @@ begin
   FBuffer.MaxTokensOfModel := MODEL_TOKENS_LIMIT;
   FBuffer.AutoTrim := True;
   FPool := TThreadPool.Create;
-  LangSrc := '';
   Temperature := 0.2;
   Name := '';
   VertScrollBoxChat.AniCalculations.Animation := True;
@@ -1326,29 +1328,29 @@ begin
       if AppendText.StartsWith('/system ') then
       begin
         AppendText := AppendText.Replace('/system ', '', []);
-        FBuffer.New(TMessageRole.System, ProcText(AppendText, True), MessageTag);
+        FBuffer.New(TMessageRole.System, AppendText, MessageTag);
         Role := TMessageKind.System;
       end
       else if AppendText.StartsWith('/user ') then
       begin
         AppendText := AppendText.Replace('/user ', '', []);
-        FBuffer.New(TMessageRole.User, ProcText(AppendText, True), MessageTag);
+        FBuffer.New(TMessageRole.User, AppendText, MessageTag);
         Role := TMessageKind.User;
       end
       else if AppendText.StartsWith('/assistant ') then
       begin
         AppendText := AppendText.Replace('/assistant ', '', []);
-        FBuffer.New(TMessageRole.Assistant, ProcText(AppendText, True), MessageTag);
+        FBuffer.New(TMessageRole.Assistant, AppendText, MessageTag);
         Role := TMessageKind.Assistant;
       end
       else
       begin
-        FBuffer.New(TMessageRole.User, ProcText(AppendText, True), MessageTag);
+        FBuffer.New(TMessageRole.User, AppendText, MessageTag);
       end;
     end
     else
     begin
-      AppendText := ProcText(AppendText, False);
+      AppendText := AppendText;
       FBuffer.New(TMessageRole.Assistant, AppendText, MessageTag);
     end;
   end;
@@ -1367,21 +1369,6 @@ begin
   Result.UpdateContentSize;
   Result.StartAnimate;
   DoOnUpdateChatItems;
-end;
-
-function TFrameChat.ProcText(const Text: string; FromUser: Boolean): string;
-begin
-  if LangSrc.IsEmpty then
-    Exit(Text);
-  var Translate := '';
-  if FromUser then
-    Translate := TranslateGoogle(Text, LangSrc, 'en')
-  else
-    Translate := TranslateGoogle(Text, 'en', LangSrc);
-  if Translate.IsEmpty then
-    Result := Text
-  else
-    Result := Translate;
 end;
 
 procedure TFrameChat.SetAPI(const Value: IOpenAI);
@@ -1417,11 +1404,6 @@ begin
     PathImage.Fill.Color := $FFACACBE;
     RectangleImageMode.Visible := False;
   end;
-end;
-
-procedure TFrameChat.SetLangSrc(const Value: string);
-begin
-  FLangSrc := Value;
 end;
 
 procedure TFrameChat.SetLastRequest(const Value: TProc);

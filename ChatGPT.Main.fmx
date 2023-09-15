@@ -9,7 +9,6 @@ object FormMain: TFormMain
   Quality = HighQuality
   SystemStatusBar.BackgroundColor = xFF202123
   StyleBook = StyleBook
-  Visible = True
   Constraints.MinHeight = 400.000000000000000000
   Constraints.MinWidth = 400.000000000000000000
   FormFactor.Width = 320
@@ -2579,7 +2578,6 @@ object FormMain: TFormMain
       end
       object ListBoxChatList: TListBox
         Align = Client
-        HitTest = False
         Margins.Top = 4.000000000000000000
         Size.Width = 251.000000000000000000
         Size.Height = 402.000000000000000000
@@ -2674,6 +2672,7 @@ object FormMain: TFormMain
             object ButtonClearConfirm: TButton
               Align = Right
               Cursor = crHandPoint
+              Hint = 'Confirm'
               Images = SVGIconImageList
               ImageIndex = 10
               Size.Width = 32.000000000000000000
@@ -2686,6 +2685,7 @@ object FormMain: TFormMain
             object ButtonClearCancel: TButton
               Align = Right
               Cursor = crHandPoint
+              Hint = 'Cancel'
               Images = SVGIconImageList
               ImageIndex = 11
               Position.X = 32.000000000000000000
@@ -2806,7 +2806,7 @@ object FormMain: TFormMain
       item
         MultiResBitmap = <
           item
-            Size = 16
+            Size = 15
           end>
         IconName = 'Item 1'
         SVGText = 
@@ -3140,6 +3140,8 @@ object FormMain: TFormMain
         Layers = <
           item
             Name = 'Item 1'
+            SourceRect.Right = 15.000000000000000000
+            SourceRect.Bottom = 15.000000000000000000
           end>
       end
       item

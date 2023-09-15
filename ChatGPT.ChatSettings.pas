@@ -17,9 +17,6 @@ type
     ButtonOk: TButton;
     VertScrollBox: TVertScrollBox;
     ComboEditModel: TComboEdit;
-    EditLangSrc: TEdit;
-    ClearEditButton1: TClearEditButton;
-    Path4: TPath;
     EditMaxTokens: TEdit;
     ClearEditButton3: TClearEditButton;
     Path2: TPath;
@@ -31,7 +28,6 @@ type
     Label17: TLabel;
     Label18: TLabel;
     Label19: TLabel;
-    Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
     Label8: TLabel;

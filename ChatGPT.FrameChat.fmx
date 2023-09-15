@@ -941,14 +941,14 @@ object FrameChat: TFrameChat
         OnKeyUp = MemoQueryKeyUp
         OnKeyDown = MemoQueryKeyDown
         OnViewportPositionChange = MemoQueryViewportPositionChange
-        Viewport.Width = 620.000000000000000000
+        Viewport.Width = 610.000000000000000000
         Viewport.Height = 26.000000000000000000
         object LabelSendTip: TLabel
           Align = Client
           StyledSettings = [Family, Style]
           Opacity = 0.800000011920929000
-          Size.Width = 50.000000000000000000
-          Size.Height = 50.000000000000000000
+          Size.Width = 610.000000000000000000
+          Size.Height = 26.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Size = 16.000000000000000000
           TextSettings.FontColor = xFFACACBE
