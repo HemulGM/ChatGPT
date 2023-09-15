@@ -264,9 +264,8 @@ const
 implementation
 
 uses
-  FMX.Ani, System.Math, OpenAI.API, ChatGPT.Translate, System.IOUtils,
-  ChatGPT.Main, ChatGPT.Overlay, FMX.BehaviorManager, HGM.FMX.Ani,
-  System.Net.HttpClient,
+  FMX.Ani, System.Math, OpenAI.API, System.IOUtils, ChatGPT.Main,
+  ChatGPT.Overlay, FMX.BehaviorManager, HGM.FMX.Ani, System.Net.HttpClient,
   {$IFDEF ANDROID}
   ChatGPT.Android, FMX.Platform.UI.Android,
   {$ENDIF}
