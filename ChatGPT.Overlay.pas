@@ -16,6 +16,7 @@ type
     procedure SetMode(const Value: TWindowMode); virtual;
   public
     property Mode: TWindowMode read FMode write SetMode;
+    constructor Create(AOwner: TComponent); override;
   end;
 
 implementation
@@ -23,6 +24,13 @@ implementation
 {$R *.fmx}
 
 { TFrameOveraly }
+
+constructor TFrameOveraly.Create(AOwner: TComponent);
+begin
+  inherited;
+  Name := '';
+  SetFocus;
+end;
 
 procedure TFrameOveraly.SetMode(const Value: TWindowMode);
 begin

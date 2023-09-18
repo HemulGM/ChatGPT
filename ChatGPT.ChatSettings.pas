@@ -129,6 +129,7 @@ begin
   Frame.TrackBarPPTracking(nil);
   Frame.TrackBarFPTracking(nil);
   Frame.TrackBarTopPTracking(nil);
+  Frame.ButtonCancel.SetFocus;
 end;
 
 procedure TFrameChatSettings.FrameResize(Sender: TObject);

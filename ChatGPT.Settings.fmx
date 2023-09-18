@@ -106,7 +106,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 1335.000000000000000000
+        Position.Y = 1320.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -127,7 +127,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 1387.000000000000000000
+        Position.Y = 1372.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
@@ -177,7 +177,7 @@ inherited FrameSettings: TFrameSettings
       end
       object Layout3: TLayout
         Align = Top
-        Position.Y = 1357.000000000000000000
+        Position.Y = 1342.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
@@ -190,7 +190,7 @@ inherited FrameSettings: TFrameSettings
           Max = 20.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           Value = 10.000000000000000000
@@ -282,7 +282,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 1115.000000000000000000
+        Position.Y = 1100.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -300,7 +300,7 @@ inherited FrameSettings: TFrameSettings
         TabOrder = 25
         KeyboardType = DecimalNumberPad
         FilterChar = '0123456789'
-        Position.Y = 1142.000000000000000000
+        Position.Y = 1127.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
@@ -339,7 +339,7 @@ inherited FrameSettings: TFrameSettings
       end
       object Layout1: TLayout
         Align = Top
-        Position.Y = 1449.000000000000000000
+        Position.Y = 1434.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
@@ -353,7 +353,7 @@ inherited FrameSettings: TFrameSettings
           Min = -20.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           OnTracking = TrackBarPPTracking
@@ -385,7 +385,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 1479.000000000000000000
+        Position.Y = 1464.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
@@ -404,7 +404,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 1427.000000000000000000
+        Position.Y = 1412.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -425,7 +425,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 1600.000000000000000000
+        Position.Y = 1585.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
@@ -440,7 +440,7 @@ inherited FrameSettings: TFrameSettings
       end
       object Layout5: TLayout
         Align = Top
-        Position.Y = 1570.000000000000000000
+        Position.Y = 1555.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
@@ -454,7 +454,7 @@ inherited FrameSettings: TFrameSettings
           Min = -20.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           OnTracking = TrackBarFPTracking
@@ -483,7 +483,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 1548.000000000000000000
+        Position.Y = 1533.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -501,7 +501,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 1225.000000000000000000
+        Position.Y = 1210.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -519,7 +519,7 @@ inherited FrameSettings: TFrameSettings
         TabOrder = 29
         KeyboardType = DecimalNumberPad
         FilterChar = '0123456789'
-        Position.Y = 1252.000000000000000000
+        Position.Y = 1237.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
@@ -565,7 +565,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 1185.000000000000000000
+        Position.Y = 1170.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
@@ -584,7 +584,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 1295.000000000000000000
+        Position.Y = 1280.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
@@ -605,14 +605,13 @@ inherited FrameSettings: TFrameSettings
         Position.X = 5.000000000000000000
         Position.Y = 866.000000000000000000
         Size.Width = 394.000000000000000000
-        Size.Height = 44.000000000000000000
+        Size.Height = 29.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
         TextSettings.FontColor = x78FFFFFF
         Text = 
           'GPT-4 is currently in a limited beta and only accessible to thos' +
-          'e who have been granted access. Please join the waitlist to get ' +
-          'access when capacity is available.'
+          'e who have been granted access'
         TabOrder = 21
         TabStop = False
       end
@@ -839,7 +838,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 30.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 2010.000000000000000000
+        Position.Y = 1995.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
@@ -857,7 +856,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 2047.000000000000000000
+        Position.Y = 2032.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -874,7 +873,7 @@ inherited FrameSettings: TFrameSettings
         Align = Top
         StyleLookup = 'editstyle_clear'
         TabOrder = 50
-        Position.Y = 2074.000000000000000000
+        Position.Y = 2059.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
@@ -917,7 +916,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 2117.000000000000000000
+        Position.Y = 2102.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -936,7 +935,7 @@ inherited FrameSettings: TFrameSettings
         TabOrder = 52
         KeyboardType = DecimalNumberPad
         FilterChar = '0123456789'
-        Position.Y = 2144.000000000000000000
+        Position.Y = 2129.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
@@ -977,7 +976,7 @@ inherited FrameSettings: TFrameSettings
         Align = Top
         StyleLookup = 'editstyle_clear'
         TabOrder = 54
-        Position.Y = 2214.000000000000000000
+        Position.Y = 2199.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
@@ -1019,7 +1018,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 2187.000000000000000000
+        Position.Y = 2172.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -1036,7 +1035,7 @@ inherited FrameSettings: TFrameSettings
         Align = Top
         StyleLookup = 'editstyle_clear'
         TabOrder = 56
-        Position.Y = 2284.000000000000000000
+        Position.Y = 2269.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
@@ -1078,7 +1077,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 2257.000000000000000000
+        Position.Y = 2242.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -1099,7 +1098,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 1721.000000000000000000
+        Position.Y = 1706.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 73.000000000000000000
         Size.PlatformDefault = False
@@ -1116,7 +1115,7 @@ inherited FrameSettings: TFrameSettings
       end
       object Layout6: TLayout
         Align = Top
-        Position.Y = 1691.000000000000000000
+        Position.Y = 1676.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
@@ -1129,7 +1128,7 @@ inherited FrameSettings: TFrameSettings
           Max = 10.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           Value = 10.000000000000000000
@@ -1159,7 +1158,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 1669.000000000000000000
+        Position.Y = 1654.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -1177,7 +1176,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 30.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 2377.000000000000000000
+        Position.Y = 2362.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
@@ -1195,7 +1194,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 2414.000000000000000000
+        Position.Y = 2399.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -1216,7 +1215,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 2327.000000000000000000
+        Position.Y = 2312.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
@@ -1255,8 +1254,8 @@ inherited FrameSettings: TFrameSettings
         Size.PlatformDefault = False
         StyleLookup = 'memostyle_normal'
         TabOrder = 58
-        Viewport.Width = 404.000000000000000000
-        Viewport.Height = 82.000000000000000000
+        Viewport.Width = 388.000000000000000000
+        Viewport.Height = 66.000000000000000000
       end
       object Label33: TLabel
         Align = Top
@@ -1284,7 +1283,7 @@ inherited FrameSettings: TFrameSettings
         Padding.Top = 4.000000000000000000
         Padding.Bottom = 4.000000000000000000
         Margins.Top = 20.000000000000000000
-        Position.Y = 935.000000000000000000
+        Position.Y = 920.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
@@ -1327,7 +1326,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 1005.000000000000000000
+        Position.Y = 990.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 29.000000000000000000
         Size.PlatformDefault = False
@@ -1360,7 +1359,7 @@ inherited FrameSettings: TFrameSettings
       object Layout8: TLayout
         Align = Top
         Margins.Top = 10.000000000000000000
-        Position.Y = 1049.000000000000000000
+        Position.Y = 1034.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 46.000000000000000000
         Size.PlatformDefault = False
@@ -1385,7 +1384,7 @@ inherited FrameSettings: TFrameSettings
         Align = Top
         Padding.Top = 4.000000000000000000
         Padding.Bottom = 4.000000000000000000
-        Position.Y = 965.000000000000000000
+        Position.Y = 950.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
@@ -1421,7 +1420,7 @@ inherited FrameSettings: TFrameSettings
       end
       object Layout10: TLayout
         Align = Top
-        Position.Y = 2436.000000000000000000
+        Position.Y = 2421.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
@@ -1436,7 +1435,7 @@ inherited FrameSettings: TFrameSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 1946.000000000000000000
+        Position.Y = 1931.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 29.000000000000000000
         Size.PlatformDefault = False
@@ -1455,7 +1454,7 @@ inherited FrameSettings: TFrameSettings
         TabOrder = 24
         KeyboardType = DecimalNumberPad
         FilterChar = '0123456789'
-        Position.Y = 1903.000000000000000000
+        Position.Y = 1888.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
@@ -1498,7 +1497,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 1876.000000000000000000
+        Position.Y = 1861.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -1515,7 +1514,7 @@ inherited FrameSettings: TFrameSettings
         StyledSettings = [Style]
         Margins.Top = 30.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 1829.000000000000000000
+        Position.Y = 1814.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False

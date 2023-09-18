@@ -70,6 +70,7 @@ begin
   Frame.BringToFront;
   if Assigned(ProcSet) then
     ProcSet(Frame);
+  Frame.MemoText.SetFocus;
 end;
 
 procedure TFrameTextEditor.FrameResize(Sender: TObject);

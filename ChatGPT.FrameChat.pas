@@ -182,6 +182,7 @@ type
     FOnNeedFuncList: TOnNeedFuncList;
     FUseFunctions: Boolean;
     FAutoExecFuncs: Boolean;
+    FOnTitleChanged: TNotifyEvent;
     procedure DoOnUpdateChatItems;
     function NewMessage(const Text: string; Role: TMessageKind; UseBuffer: Boolean = True; IsAudio: Boolean = False): TFrameMessage;
     function NewMessageImage(Role: TMessageKind; Images: TArray<string>): TFrameMessage;
@@ -205,7 +206,6 @@ type
     procedure RequestAudio(const AudioFile: string);
     procedure SetLastRequest(const Value: TProc);
     procedure SetMenuItem(const Value: TListBoxItem);
-    procedure UpdateMenuTitle(const Text: string);
     procedure SetFrequencyPenalty(const Value: Single);
     procedure SetMaxTokens(const Value: Integer);
     procedure SetMaxTokensQuery(const Value: Integer);
@@ -229,6 +229,7 @@ type
     procedure ExecuteFunc(const FuncName, FuncArgs: string; Callback: TProc<Boolean, string>);
     procedure SetUseFunctions(const Value: Boolean);
     procedure SetAutoExecFuncs(const Value: Boolean);
+    procedure SetOnTitleChanged(const Value: TNotifyEvent);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -253,6 +254,7 @@ type
     property OnNeedFuncList: TOnNeedFuncList read FOnNeedFuncList write SetOnNeedFuncList;
     property UseFunctions: Boolean read FUseFunctions write SetUseFunctions;
     property AutoExecFuncs: Boolean read FAutoExecFuncs write SetAutoExecFuncs;
+    property OnTitleChanged: TNotifyEvent read FOnTitleChanged write SetOnTitleChanged;
     procedure Init;
   end;
 
@@ -515,7 +517,7 @@ begin
   var LastRoleIsUser: Boolean := False;
   if FChatId.IsEmpty then
     FChatId := JSON.GetValue('chat_id', TGUID.NewGuid.ToString);
-  FTitle := JSON.GetValue('title', FTitle);
+  Title := JSON.GetValue('title', FTitle);
   FTemperature := JSON.GetValue('temperature', FTemperature);
   FrequencyPenalty := JSON.GetValue<Single>('frequency_penalty', FrequencyPenalty);
   PresencePenalty := JSON.GetValue<Single>('presence_penalty', PresencePenalty);
@@ -792,6 +794,7 @@ begin
     end,
     procedure(Frame: TFrameImportExport; Success: Boolean)
     begin
+      MemoQuery.SetFocus;
       if not Success then
         Exit;
       if Frame.RadioButtonExport.IsChecked then
@@ -828,7 +831,6 @@ begin
         if Assigned(JSON) then
         try
           LoadFromJson(JSON as TJSONObject);
-          UpdateMenuTitle(FTitle);
         finally
           JSON.Free;
         end;
@@ -1284,17 +1286,6 @@ begin
   MemoQueryChange(Sender);
 end;
 
-procedure TFrameChat.UpdateMenuTitle(const Text: string);
-begin
-  if not Assigned(FMenuItem) then
-    Exit;
-  if not FMenuItem.StylesData['changed_title'].AsBoolean then
-  begin
-    FTitle := Text.Replace(#10, '').Replace(#13, '').Replace('&', '').Substring(0, 50);
-    FMenuItem.Text := FTitle;
-  end;
-end;
-
 procedure TFrameChat.VertScrollBoxChatViewportPositionChange(Sender: TObject; const OldViewportPosition, NewViewportPosition: TPointF; const ContentSizeChanged: Boolean);
 begin
   VertScrollBoxChat.FViewPositionY := NewViewportPosition.Y;
@@ -1315,7 +1306,7 @@ begin
   if (Role = TMessageKind.User) and IsFirstMessage then
   begin
     IsFirstMessage := False;
-    UpdateMenuTitle(Text);
+    Title := Text;
   end;
 
   var AppendText := Text;
@@ -1504,6 +1495,11 @@ begin
   FOnNeedFuncList := Value;
 end;
 
+procedure TFrameChat.SetOnTitleChanged(const Value: TNotifyEvent);
+begin
+  FOnTitleChanged := Value;
+end;
+
 procedure TFrameChat.SetPresencePenalty(const Value: Single);
 begin
   FPresencePenalty := Value;
@@ -1516,7 +1512,9 @@ end;
 
 procedure TFrameChat.SetTitle(const Value: string);
 begin
-  FTitle := Value;
+  FTitle := Value.Replace(#10, '').Replace(#13, '').Replace('&', '').Substring(0, 50);
+  if Assigned(FOnTitleChanged) then
+    FOnTitleChanged(Self);
 end;
 
 procedure TFrameChat.SetTopP(const Value: Single);

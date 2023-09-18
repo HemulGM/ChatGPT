@@ -101,7 +101,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TabOrder = 4
         KeyboardType = DecimalNumberPad
         FilterChar = '0123456789'
-        Position.Y = 397.000000000000000000
+        Position.Y = 382.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
@@ -145,7 +145,7 @@ inherited FrameChatSettings: TFrameChatSettings
         TabOrder = 5
         KeyboardType = DecimalNumberPad
         FilterChar = '0123456789'
-        Position.Y = 507.000000000000000000
+        Position.Y = 492.000000000000000000
         Margins.Top = 5.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
@@ -207,7 +207,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 480.000000000000000000
+        Position.Y = 465.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -227,7 +227,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 440.000000000000000000
+        Position.Y = 425.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
@@ -246,7 +246,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 550.000000000000000000
+        Position.Y = 535.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
@@ -267,14 +267,13 @@ inherited FrameChatSettings: TFrameChatSettings
         Position.X = 5.000000000000000000
         Position.Y = 177.000000000000000000
         Size.Width = 394.000000000000000000
-        Size.Height = 44.000000000000000000
+        Size.Height = 29.000000000000000000
         Size.PlatformDefault = False
         TextSettings.Font.Family = 'Roboto'
         TextSettings.FontColor = x78FFFFFF
         Text = 
           'GPT-4 is currently in a limited beta and only accessible to thos' +
-          'e who have been granted access. Please join the waitlist to get ' +
-          'access when capacity is available.'
+          'e who have been granted access'
         TabOrder = 12
         TabStop = False
       end
@@ -284,7 +283,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 590.000000000000000000
+        Position.Y = 575.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -302,7 +301,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 10.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 642.000000000000000000
+        Position.Y = 627.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 15.000000000000000000
         Size.PlatformDefault = False
@@ -337,7 +336,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 370.000000000000000000
+        Position.Y = 355.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -350,7 +349,7 @@ inherited FrameChatSettings: TFrameChatSettings
       end
       object Layout3: TLayout
         Align = Top
-        Position.Y = 612.000000000000000000
+        Position.Y = 597.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
@@ -389,7 +388,7 @@ inherited FrameChatSettings: TFrameChatSettings
       end
       object Layout1: TLayout
         Align = Top
-        Position.Y = 704.000000000000000000
+        Position.Y = 689.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
@@ -432,7 +431,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 682.000000000000000000
+        Position.Y = 667.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -453,7 +452,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 734.000000000000000000
+        Position.Y = 719.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
@@ -472,7 +471,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 803.000000000000000000
+        Position.Y = 788.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -486,7 +485,7 @@ inherited FrameChatSettings: TFrameChatSettings
       end
       object Layout5: TLayout
         Align = Top
-        Position.Y = 825.000000000000000000
+        Position.Y = 810.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
@@ -500,7 +499,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Min = -20.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 20.000000000000000000
+          Size.Height = 19.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           OnTracking = TrackBarFPTracking
@@ -532,7 +531,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 855.000000000000000000
+        Position.Y = 840.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 44.000000000000000000
         Size.PlatformDefault = False
@@ -554,7 +553,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 976.000000000000000000
+        Position.Y = 961.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 73.000000000000000000
         Size.PlatformDefault = False
@@ -571,7 +570,7 @@ inherited FrameChatSettings: TFrameChatSettings
       end
       object Layout6: TLayout
         Align = Top
-        Position.Y = 946.000000000000000000
+        Position.Y = 931.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False
@@ -584,7 +583,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Max = 10.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 20.000000000000000000
+          Size.Height = 19.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           Value = 10.000000000000000000
@@ -614,7 +613,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyledSettings = [Style]
         Margins.Top = 20.000000000000000000
         Margins.Bottom = 5.000000000000000000
-        Position.Y = 924.000000000000000000
+        Position.Y = 909.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 17.000000000000000000
         Size.PlatformDefault = False
@@ -649,7 +648,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Padding.Top = 4.000000000000000000
         Padding.Bottom = 4.000000000000000000
         Margins.Top = 20.000000000000000000
-        Position.Y = 246.000000000000000000
+        Position.Y = 231.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
@@ -692,7 +691,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Margins.Right = 5.000000000000000000
         Margins.Bottom = 5.000000000000000000
         Position.X = 5.000000000000000000
-        Position.Y = 316.000000000000000000
+        Position.Y = 301.000000000000000000
         Size.Width = 394.000000000000000000
         Size.Height = 29.000000000000000000
         Size.PlatformDefault = False
@@ -708,7 +707,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Align = Top
         Padding.Top = 4.000000000000000000
         Padding.Bottom = 4.000000000000000000
-        Position.Y = 276.000000000000000000
+        Position.Y = 261.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
@@ -744,7 +743,7 @@ inherited FrameChatSettings: TFrameChatSettings
       end
       object Layout2: TLayout
         Align = Top
-        Position.Y = 1054.000000000000000000
+        Position.Y = 1039.000000000000000000
         Size.Width = 404.000000000000000000
         Size.Height = 20.000000000000000000
         Size.PlatformDefault = False

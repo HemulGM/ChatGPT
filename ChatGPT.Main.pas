@@ -137,6 +137,8 @@ type
     procedure SetUseFunctions(const Value: Boolean);
     procedure SetAutoExecFuncs(const Value: Boolean);
     procedure SetTimeout(const Value: Integer);
+    procedure RenameChat(const ChatId, Text: string);
+    procedure FOnChatTitleChanged(Sender: TObject);
   protected
     procedure CreateHandle; override;
   public
@@ -391,6 +393,20 @@ begin
   end;
 end;
 
+procedure TFormMain.RenameChat(const ChatId, Text: string);
+begin
+  for var Control in LayoutChatsBox.Controls do
+    if Control is TFrameChat then
+    begin
+      var Frame := TFrameChat(Control);
+      if Frame.ChatId = ChatId then
+      begin
+        Frame.Title := Text;
+        Break;
+      end;
+    end;
+end;
+
 destructor TFormMain.Destroy;
 begin
   FGPTFuncList.Free;
@@ -417,18 +433,17 @@ end;
 procedure TFormMain.FOnChatEditClick(Sender: TObject);
 var
   Button: TButton absolute Sender;
-  ListItem: TListBoxItem;
+  ListItem: TListBoxItemChat;
+  ChatId: string;
 begin
-  if TFMXObjectHelper.FindNearestParentOfClass<TListBoxItem>(Button, ListItem) then
+  if TFMXObjectHelper.FindNearestParentOfClass<TListBoxItemChat>(Button, ListItem) then
   begin
+    ChatId := ListItem.ChatId;
     TDialogService.InputQuery('New Chat name', ['Name'], [ListItem.Text],
       procedure(const AResult: TModalResult; const AValues: array of string)
       begin
         if AResult = mrOk then
-        begin
-          ListItem.Text := AValues[0];
-          ListItem.StylesData['changed_title'] := True;
-        end;
+          RenameChat(ChatId, AValues[0]);
       end);
   end;
 end;
@@ -750,6 +765,7 @@ begin
     SelFrame.API := OpenAI;
     SelFrame.Mode := Mode;
     SelFrame.OnNeedFuncList := FOnNeedFuncList;
+    SelFrame.OnTitleChanged := FOnChatTitleChanged;
     if Assigned(ItemList.JSON) then
       SelFrame.LoadFromJson(ItemList.JSON)
     else
@@ -770,6 +786,21 @@ begin
     SelFrame.Visible := True;
   end;
   SelFrame.Init;
+end;
+
+procedure TFormMain.FOnChatTitleChanged(Sender: TObject);
+var
+  Frame: TFrameChat absolute Sender;
+begin
+  for var i := 0 to Pred(ListBoxChatList.Count) do
+    if ListBoxChatList.ListItems[i] is TListBoxItemChat then
+      if TListBoxItemChat(ListBoxChatList.ListItems[i]).ChatId = Frame.ChatId then
+      begin
+        ListBoxChatList.ListItems[i].Text := Frame.Title;
+        Break;
+      end;
+  if FSelectedChatId = Frame.ChatId then
+    LabelChatName.Text := Frame.Title;
 end;
 
 procedure TFormMain.CreateGPTFunctions;

@@ -116,6 +116,7 @@ begin
   Frame.BringToFront;
   if Assigned(ProcSet) then
     ProcSet(Frame);
+  Frame.ButtonCancel.SetFocus;
 end;
 
 procedure TFrameImportExport.FrameResize(Sender: TObject);

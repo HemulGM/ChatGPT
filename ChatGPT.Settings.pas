@@ -204,6 +204,7 @@ begin
   Frame.TrackBarPPTracking(nil);
   Frame.TrackBarFPTracking(nil);
   Frame.TrackBarTopPTracking(nil);
+  Frame.ButtonCancel.SetFocus;
 end;
 
 procedure TFrameSettings.FrameResize(Sender: TObject);

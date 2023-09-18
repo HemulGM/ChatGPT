@@ -74,7 +74,7 @@ inherited FrameImportExport: TFrameImportExport
       TextSettings.FontColor = xFFE9E9E9
       TextSettings.WordWrap = False
       Text = 'Import && Export'
-      TabOrder = 48
+      TabOrder = 47
     end
     object VertScrollBox: TVertScrollBox
       Align = Client
@@ -150,7 +150,7 @@ inherited FrameImportExport: TFrameImportExport
             TextSettings.Font.Family = 'Roboto'
             TextSettings.FontColor = x78FFFFFF
             Text = '*.txt, *.json'
-            TabOrder = 13
+            TabOrder = 12
             TabStop = False
           end
           object EditExport: TEdit
@@ -281,7 +281,7 @@ inherited FrameImportExport: TFrameImportExport
             TextSettings.Font.Family = 'Roboto'
             TextSettings.FontColor = x78FFFFFF
             Text = '*.json'
-            TabOrder = 13
+            TabOrder = 12
             TabStop = False
           end
           object EditImport: TEdit
