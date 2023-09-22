@@ -116,6 +116,12 @@ type
     Path4: TPath;
     Label7: TLabel;
     Label38: TLabel;
+    Layout11: TLayout;
+    SwitchSendEnter: TSwitch;
+    Label39: TLabel;
+    Label40: TLabel;
+    ALLine1: TLine;
+    ALLine2: TLine;
     procedure TrackBarTempTracking(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);

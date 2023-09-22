@@ -1267,11 +1267,26 @@ end;
 
 procedure TFrameChat.MemoQueryKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
-  if (Key = vkReturn) and not ((ssCtrl in Shift) or (ssShift in Shift)) and not MemoQuery.Text.IsEmpty then
+  if not MemoQuery.Text.IsEmpty then
   begin
-    Key := 0;
-    KeyChar := #0;
-    ButtonSendClick(nil);
+    if FormMain.SendByEnter then
+    begin
+      if (Key = vkReturn) and not ((ssCtrl in Shift) or (ssShift in Shift)) then
+      begin
+        Key := 0;
+        KeyChar := #0;
+        ButtonSendClick(nil);
+      end;
+    end
+    else
+    begin
+      if (Key = vkReturn) and (ssCtrl in Shift) then
+      begin
+        Key := 0;
+        KeyChar := #0;
+        ButtonSendClick(nil);
+      end;
+    end;
   end;
   MemoQueryChange(Sender);
 end;

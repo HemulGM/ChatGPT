@@ -99,6 +99,7 @@ type
     FUseFunctions: Boolean;
     FAutoExecFuncs: Boolean;
     FTimeout: Integer;
+    FSendByEnter: Boolean;
     procedure SetMode(const Value: TWindowMode);
     procedure UpdateMode;
     procedure SelectChat(const ChatId: string);
@@ -139,6 +140,7 @@ type
     procedure SetTimeout(const Value: Integer);
     procedure RenameChat(const ChatId, Text: string);
     procedure FOnChatTitleChanged(Sender: TObject);
+    procedure SetSendByEnter(const Value: Boolean);
   protected
     procedure CreateHandle; override;
   public
@@ -148,6 +150,7 @@ type
     class function NextChatId: Integer; static;
     property UseFunctions: Boolean read FUseFunctions write SetUseFunctions;
     property AutoExecFuncs: Boolean read FAutoExecFuncs write SetAutoExecFuncs;
+    property SendByEnter: Boolean read FSendByEnter write SetSendByEnter;
     property OpenAI: TOpenAIComponent read FOpenAI;
     property Mode: TWindowMode read FMode write SetMode;
     property Token: string read FToken write SetToken;
@@ -544,18 +547,19 @@ begin
       OpenAI.BaseUrl := JSON.GetValue('base_url', OpenAI.BaseUrl);
       UseFunctions := JSON.GetValue<Boolean>('use_functions', False);
       AutoExecFuncs := JSON.GetValue<Boolean>('auto_exec_funcs', False);
+      SendByEnter := JSON.GetValue<Boolean>('send_by_enter', True);
 
       if JSON.GetValue('on_top', False) then
         FormStyle := TFormStyle.StayOnTop
       else
         FormStyle := TFormStyle.Normal;
 
-      OpenAI.API.Client.ProxySettings := TProxySettings.Create(
+      OpenAI.API.ProxySettings := TProxySettings.Create(
         JSON.GetValue('proxy_host', ''),
         JSON.GetValue<Integer>('proxy_port', 0),
         JSON.GetValue('proxy_username', ''),
         JSON.GetValue('proxy_password', ''));
-      TBitmap.Client.ProxySettings := OpenAI.API.Client.ProxySettings;
+      TBitmap.Client.ProxySettings := OpenAI.API.ProxySettings;
 
       var Headers: TNetHeaders;
       try
@@ -620,11 +624,12 @@ begin
     JSON.AddPair('on_top', FormStyle = TFormStyle.StayOnTop);
     JSON.AddPair('use_functions', UseFunctions);
     JSON.AddPair('auto_exec_funcs', AutoExecFuncs);
+    JSON.AddPair('send_by_enter', SendByEnter);
 
-    JSON.AddPair('proxy_host', OpenAI.API.Client.ProxySettings.Host);
-    JSON.AddPair('proxy_port', OpenAI.API.Client.ProxySettings.Port);
-    JSON.AddPair('proxy_username', OpenAI.API.Client.ProxySettings.UserName);
-    JSON.AddPair('proxy_password', OpenAI.API.Client.ProxySettings.Password);
+    JSON.AddPair('proxy_host', OpenAI.API.ProxySettings.Host);
+    JSON.AddPair('proxy_port', OpenAI.API.ProxySettings.Port);
+    JSON.AddPair('proxy_username', OpenAI.API.ProxySettings.UserName);
+    JSON.AddPair('proxy_password', OpenAI.API.ProxySettings.Password);
 
     JSON.AddPair('base_url', OpenAI.BaseUrl);
 
@@ -843,7 +848,7 @@ begin
   ListBoxChatList.AniCalculations.Animation := True;
   FGPTFuncList := TList<IChatFunction>.Create;
   FOpenAI := TOpenAIComponent.Create(Self);
-  FOpenAI.API.Client.ConnectionTimeout := 30000;
+  FOpenAI.API.ConnectionTimeout := 30000;
 
   CreateGPTFunctions;
   Defaults;
@@ -907,14 +912,15 @@ begin
       Frame.ComboEditModel.Text := Model;
       Frame.TrackBarTopP.Value := TopP * 10;
       Frame.SwitchOnTop.IsChecked := FormStyle = TFormStyle.StayOnTop;
-      Frame.EditProxyServer.Text := OpenAI.API.Client.ProxySettings.Host;
-      Frame.EditProxyPort.Text := OpenAI.API.Client.ProxySettings.Port.ToString;
-      Frame.EditProxyUsername.Text := OpenAI.API.Client.ProxySettings.UserName;
-      Frame.EditProxyPassword.Text := OpenAI.API.Client.ProxySettings.Password;
+      Frame.EditProxyServer.Text := OpenAI.API.ProxySettings.Host;
+      Frame.EditProxyPort.Text := OpenAI.API.ProxySettings.Port.ToString;
+      Frame.EditProxyUsername.Text := OpenAI.API.ProxySettings.UserName;
+      Frame.EditProxyPassword.Text := OpenAI.API.ProxySettings.Password;
       Frame.LabelVersion.Text := 'Version: ' + VersionName;
       Frame.EditBaseUrl.Text := OpenAI.BaseUrl;
       Frame.SwitchUseFunctions.IsChecked := UseFunctions;
-      Frame.SwitchAutoExecFuncs.IsChecked := UseFunctions;
+      Frame.SwitchAutoExecFuncs.IsChecked := AutoExecFuncs;
+      Frame.SwitchSendEnter.IsChecked := SendByEnter;
       for var Head in OpenAI.API.CustomHeaders do
         Frame.MemoCustomHeaders.Lines.AddPair(Head.Name, Head.Value);
     end,
@@ -936,15 +942,16 @@ begin
         FormStyle := TFormStyle.StayOnTop
       else
         FormStyle := TFormStyle.Normal;
-      OpenAI.API.Client.ProxySettings := TProxySettings.Create(
+      OpenAI.API.ProxySettings := TProxySettings.Create(
         Frame.EditProxyServer.Text,
         StrToIntDef(Frame.EditProxyPort.Text, 0),
         Frame.EditProxyUsername.Text,
         Frame.EditProxyPassword.Text);
-      TBitmap.Client.ProxySettings := OpenAI.API.Client.ProxySettings;
+      TBitmap.Client.ProxySettings := OpenAI.API.ProxySettings;
       OpenAI.BaseUrl := Frame.EditBaseUrl.Text;
       UseFunctions := Frame.SwitchUseFunctions.IsChecked;
       AutoExecFuncs := Frame.SwitchAutoExecFuncs.IsChecked;
+      SendByEnter := Frame.SwitchSendEnter.IsChecked;
 
       var FHeaders: TNetHeaders;
       try
@@ -1087,6 +1094,11 @@ begin
   FPresencePenalty := Value;
 end;
 
+procedure TFormMain.SetSendByEnter(const Value: Boolean);
+begin
+  FSendByEnter := Value;
+end;
+
 procedure TFormMain.SetTemperature(const Value: Single);
 begin
   FTemperature := Value;
@@ -1097,8 +1109,8 @@ begin
   FTimeout := Value;
   if Value <= 0 then
     FTimeout := DEFAULT_TIMEOUT;
-  FOpenAI.API.Client.ResponseTimeout := FTimeout;
-  FOpenAI.API.Client.SendTimeout := FTimeout;
+  FOpenAI.API.ResponseTimeout := FTimeout;
+  FOpenAI.API.SendTimeout := FTimeout;
 end;
 
 procedure TFormMain.SetToken(const Value: string);
