@@ -42,7 +42,6 @@ type
     procedure MemoCodePresentationNameChoosing(Sender: TObject;
       var PresenterName: string);
   private
-    FCodeSyntax: TCodeSyntax;
     FOnWheel: TMouseWheelEvent;
     FStyledMemo: TRichEditStyled;
     FUnderMouse: TUnderMouse;
@@ -51,10 +50,7 @@ type
     FMouseDown: TPointF;
     procedure FOnStyleLookup(Sender: TObject);
     procedure SetOnWheel(const Value: TMouseWheelEvent);
-    {$IFDEF NEW_MEMO}
-    procedure UpdateLayout(Sender: TObject; Layout: TTextLayout; const Index: Integer);
     function IsJson(const Value: string): Boolean;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -77,7 +73,6 @@ constructor TFrameCode.Create(AOwner: TComponent);
 begin
   inherited;
   Name := '';
-  FCodeSyntax := nil;
 
   MemoCode.DisableDisappear := True;
   FStyledMemo := (MemoCode.Presentation as TRichEditStyled);
@@ -89,19 +84,11 @@ begin
   MemoCode.HitTest := False;
   {$ENDIF}
   MemoCode.OnApplyStyleLookup := FOnStyleLookup;
-  {$IFDEF NEW_MEMO}            {
-  FStyledMemo.OnUpdateLayoutParams := UpdateLayout;
-  FStyledMemo.ScrollToCaret := False;   }
-  {$IFDEF MOBILE}                    {
-  FStyledMemo.NeedSelectorPoints := True;}
-  {$ENDIF}
-  {$ENDIF}
 end;
 
 destructor TFrameCode.Destroy;
 begin
   FUnderMouseAttr.Font.Free;
-  FCodeSyntax.Free;
   inherited;
 end;
 
@@ -122,12 +109,6 @@ end;
 
 procedure TFrameCode.Fill(Data: TPart);
 begin
-  {$IFDEF NEW_MEMO}
-  if Assigned(FCodeSyntax) then
-  begin
-    FCodeSyntax.Free;
-    FCodeSyntax := nil;
-  end;
   if Data.Language.IsEmpty then
     if IsJson(Data.Content) then
       Data.Language := 'json';
@@ -136,7 +117,7 @@ begin
     FStyledMemo.SetCodeSyntaxName(Data.Language, MemoCode.Font, MemoCode.FontColor)
   else
     FStyledMemo.SetCodeSyntaxName('md', MemoCode.Font, MemoCode.FontColor);
-  {$ENDIF}
+
   MemoCode.Text := Data.Content;
   if Data.Language.IsEmpty then
     LabelLanguage.Text := ''
@@ -288,27 +269,6 @@ begin
   FStyledMemo.Repaint;      }
   {$ENDIF}
 end;
-
-{$IFDEF NEW_MEMO}
-procedure TFrameCode.UpdateLayout(Sender: TObject; Layout: TTextLayout; const Index: Integer);
-begin
-  if not Assigned(Layout) then
-    Exit;
-  Layout.BeginUpdate;
-  try
-    Layout.ClearAttributes;
-    Layout.Padding.Top := 1;
-    Layout.Padding.Bottom := 1;
-    if Assigned(FCodeSyntax) then
-      for var Attr in FCodeSyntax.GetAttributesForLine(MemoCode.Lines[Index], Index) do
-        Layout.AddAttribute(Attr.Range, Attr.Attribute);
-    if Index = FUnderMouse.WordLine then
-      Layout.AddAttribute(TTextRange.Create(FUnderMouse.WordStart, FUnderMouse.WordLength), FUnderMouseAttr);
-  finally
-    Layout.EndUpdate;
-  end;
-end;
-{$ENDIF}
 
 { TMemo }
 

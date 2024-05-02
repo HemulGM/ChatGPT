@@ -938,6 +938,12 @@ begin
     Result := [];
 end;
 
+function CreateTools(Funcs: TArray<IChatFunction>): TArray<TChatToolParam>;
+begin
+  for var Item in Funcs do
+    Result := Result + [TChatToolFunctionParam.Create(Item)];
+end;
+
 procedure TFrameChat.RequestFunc(FuncResult: string);
 begin
   SetTyping(True);
@@ -963,8 +969,8 @@ begin
             Params.Temperature(Temperature);
             if Length(Funcs) > 0 then
             begin
-              Params.Functions(Funcs);
-              Params.FunctionCall(TFunctionCall.Auto);
+              Params.Tools(CreateTools(Funcs));
+              Params.ToolChoice(TChatToolChoiceParam.Auto);
             end;
             Params.User(FChatId);
           end);
@@ -1026,8 +1032,8 @@ begin
             Params.Temperature(Temperature);
             if Length(Funcs) > 0 then
             begin
-              Params.Functions(Funcs);
-              Params.FunctionCall(TFunctionCall.Auto);
+              Params.Tools(CreateTools(Funcs));
+              Params.ToolChoice(TChatToolChoiceParam.Auto);
             end;
             Params.User(FChatId);
           end);

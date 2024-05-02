@@ -35,7 +35,7 @@ object FrameText: TFrameText
     OnMouseWheel = MemoTextMouseWheel
     OnMouseLeave = MemoTextMouseLeave
     OnPresentationNameChoosing = MemoTextPresentationNameChoosing
-    Viewport.Width = 565.000000000000000000
+    Viewport.Width = 575.000000000000000000
     Viewport.Height = 387.000000000000000000
   end
   object TimerMouseOver: TTimer

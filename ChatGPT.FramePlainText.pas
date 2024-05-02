@@ -27,16 +27,11 @@ type
       var PresenterName: string);
   private
     FOnWheel: TMouseWheelEvent;
-    FCodeSyntax: TCodeSyntax;
     FStyledMemo: TRichEditStyled;
     FMouseMemo: TPointF;
     FUnderMouse: TUnderMouse;
     FUnderMouseAttr: TTextAttribute;
     procedure SetOnWheel(const Value: TMouseWheelEvent);
-  private
-    {$IFDEF NEW_MEMO}
-    procedure UpdateLayout(Sender: TObject; Layout: TTextLayout; const Index: Integer);
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -59,7 +54,6 @@ begin
   inherited;
   Name := '';
   MemoText.DisableDisappear := True;
-  FCodeSyntax := nil;
   FUnderMouseAttr.Color := MemoText.TextSettings.FontColor; // $FF006CE8;
   FUnderMouseAttr.Font := TFont.Create;
   FUnderMouseAttr.Font.Assign(MemoText.TextSettings.Font);
@@ -69,32 +63,17 @@ begin
   MemoText.HitTest := False;
   {$ENDIF}
   MemoText.TextSettings.VertAlign := TTextAlign.Center;
-  {$IFDEF NEW_MEMO}
-  //FStyledMemo.OnUpdateLayoutParams := UpdateLayout;
-  {$IFDEF MOBILE}
-  //FStyledMemo.NeedSelectorPoints := True;
-  {$ENDIF}
-  {$ENDIF}
 end;
 
 destructor TFrameText.Destroy;
 begin
   FUnderMouseAttr.Font.Free;
-  FCodeSyntax.Free;
   inherited;
 end;
 
 procedure TFrameText.Fill(Data: TPart);
 begin
-  {$IFDEF NEW_MEMO}
-  if Assigned(FCodeSyntax) then
-  begin
-    FCodeSyntax.Free;
-    FCodeSyntax := nil;
-  end;
-  //FCodeSyntax := TCodeSyntax.FindSyntax('md', MemoText.Font, MemoText.FontColor);
   FStyledMemo.SetCodeSyntaxName('md', MemoText.Font, MemoText.FontColor);
-  {$ENDIF}
   MemoText.Text := Data.Content;
   MemoText.TextSettings.WordWrap := True;
   FrameResize(nil);
@@ -194,27 +173,6 @@ begin
   MemoText.Repaint;   }
   {$ENDIF}
 end;
-
-{$IFDEF NEW_MEMO}
-procedure TFrameText.UpdateLayout(Sender: TObject; Layout: TTextLayout; const Index: Integer);
-begin
-  if not Assigned(Layout) then
-    Exit;
-  Layout.BeginUpdate;
-  try
-    Layout.ClearAttributes;
-    Layout.Padding.Top := 1;
-    Layout.Padding.Bottom := 1;
-    if Assigned(FCodeSyntax) then
-      for var Attr in FCodeSyntax.GetAttributesForLine(MemoText.Lines[Index], Index) do
-        Layout.AddAttribute(Attr.Range, Attr.Attribute);
-    if Index = FUnderMouse.WordLine then
-      Layout.AddAttribute(TTextRange.Create(FUnderMouse.WordStart, FUnderMouse.WordLength), FUnderMouseAttr);
-  finally
-    Layout.EndUpdate;
-  end;
-end;
-{$ENDIF}
 
 end.
 

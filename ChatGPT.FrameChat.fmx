@@ -347,6 +347,7 @@ object FrameChat: TFrameChat
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.FontColor = xFFECECF1
             TextSettings.WordWrap = True
+            TextSettings.Trimming = None
             OnClick = ButtonExample3Click
           end
           object ButtonExample2: TButton
@@ -369,6 +370,7 @@ object FrameChat: TFrameChat
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.FontColor = xFFECECF1
             TextSettings.WordWrap = True
+            TextSettings.Trimming = None
             OnClick = ButtonExample2Click
           end
           object ButtonExample1: TButton
@@ -391,6 +393,7 @@ object FrameChat: TFrameChat
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.FontColor = xFFECECF1
             TextSettings.WordWrap = True
+            TextSettings.Trimming = None
             OnClick = ButtonExample1Click
           end
           object Layout5: TLayout
