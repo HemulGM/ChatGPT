@@ -31,7 +31,7 @@
 - All model settings
 - Custom headers for third party APIs
 - Send message as assistant, user or system
-- Doesn't require a VPN
+- Doesn't require a VPN (*Now required!*)
 - GPT functions (external load from "funcs" folder)
 - Syntax highlighting (pascal, python, json, sql, markdown)
 
