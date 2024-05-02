@@ -40,6 +40,7 @@ inherited FrameChatSettings: TFrameChatSettings
       TabStop = False
       object ButtonCancel: TButton
         Align = Right
+        Cancel = True
         Position.X = 340.000000000000000000
         Size.Width = 80.000000000000000000
         Size.Height = 46.000000000000000000
@@ -47,6 +48,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyleLookup = 'buttonstyle_menu'
         TabOrder = 0
         Text = 'CANCEL'
+        TextSettings.Trimming = None
         ParentShowHint = False
         ShowHint = True
         OnClick = ButtonCancelClick
@@ -60,6 +62,7 @@ inherited FrameChatSettings: TFrameChatSettings
         StyleLookup = 'buttonstyle_menu'
         TabOrder = 1
         Text = 'OK'
+        TextSettings.Trimming = None
         OnClick = ButtonOkClick
       end
     end
@@ -93,6 +96,7 @@ inherited FrameChatSettings: TFrameChatSettings
         Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
+        OnMouseWheel = ComboEditModelMouseWheel
       end
       object EditMaxTokens: TEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
@@ -108,8 +112,10 @@ inherited FrameChatSettings: TFrameChatSettings
         Size.PlatformDefault = False
         TextPrompt = 'Example: 4096'
         object ClearEditButton3: TClearEditButton
+          Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
+          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -152,8 +158,10 @@ inherited FrameChatSettings: TFrameChatSettings
         Size.PlatformDefault = False
         TextPrompt = 'Example: 1024'
         object ClearEditButton4: TClearEditButton
+          Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
+          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -362,7 +370,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Max = 20.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           Value = 10.000000000000000000
@@ -402,7 +410,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Min = -20.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           OnTracking = TrackBarPPTracking
@@ -499,7 +507,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Min = -20.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           OnTracking = TrackBarFPTracking
@@ -583,7 +591,7 @@ inherited FrameChatSettings: TFrameChatSettings
           Max = 10.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 19.000000000000000000
+          Size.Height = 20.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           Value = 10.000000000000000000

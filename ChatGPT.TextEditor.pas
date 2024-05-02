@@ -26,6 +26,7 @@ type
     FLayoutClientWidth, FLayoutClientHeight: Single;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure Cancel; override;
     class procedure Execute(AParent: TControl; ProcSet: TProc<TFrameTextEditor>; ProcExecuted: TProc<TFrameTextEditor, Boolean>);
   end;
 
@@ -35,21 +36,26 @@ var
 implementation
 
 uses
-  System.Math, ChatGPT.Main;
+  System.Math;
 
 {$R *.fmx}
 
 procedure TFrameTextEditor.ButtonCancelClick(Sender: TObject);
 begin
-  if Assigned(FProcCallback) then
-    FProcCallback(Self, False);
-  Release;
+  Cancel;
 end;
 
 procedure TFrameTextEditor.ButtonOkClick(Sender: TObject);
 begin
   if Assigned(FProcCallback) then
     FProcCallback(Self, True);
+  Release;
+end;
+
+procedure TFrameTextEditor.Cancel;
+begin
+  if Assigned(FProcCallback) then
+    FProcCallback(Self, False);
   Release;
 end;
 

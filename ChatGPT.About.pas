@@ -9,6 +9,10 @@ uses
   FMX.ComboEdit, FMX.Edit, FMX.Controls.Presentation, FMX.Layouts,
   ChatGPT.Classes;
 
+{$IF DEFINED(ANDROID) OR DEFINED(IOS) OR DEFINED(IOS64)}
+  {$DEFINE MOBILE}
+{$ENDIF}
+
 type
   TFrameAbout = class(TFrameOveraly)
     LayoutClient: TLayout;
@@ -33,6 +37,8 @@ type
     procedure FrameResize(Sender: TObject);
     procedure ButtonGitHubClick(Sender: TObject);
     procedure ButtonReportClick(Sender: TObject);
+    procedure ButtonGitHubTap(Sender: TObject; const Point: TPointF);
+    procedure ButtonReportTap(Sender: TObject; const Point: TPointF);
   private
     FProcCallback: TProc<TFrameAbout, Boolean>;
     FLayoutClientWidth, FLayoutClientHeight: Single;
@@ -40,6 +46,7 @@ type
     procedure SetMode(const Value: TWindowMode); override;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure Cancel; override;
     class procedure Execute(AParent: TControl; ProcSet: TProc<TFrameAbout>; ProcExecuted: TProc<TFrameAbout, Boolean>);
   end;
 
@@ -49,7 +56,7 @@ var
 implementation
 
 uses
-  System.Math, ChatGPT.Main;
+  System.Math;
 
 {$R *.fmx}
 
@@ -58,16 +65,31 @@ begin
   OpenUrl('https://github.com/HemulGM/ChatGPT');
 end;
 
+procedure TFrameAbout.ButtonGitHubTap(Sender: TObject; const Point: TPointF);
+begin
+  ButtonGitHubClick(nil);
+end;
+
 procedure TFrameAbout.ButtonOkClick(Sender: TObject);
 begin
-  if Assigned(FProcCallback) then
-    FProcCallback(Self, True);
-  Release;
+  Cancel;
 end;
 
 procedure TFrameAbout.ButtonReportClick(Sender: TObject);
 begin
   OpenUrl('https://github.com/HemulGM/ChatGPT/issues');
+end;
+
+procedure TFrameAbout.ButtonReportTap(Sender: TObject; const Point: TPointF);
+begin
+  ButtonReportClick(nil);
+end;
+
+procedure TFrameAbout.Cancel;
+begin
+  if Assigned(FProcCallback) then
+    FProcCallback(Self, True);
+  Release;
 end;
 
 constructor TFrameAbout.Create(AOwner: TComponent);
@@ -80,6 +102,10 @@ begin
   VertScrollBoxContent.AniCalculations.Interval := 1;
   VertScrollBoxContent.AniCalculations.Averaging := True;
   VertScrollBoxContent.ViewportPosition := TPoint.Zero;
+  {$IFDEF MOBILE}
+  ButtonReport.OnClick := nil;
+  ButtonGitHub.OnClick := nil;
+  {$ENDIF}
 end;
 
 class procedure TFrameAbout.Execute(AParent: TControl; ProcSet: TProc<TFrameAbout>; ProcExecuted: TProc<TFrameAbout, Boolean>);

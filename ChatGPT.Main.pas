@@ -2,21 +2,29 @@
 
 interface
 
+{$IF DEFINED(ANDROID) OR DEFINED(IOS) OR DEFINED(IOS64)}
+  {$DEFINE MOBILE}
+{$ENDIF}
+
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, OpenAI,
   FMX.Objects, FMX.Layouts, FMX.ListBox, FMX.Controls.Presentation, FMX.StdCtrls,
   System.ImageList, FMX.ImgList, FMX.SVGIconImageList, ChatGPT.FrameChat,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo, FMX.Effects, FMX.Filter.Effects,
-  FMX.Edit, ChatGPT.Classes, System.JSON, FMX.ComboEdit, FMX.Menus,
+  FMX.Edit, ChatGPT.Classes, System.JSON, FMX.ComboEdit, FMX.Menus, System.Skia,
   System.Generics.Collections, System.Actions, FMX.ActnList, FMX.StdActns,
-  FMX.MediaLibrary.Actions, OpenAI.Chat.Functions;
+  FMX.MediaLibrary.Actions, OpenAI.Chat.Functions, FMX.Gestures, FMX.Ani,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
+  FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async,
+  FireDAC.Phys, FireDAC.FMXUI.Wait, Data.DB, FireDAC.Comp.Client;
 
 type
   TListBoxItemChat = class(TListBoxItem)
   public
     JSON: TJSONObject;
     ChatId: string;
+    procedure Paint; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -25,7 +33,6 @@ type
     LayoutChats: TLayout;
     Rectangle1: TRectangle;
     StyleBook: TStyleBook;
-    SVGIconImageList: TSVGIconImageList;
     LayoutHead: TLayout;
     ButtonMenu: TButton;
     ButtonNewChatCompact: TButton;
@@ -52,10 +59,11 @@ type
     ButtonSettings: TButton;
     Line2: TLine;
     ButtonAbout: TButton;
-    ActionListMain: TActionList;
-    ShowShareSheetAction: TShowShareSheetAction;
     LayoutMenuButtons: TLayout;
     ButtonMenuButonsSwitch: TButton;
+    TimerFPS: TTimer;
+    GestureManager: TGestureManager;
+    FDConnection: TFDConnection;
     procedure ButtonNewChatClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure ButtonMenuClick(Sender: TObject);
@@ -70,16 +78,17 @@ type
     procedure ButtonFAQClick(Sender: TObject);
     procedure ButtonSettingsClick(Sender: TObject);
     procedure ButtonAboutClick(Sender: TObject);
-    procedure ShowShareSheetActionBeforeExecute(Sender: TObject);
     procedure ButtonMenuButonsSwitchClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormSaveState(Sender: TObject);
+    procedure TimerFPSTimer(Sender: TObject);
+    procedure FormGesture(Sender: TObject; const EventInfo: TGestureEventInfo; var Handled: Boolean);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     class var
       FChatIdCount: Integer;
   private
     FOpenAI: TOpenAIComponent;
-    FShareBitmap: TBitmap;
     FMode: TWindowMode;
     FToken: string;
     FTemperature: Single;
@@ -94,12 +103,10 @@ type
     FBaseUrl: string;
     FModel: string;
     FTopP: Single;
-    FCanShare: Boolean;
     FGPTFuncList: TList<IChatFunction>;
     FUseFunctions: Boolean;
     FAutoExecFuncs: Boolean;
     FTimeout: Integer;
-    FSendByEnter: Boolean;
     procedure SetMode(const Value: TWindowMode);
     procedure UpdateMode;
     procedure SelectChat(const ChatId: string);
@@ -131,7 +138,6 @@ type
     procedure SetModel(const Value: string);
     function GetChatFrame(const ChatId: string): TFrameChat;
     procedure SetTopP(const Value: Single);
-    function GetCanShare: Boolean;
     procedure Defaults;
     procedure FOnNeedFuncList(Sender: TObject; out Items: TArray<IChatFunction>);
     procedure CreateGPTFunctions;
@@ -140,17 +146,14 @@ type
     procedure SetTimeout(const Value: Integer);
     procedure RenameChat(const ChatId, Text: string);
     procedure FOnChatTitleChanged(Sender: TObject);
-    procedure SetSendByEnter(const Value: Boolean);
   protected
     procedure CreateHandle; override;
   public
     procedure LoadChats;
     procedure SaveChats;
-    procedure ShareBitmap(Bitmap: TBitmap);
     class function NextChatId: Integer; static;
     property UseFunctions: Boolean read FUseFunctions write SetUseFunctions;
     property AutoExecFuncs: Boolean read FAutoExecFuncs write SetAutoExecFuncs;
-    property SendByEnter: Boolean read FSendByEnter write SetSendByEnter;
     property OpenAI: TOpenAIComponent read FOpenAI;
     property Mode: TWindowMode read FMode write SetMode;
     property Token: string read FToken write SetToken;
@@ -164,7 +167,6 @@ type
     property FrequencyPenalty: Single read FFrequencyPenalty write SetFrequencyPenalty;
     property TopP: Single read FTopP write SetTopP;
     property Model: string read FModel write SetModel;
-    property CanShare: Boolean read FCanShare;
     property GPTFuncList: TList<IChatFunction> read FGPTFuncList;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -175,11 +177,10 @@ const
   DEFAULT_TIMEOUT = 120000;
 
 const
-  VersionName = '1.0.18';
+  VersionName = '1.1.30';
 
 var
   FormMain: TFormMain;
-  FAppFolder, FImagesCacheFolder, FAudioCacheFolder: string;
 
 const
   AniInterpolation = TInterpolationType.Quadratic;
@@ -187,27 +188,16 @@ const
 implementation
 
 uses
-  FMX.Text, FMX.Ani, System.Math, System.Rtti, FMX.Utils, FMX.DialogService,
+  FMX.Text, System.Math, System.Rtti, FMX.Utils, FMX.DialogService,
   System.Threading, System.Net.URLClient, System.IOUtils, ChatGPT.Settings,
   ChatGPT.Overlay, FMX.Styles, HGM.FMX.Ani, HGM.FMX.Image, OpenAI.API,
+  ChatGPT.Manager,
   {$IFDEF MSWINDOWS}
   DarkModeApi.FMX, FMX.Platform.Win,
   {$ENDIF}
-  ChatGPT.About, FMX.Platform, FMX.MediaLibrary, ChatGPT.Functions;
+  ChatGPT.About, ChatGPT.Functions, System.Math.Vectors;
 
 {$R *.fmx}
-
-procedure CreateAppFolder;
-begin
-  try
-    TDirectory.CreateDirectory(FAppFolder);
-    TDirectory.CreateDirectory(FImagesCacheFolder);
-    TDirectory.CreateDirectory(FAudioCacheFolder);
-  except
-    on E: Exception do
-      ShowMessage('Error: ' + E.Message);
-  end;
-end;
 
 { TFormMain }
 
@@ -217,12 +207,6 @@ begin
   Result := FChatIdCount;
 end;
 
-procedure TFormMain.ShareBitmap(Bitmap: TBitmap);
-begin
-  FShareBitmap := Bitmap;
-  ShowShareSheetAction.Execute;
-end;
-
 procedure TFormMain.ShowClearConfirm;
 begin
   ButtonClear.Text := 'Confirm clear';
@@ -230,9 +214,9 @@ begin
   ButtonClearCancel.Visible := True;
 end;
 
-procedure TFormMain.ShowShareSheetActionBeforeExecute(Sender: TObject);
+procedure TFormMain.TimerFPSTimer(Sender: TObject);
 begin
-  ShowShareSheetAction.Bitmap.Assign(FShareBitmap);
+  Invalidate;
 end;
 
 procedure TFormMain.HideClearConfirm;
@@ -337,8 +321,9 @@ begin
     ItemList.Text := JSON.GetValue('title', '').Replace(#13, ' ').Replace(#10, ' ').Replace('&', '');
     ItemList.ChatId := JSON.GetValue('chat_id', TGUID.NewGuid.ToString);
   end;
+  ItemList.TabStop := False;
   ItemList.HitTest := True;
-  {$IFDEF ANDROID OR IOS OR IOS64}
+  {$IFDEF MOBILE}
   ItemList.OnTap := FOnChatItemTap;
   {$ELSE}
   ItemList.OnClick := FOnChatItemClick;
@@ -495,19 +480,20 @@ end;
 function TFormMain.GetSettingsFileName: string;
 begin
   if FSettingsFileName.IsEmpty then
-    FSettingsFileName := TPath.Combine(FAppFolder, 'settings.json');
+    FSettingsFileName := TPath.Combine(Manager.AppFolder, 'settings.json');
   Result := FSettingsFileName;
 end;
 
 function TFormMain.GetChatsFileName: string;
 begin
   if FChatsFileName.IsEmpty then
-    FChatsFileName := TPath.Combine(FAppFolder, 'chats.json');
+    FChatsFileName := TPath.Combine(Manager.AppFolder, 'chats.json');
   Result := FChatsFileName;
 end;
 
 procedure TFormMain.Defaults;
 begin
+  TimeOut := DEFAULT_TIMEOUT;
   Token := '';
   Temperature := 1;
   FrequencyPenalty := 0;
@@ -547,7 +533,7 @@ begin
       OpenAI.BaseUrl := JSON.GetValue('base_url', OpenAI.BaseUrl);
       UseFunctions := JSON.GetValue<Boolean>('use_functions', False);
       AutoExecFuncs := JSON.GetValue<Boolean>('auto_exec_funcs', False);
-      SendByEnter := JSON.GetValue<Boolean>('send_by_enter', True);
+      Manager.SendByEnter := JSON.GetValue<Boolean>('send_by_enter', True);
 
       if JSON.GetValue('on_top', False) then
         FormStyle := TFormStyle.StayOnTop
@@ -624,7 +610,7 @@ begin
     JSON.AddPair('on_top', FormStyle = TFormStyle.StayOnTop);
     JSON.AddPair('use_functions', UseFunctions);
     JSON.AddPair('auto_exec_funcs', AutoExecFuncs);
-    JSON.AddPair('send_by_enter', SendByEnter);
+    JSON.AddPair('send_by_enter', Manager.SendByEnter);
 
     JSON.AddPair('proxy_host', OpenAI.API.ProxySettings.Host);
     JSON.AddPair('proxy_port', OpenAI.API.ProxySettings.Port);
@@ -716,12 +702,6 @@ begin
       ShowMessage(E.Message);
   end;
   JSON.Free;
-end;
-
-function TFormMain.GetCanShare: Boolean;
-begin
-  var FSharingService: IFMXShareSheetActionsService;
-  Result := TPlatformServices.Current.SupportsPlatformService(IFMXShareSheetActionsService, FSharingService);
 end;
 
 function TFormMain.GetChatFrame(const ChatId: string): TFrameChat;
@@ -817,6 +797,7 @@ end;
 constructor TFormMain.Create(AOwner: TComponent);
 begin
   inherited;
+  FMode := TWindowMode.Full;
   TAnimation.AniFrameRate := 300;
   ListBoxChatList.AniCalculations.Animation := True;
   ListBoxChatList.AniCalculations.Interval := 1;
@@ -850,15 +831,13 @@ begin
   FOpenAI := TOpenAIComponent.Create(Self);
   FOpenAI.API.ConnectionTimeout := 30000;
 
+  Manager.OverlayContainer := LayoutOverlay;
+  Manager.GPTFuncList := FGPTFuncList;
+
   CreateGPTFunctions;
   Defaults;
-  FCanShare := GetCanShare;
   Clear;
-  FMode := TWindowMode.Full;
   UpdateMode;
-  TimeOut := DEFAULT_TIMEOUT;
-  Temperature := 0;
-  Token := '';
 end;
 
 procedure TFormMain.Clear;
@@ -874,6 +853,18 @@ begin
   end;
 end;
 
+procedure TFormMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  {$IFDEF MOBILE}
+  if Overlays.Count > 0 then
+  begin
+    var Active := Overlays.Last;
+    Active.Cancel;
+    CanClose := False;
+  end;
+  {$ENDIF}
+end;
+
 procedure TFormMain.FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight, MaxWidth, MaxHeight: Single);
 begin
   FormResize(Sender);
@@ -883,6 +874,15 @@ procedure TFormMain.FormCreate(Sender: TObject);
 begin
   LoadSettings;
   LoadChats;
+end;
+
+procedure TFormMain.FormGesture(Sender: TObject; const EventInfo: TGestureEventInfo; var Handled: Boolean);
+begin
+  if (EventInfo.GestureID = sgiRightLeft) then
+  begin
+    Handled := True;
+    ButtonMenuClick(nil);
+  end;
 end;
 
 procedure TFormMain.OpenSettings;
@@ -920,7 +920,7 @@ begin
       Frame.EditBaseUrl.Text := OpenAI.BaseUrl;
       Frame.SwitchUseFunctions.IsChecked := UseFunctions;
       Frame.SwitchAutoExecFuncs.IsChecked := AutoExecFuncs;
-      Frame.SwitchSendEnter.IsChecked := SendByEnter;
+      Frame.SwitchSendEnter.IsChecked := Manager.SendByEnter;
       for var Head in OpenAI.API.CustomHeaders do
         Frame.MemoCustomHeaders.Lines.AddPair(Head.Name, Head.Value);
     end,
@@ -951,7 +951,7 @@ begin
       OpenAI.BaseUrl := Frame.EditBaseUrl.Text;
       UseFunctions := Frame.SwitchUseFunctions.IsChecked;
       AutoExecFuncs := Frame.SwitchAutoExecFuncs.IsChecked;
-      SendByEnter := Frame.SwitchSendEnter.IsChecked;
+      Manager.SendByEnter := Frame.SwitchSendEnter.IsChecked;
 
       var FHeaders: TNetHeaders;
       try
@@ -1094,11 +1094,6 @@ begin
   FPresencePenalty := Value;
 end;
 
-procedure TFormMain.SetSendByEnter(const Value: Boolean);
-begin
-  FSendByEnter := Value;
-end;
-
 procedure TFormMain.SetTemperature(const Value: Single);
 begin
   FTemperature := Value;
@@ -1144,15 +1139,20 @@ begin
   inherited;
 end;
 
+procedure TListBoxItemChat.Paint;
+begin
+  var Canv: ISkCanvas;
+  if Supports(Canvas, ISkCanvas, Canv) then
+    Canv.Skew(1, 0.2);
+  Canvas.SetMatrix(TMatrix.CreateScaling(1, 2));
+  inherited;
+  Canvas.SetMatrix(TMatrix.CreateScaling(1, 2));
+end;
+
 initialization
   {$IFDEF DEBUG}
   ReportMemoryLeaksOnShutdown := True;
   {$ENDIF}
-  FAppFolder := TPath.Combine(TPath.GetHomePath, 'ChatGPT');
-  FImagesCacheFolder := TPath.Combine(FAppFolder, 'images');
-  FAudioCacheFolder := TPath.Combine(FAppFolder, 'audios');
-  TBitmap.CachePath := FImagesCacheFolder;
-  CreateAppFolder;
 
 end.
 

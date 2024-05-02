@@ -6,6 +6,7 @@ inherited FrameImportExport: TFrameImportExport
   inherited RectangleBG: TRectangle
     Size.Width = 772.000000000000000000
     Size.Height = 703.000000000000000000
+    OnClick = RectangleBGClick
   end
   object LayoutClient: TLayout
     Align = Center
@@ -43,19 +44,22 @@ inherited FrameImportExport: TFrameImportExport
         Size.Height = 46.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'buttonstyle_menu'
-        TabOrder = 2
+        TabOrder = 0
         Text = 'OK'
+        TextSettings.Trimming = None
         OnClick = ButtonOkClick
       end
       object ButtonCancel: TButton
         Align = Right
+        Cancel = True
         Position.X = 340.000000000000000000
         Size.Width = 80.000000000000000000
         Size.Height = 46.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'buttonstyle_menu'
-        TabOrder = 3
+        TabOrder = 1
         Text = 'CANCEL'
+        TextSettings.Trimming = None
         OnClick = ButtonCancelClick
       end
     end
@@ -74,7 +78,7 @@ inherited FrameImportExport: TFrameImportExport
       TextSettings.FontColor = xFFE9E9E9
       TextSettings.WordWrap = False
       Text = 'Import && Export'
-      TabOrder = 47
+      TabOrder = 44
     end
     object VertScrollBox: TVertScrollBox
       Align = Client
@@ -98,21 +102,24 @@ inherited FrameImportExport: TFrameImportExport
         Size.Width = 400.000000000000000000
         Size.Height = 456.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 4
+        TabOrder = 0
         object RadioButtonImport: TRadioButton
           Align = Top
+          StyledSettings = [Family, Style, FontColor]
           Margins.Top = 10.000000000000000000
           Position.Y = 163.000000000000000000
           Size.Width = 400.000000000000000000
           Size.Height = 19.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'radiobuttonstyle_md'
-          TabOrder = 0
+          TabOrder = 2
           Text = 'Import'
+          TextSettings.Font.Size = 14.000000000000000000
           OnChange = RadioButtonExportChange
         end
         object RadioButtonExport: TRadioButton
           Align = Top
+          StyledSettings = [Family, Style, FontColor]
           IsChecked = True
           Margins.Top = 10.000000000000000000
           Position.Y = 10.000000000000000000
@@ -120,8 +127,9 @@ inherited FrameImportExport: TFrameImportExport
           Size.Height = 19.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'radiobuttonstyle_md'
-          TabOrder = 46
+          TabOrder = 0
           Text = 'Export'
+          TextSettings.Font.Size = 14.000000000000000000
           OnChange = RadioButtonExportChange
         end
         object LayoutExport: TLayout
@@ -133,7 +141,7 @@ inherited FrameImportExport: TFrameImportExport
           Size.Width = 380.000000000000000000
           Size.Height = 124.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 49
+          TabOrder = 1
           object Label17: TLabel
             Align = Top
             AutoSize = True
@@ -150,29 +158,31 @@ inherited FrameImportExport: TFrameImportExport
             TextSettings.Font.Family = 'Roboto'
             TextSettings.FontColor = x78FFFFFF
             Text = '*.txt, *.json'
-            TabOrder = 12
+            TabOrder = 8
             TabStop = False
           end
           object EditExport: TEdit
             Touch.InteractiveGestures = [LongTap, DoubleTap]
             Align = Top
             StyleLookup = 'editstyle_clear'
-            TabOrder = 4
+            TabOrder = 0
             Position.Y = 47.000000000000000000
             Margins.Top = 5.000000000000000000
             Size.Width = 380.000000000000000000
             Size.Height = 33.000000000000000000
             Size.PlatformDefault = False
             object ClearEditButtonExport: TClearEditButton
+              Touch.InteractiveGestures = [LongTap]
               CanFocus = False
               Cursor = crArrow
+              TextSettings.Trimming = None
               Hint = 'Clear'
               Position.X = 28.000000000000000000
               Size.Width = 28.000000000000000000
               Size.Height = 29.000000000000000000
               Size.PlatformDefault = False
               StyleLookup = 'buttonstyle_clearmini'
-              TabOrder = 0
+              TabOrder = 1
               Text = 'buttonstyle_clearmini'
               object Path2: TPath
                 Align = Center
@@ -195,13 +205,15 @@ inherited FrameImportExport: TFrameImportExport
               end
             end
             object EditButtonExportFile: TEditButton
+              Touch.InteractiveGestures = [LongTap]
               CanFocus = False
               Cursor = crArrow
+              TextSettings.Trimming = None
               Size.Width = 28.000000000000000000
               Size.Height = 29.000000000000000000
               Size.PlatformDefault = False
               StyleLookup = 'editbuttonstyle'
-              TabOrder = 1
+              TabOrder = 0
               Text = 'editbuttonstyle'
               OnClick = EditButtonExportFileClick
               object Path1: TPath
@@ -251,7 +263,7 @@ inherited FrameImportExport: TFrameImportExport
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.FontColor = xB4FFFFFF
             Text = 'File name'
-            TabOrder = 31
+            TabOrder = 30
             TabStop = False
           end
         end
@@ -262,9 +274,9 @@ inherited FrameImportExport: TFrameImportExport
           Position.X = 10.000000000000000000
           Position.Y = 182.000000000000000000
           Size.Width = 380.000000000000000000
-          Size.Height = 124.000000000000000000
+          Size.Height = 147.000000000000000000
           Size.PlatformDefault = False
-          TabOrder = 48
+          TabOrder = 3
           object Label1: TLabel
             Align = Top
             AutoSize = True
@@ -281,29 +293,31 @@ inherited FrameImportExport: TFrameImportExport
             TextSettings.Font.Family = 'Roboto'
             TextSettings.FontColor = x78FFFFFF
             Text = '*.json'
-            TabOrder = 12
+            TabOrder = 8
             TabStop = False
           end
           object EditImport: TEdit
             Touch.InteractiveGestures = [LongTap, DoubleTap]
             Align = Top
             StyleLookup = 'editstyle_clear'
-            TabOrder = 4
+            TabOrder = 0
             Position.Y = 47.000000000000000000
             Margins.Top = 5.000000000000000000
             Size.Width = 380.000000000000000000
             Size.Height = 33.000000000000000000
             Size.PlatformDefault = False
             object ClearEditButtonImport: TClearEditButton
+              Touch.InteractiveGestures = [LongTap]
               CanFocus = False
               Cursor = crArrow
+              TextSettings.Trimming = None
               Hint = 'Clear'
               Position.X = 28.000000000000000000
               Size.Width = 28.000000000000000000
               Size.Height = 29.000000000000000000
               Size.PlatformDefault = False
               StyleLookup = 'buttonstyle_clearmini'
-              TabOrder = 0
+              TabOrder = 1
               Text = 'buttonstyle_clearmini'
               object Path3: TPath
                 Align = Center
@@ -326,13 +340,15 @@ inherited FrameImportExport: TFrameImportExport
               end
             end
             object EditButtonImportFile: TEditButton
+              Touch.InteractiveGestures = [LongTap]
               CanFocus = False
               Cursor = crArrow
+              TextSettings.Trimming = None
               Size.Width = 28.000000000000000000
               Size.Height = 29.000000000000000000
               Size.PlatformDefault = False
               StyleLookup = 'editbuttonstyle'
-              TabOrder = 1
+              TabOrder = 0
               Text = 'editbuttonstyle'
               OnClick = EditButtonImportFileClick
               object Path4: TPath
@@ -382,7 +398,28 @@ inherited FrameImportExport: TFrameImportExport
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.FontColor = xB4FFFFFF
             Text = 'File name'
-            TabOrder = 31
+            TabOrder = 29
+            TabStop = False
+          end
+          object Label3: TLabel
+            Align = Top
+            AutoSize = True
+            StyledSettings = [Style]
+            Margins.Left = 5.000000000000000000
+            Margins.Top = 10.000000000000000000
+            Margins.Right = 5.000000000000000000
+            Margins.Bottom = 5.000000000000000000
+            Position.X = 5.000000000000000000
+            Position.Y = 120.000000000000000000
+            Size.Width = 370.000000000000000000
+            Size.Height = 15.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Roboto'
+            TextSettings.FontColor = x78FFFFFF
+            Text = 
+              'The current chat data will not be deleted, but will be supplemen' +
+              'ted'
+            TabOrder = 10
             TabStop = False
           end
         end

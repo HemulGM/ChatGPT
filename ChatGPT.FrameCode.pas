@@ -7,7 +7,11 @@ uses
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Memo.Types, FMX.Controls.Presentation, FMX.ScrollBox,
   FMX.Edit.Style, FMX.Memo, FMX.Layouts, FMX.Memo.Style, ChatGPT.Classes,
-  FMX.TextLayout, ChatGPT.Code, FMX.Gestures;
+  FMX.TextLayout, ChatGPT.Code, FMX.Gestures, FMX.RichEdit.Style;
+
+{$IF DEFINED(ANDROID) OR DEFINED(IOS) OR DEFINED(IOS64)}
+  {$DEFINE MOBILE}
+{$ENDIF}
 
 type
   TMemo = class(FMX.Memo.TMemo)
@@ -35,10 +39,12 @@ type
     procedure RectangleClientMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
     procedure RectangleClientMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure TimerMouseOverTimer(Sender: TObject);
+    procedure MemoCodePresentationNameChoosing(Sender: TObject;
+      var PresenterName: string);
   private
     FCodeSyntax: TCodeSyntax;
     FOnWheel: TMouseWheelEvent;
-    FStyledMemo: TStyledMemo;
+    FStyledMemo: TRichEditStyled;
     FUnderMouse: TUnderMouse;
     FMouseMemo: TPointF;
     FUnderMouseAttr: TTextAttribute;
@@ -72,21 +78,22 @@ begin
   inherited;
   Name := '';
   FCodeSyntax := nil;
+
   MemoCode.DisableDisappear := True;
-  FStyledMemo := (MemoCode.Presentation as TStyledMemo);
+  FStyledMemo := (MemoCode.Presentation as TRichEditStyled);
   FUnderMouseAttr.Color := MemoCode.TextSettings.FontColor; // $FF006CE8;
   FUnderMouseAttr.Font := TFont.Create;
   FUnderMouseAttr.Font.Assign(MemoCode.TextSettings.Font);
   FUnderMouseAttr.Font.Style := [TFontStyle.fsUnderline];
-  {$IFDEF ANDROID OR IOS OR IOS64}
+  {$IFDEF MOBILE}
   MemoCode.HitTest := False;
   {$ENDIF}
   MemoCode.OnApplyStyleLookup := FOnStyleLookup;
-  {$IFDEF NEW_MEMO}
+  {$IFDEF NEW_MEMO}            {
   FStyledMemo.OnUpdateLayoutParams := UpdateLayout;
-  FStyledMemo.ScrollToCaret := False;
-  {$IFDEF ANDROID OR IOS OR IOS64}
-  FStyledMemo.NeedSelectorPoints := True;
+  FStyledMemo.ScrollToCaret := False;   }
+  {$IFDEF MOBILE}                    {
+  FStyledMemo.NeedSelectorPoints := True;}
   {$ENDIF}
   {$ENDIF}
 end;
@@ -125,7 +132,10 @@ begin
     if IsJson(Data.Content) then
       Data.Language := 'json';
   if not Data.Language.IsEmpty then
-    FCodeSyntax := TCodeSyntax.FindSyntax(Data.Language, MemoCode.Font, MemoCode.FontColor);
+    //FCodeSyntax := TCodeSyntax.FindSyntax(Data.Language, MemoCode.Font, MemoCode.FontColor);
+    FStyledMemo.SetCodeSyntaxName(Data.Language, MemoCode.Font, MemoCode.FontColor)
+  else
+    FStyledMemo.SetCodeSyntaxName('md', MemoCode.Font, MemoCode.FontColor);
   {$ENDIF}
   MemoCode.Text := Data.Content;
   if Data.Language.IsEmpty then
@@ -203,7 +213,7 @@ begin
 end;
 
 procedure TFrameCode.MemoCodeMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
-begin
+begin    {
   if ssShift in Shift then
   begin
     //MemoCode.DisableMouseWheel := False;
@@ -216,7 +226,13 @@ begin
     Handled := True;
     if Assigned(FOnWheel) then
       FOnWheel(Sender, Shift, WheelDelta, Handled);
-  end;
+  end;    }
+end;
+
+procedure TFrameCode.MemoCodePresentationNameChoosing(Sender: TObject;
+  var PresenterName: string);
+begin
+  PresenterName := 'RichEditStyled';
 end;
 
 procedure TFrameCode.RectangleClientMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
@@ -246,7 +262,8 @@ end;
 
 procedure TFrameCode.TimerMouseOverTimer(Sender: TObject);
 begin
-  {$IFDEF NEW_MEMO}
+  TimerMouseOver.Enabled := False;
+  {$IFDEF NEW_MEMO}    {
   var BeginWord: Int64;
   var Line: Int64;
   var Str := FStyledMemo.GetWordAtPos(FMouseMemo.X, FMouseMemo.Y, BeginWord, Line);
@@ -268,7 +285,7 @@ begin
   FUnderMouse.WordLine := Line;
   FUnderMouse.Text := Str;
   FStyledMemo.UpdateVisibleLayoutParams;
-  FStyledMemo.Repaint;
+  FStyledMemo.Repaint;      }
   {$ENDIF}
 end;
 

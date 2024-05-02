@@ -33,7 +33,7 @@ type
 implementation
 
 uses
-  HGM.FMX.Ani, ChatGPT.Main, System.IOUtils, ChatGPT.FrameUIMessage;
+  HGM.FMX.Ani, System.IOUtils, ChatGPT.FrameUIMessage, ChatGPT.Manager;
 
 {$R *.fmx}
 
@@ -57,14 +57,14 @@ end;
 
 procedure TFramePreview.ButtonShareClick(Sender: TObject);
 begin
-  FormMain.ShareBitmap(Image.Bitmap);
+  Manager.ShareBitmap(Image.Bitmap);
 end;
 
 constructor TFramePreview.Create(AOwner: TComponent);
 begin
   inherited;
   Name := '';
-  ButtonShare.Visible := FormMain.CanShare;
+  ButtonShare.Visible := Manager.CanShare;
 end;
 
 procedure TFramePreview.FrameClick(Sender: TObject);

@@ -51,7 +51,7 @@ uses
   {$IFDEF ANDROID}
   Androidapi.Helpers, Androidapi.JNI.GraphicsContentViewText, Androidapi.JNI.NET,
   {$ENDIF}
-  {$IFDEF IOS OR IOS64}
+  {$IF DEFINED(IOS) OR DEFINED(IOS64)}
   MacApi.Helpers, iOSApi.Foundation, FMX.Helpers.iOS,
   {$ENDIF}
   {$IFDEF POSIX}
@@ -67,7 +67,7 @@ begin
   {$IFDEF ANDROID}
   TAndroidHelper.Context.startActivity(TJIntent.JavaClass.init(TJIntent.JavaClass.ACTION_VIEW, StrToJURI(URL)));
   {$ENDIF}
-  {$IFDEF IOS OR IOS64}
+  {$IF DEFINED(IOS) OR DEFINED(IOS64)}
   SharedApplication.OpenURL(StrToNSUrl(URL));
   {$ENDIF}
   {$IFDEF POSIX}

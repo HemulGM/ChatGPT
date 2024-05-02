@@ -898,6 +898,7 @@ object FrameChat: TFrameChat
     object LayoutQuery: TLayout
       Align = HorzCenter
       Locked = True
+      HitTest = True
       Padding.Top = 12.000000000000000000
       Padding.Right = 16.000000000000000000
       Padding.Bottom = 12.000000000000000000
@@ -930,9 +931,10 @@ object FrameChat: TFrameChat
         OnChange = MemoQueryChange
         OnChangeTracking = MemoQueryChange
         Align = Top
+        Margins.Top = 2.000000000000000000
         Position.X = 26.000000000000000000
-        Position.Y = 12.000000000000000000
-        Size.Width = 620.000000000000000000
+        Position.Y = 14.000000000000000000
+        Size.Width = 618.000000000000000000
         Size.Height = 26.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'memostyle_clear'
@@ -941,14 +943,15 @@ object FrameChat: TFrameChat
         OnKeyUp = MemoQueryKeyUp
         OnKeyDown = MemoQueryKeyDown
         OnViewportPositionChange = MemoQueryViewportPositionChange
-        Viewport.Width = 620.000000000000000000
+        Viewport.Width = 618.000000000000000000
         Viewport.Height = 26.000000000000000000
         object LabelSendTip: TLabel
           Align = Client
           StyledSettings = [Family, Style]
           Opacity = 0.800000011920929000
-          Size.Width = 610.000000000000000000
-          Size.Height = 26.000000000000000000
+          Margins.Top = -8.000000000000000000
+          Size.Width = 50.000000000000000000
+          Size.Height = 58.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Size = 16.000000000000000000
           TextSettings.FontColor = xFFACACBE
@@ -960,15 +963,15 @@ object FrameChat: TFrameChat
       object LayoutSendControls: TLayout
         Align = MostRight
         Margins.Left = 4.000000000000000000
-        Position.X = 674.000000000000000000
+        Position.X = 648.000000000000000000
         Position.Y = 12.000000000000000000
-        Size.Width = 78.000000000000000000
+        Size.Width = 104.000000000000000000
         Size.Height = 26.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
         object LayoutSendCommons: TLayout
           Align = Bottom
-          Size.Width = 78.000000000000000000
+          Size.Width = 104.000000000000000000
           Size.Height = 26.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 2
@@ -978,11 +981,12 @@ object FrameChat: TFrameChat
             Hint = 
               'Submit an audio recording for recognition. Will be taken into ac' +
               'count in the context of communication with GPT (Whisper)'
+            Position.X = 26.000000000000000000
             Size.Width = 26.000000000000000000
             Size.Height = 26.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_clearmini'
-            TabOrder = 2
+            TabOrder = 3
             TextSettings.Trimming = None
             ParentShowHint = False
             ShowHint = True
@@ -1014,12 +1018,12 @@ object FrameChat: TFrameChat
             Align = Right
             CanFocus = False
             Hint = 'Send prompt'
-            Position.X = 52.000000000000000000
+            Position.X = 78.000000000000000000
             Size.Width = 26.000000000000000000
             Size.Height = 26.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_clearmini'
-            TabOrder = 4
+            TabOrder = 5
             Text = 'ButtonSend'
             TextSettings.Trimming = None
             OnClick = ButtonSendClick
@@ -1122,12 +1126,12 @@ object FrameChat: TFrameChat
             Align = Right
             CanFocus = False
             Hint = 'Image generation mode on demand (DALL-E)'
-            Position.X = 26.000000000000000000
+            Position.X = 52.000000000000000000
             Size.Width = 26.000000000000000000
             Size.Height = 26.000000000000000000
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_clearmini'
-            TabOrder = 3
+            TabOrder = 4
             Text = 'ButtonSend'
             TextSettings.Trimming = None
             OnClick = ButtonImageClick
@@ -1186,24 +1190,23 @@ object FrameChat: TFrameChat
               WrapMode = Fit
             end
           end
+          object LabelTyping: TLabel
+            Align = MostLeft
+            StyledSettings = [Style]
+            Margins.Left = 4.000000000000000000
+            Position.X = 4.000000000000000000
+            Size.Width = 20.000000000000000000
+            Size.Height = 26.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 20.000000000000000000
+            TextSettings.FontColor = xFFACACBE
+            TextSettings.HorzAlign = Center
+            TextSettings.WordWrap = False
+            TextSettings.Trimming = None
+            Text = '...'
+            TabOrder = 2
+          end
         end
-      end
-      object LabelTyping: TLabel
-        Align = MostRight
-        StyledSettings = [Style]
-        Margins.Left = 4.000000000000000000
-        Position.X = 650.000000000000000000
-        Position.Y = 12.000000000000000000
-        Size.Width = 20.000000000000000000
-        Size.Height = 26.000000000000000000
-        Size.PlatformDefault = False
-        TextSettings.Font.Size = 20.000000000000000000
-        TextSettings.FontColor = xFFACACBE
-        TextSettings.HorzAlign = Center
-        TextSettings.WordWrap = False
-        TextSettings.Trimming = None
-        Text = '...'
-        TabOrder = 2
       end
       object LayoutChatSettings: TLayout
         Align = MostLeft
@@ -1215,7 +1218,7 @@ object FrameChat: TFrameChat
         Size.Width = 26.000000000000000000
         Size.Height = 26.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 3
+        TabOrder = 2
         object ButtonSettings: TButton
           Align = Bottom
           CanFocus = False
@@ -1349,7 +1352,7 @@ object FrameChat: TFrameChat
         Size.Height = 26.000000000000000000
         Size.PlatformDefault = False
         Visible = False
-        TabOrder = 4
+        TabOrder = 3
         object AnimatedImageRecording: TSkAnimatedImage
           Align = Left
           Size.Width = 60.000000000000000000
@@ -1745,8 +1748,8 @@ object FrameChat: TFrameChat
   object TimerCheckRecording: TTimer
     Enabled = False
     OnTimer = TimerCheckRecordingTimer
-    Left = 632
-    Top = 152
+    Left = 64
+    Top = 144
   end
   object Rectangle1: TRectangle
     Position.X = 20.000000000000000000

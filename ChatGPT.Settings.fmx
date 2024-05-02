@@ -52,8 +52,10 @@ inherited FrameSettings: TFrameSettings
         Size.PlatformDefault = False
         TextPrompt = 'sk-rBYbw....'
         object ClearEditButton2: TClearEditButton
+          Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
+          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -225,7 +227,6 @@ inherited FrameSettings: TFrameSettings
         TabStop = False
         object ButtonGetToken: TButton
           Align = Left
-          Images = FormMain.SVGIconImageList
           ImageIndex = 9
           Size.Width = 289.000000000000000000
           Size.Height = 46.000000000000000000
@@ -234,6 +235,7 @@ inherited FrameSettings: TFrameSettings
           TabOrder = 0
           Text = 'Obtain API token from your Open AI'
           TextSettings.HorzAlign = Leading
+          TextSettings.Trimming = None
           ParentShowHint = False
           ShowHint = True
           OnClick = ButtonGetTokenClick
@@ -261,6 +263,7 @@ inherited FrameSettings: TFrameSettings
         Align = Top
         StyleLookup = 'combo_style'
         TabOrder = 21
+        DropDownKind = Custom
         ItemHeight = 36.000000000000000000
         Items.Strings = (
           'gpt-3.5-turbo'
@@ -275,6 +278,7 @@ inherited FrameSettings: TFrameSettings
         Size.Width = 404.000000000000000000
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
+        OnMouseWheel = ComboEditModelMouseWheel
       end
       object Label9: TLabel
         Align = Top
@@ -307,8 +311,10 @@ inherited FrameSettings: TFrameSettings
         Size.PlatformDefault = False
         TextPrompt = 'Example: 4096'
         object ClearEditButton3: TClearEditButton
+          Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
+          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -526,8 +532,10 @@ inherited FrameSettings: TFrameSettings
         Size.PlatformDefault = False
         TextPrompt = 'Example: 1024'
         object ClearEditButton4: TClearEditButton
+          Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
+          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -662,8 +670,10 @@ inherited FrameSettings: TFrameSettings
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         object ClearEditButton5: TClearEditButton
+          Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
+          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -728,8 +738,10 @@ inherited FrameSettings: TFrameSettings
         Size.PlatformDefault = False
         TextPrompt = 'https://api.openai.com/v1'
         object ClearEditButton6: TClearEditButton
+          Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
+          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -880,8 +892,10 @@ inherited FrameSettings: TFrameSettings
         Size.PlatformDefault = False
         TextPrompt = 'http or https://...'
         object ClearEditButton7: TClearEditButton
+          Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
+          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -941,8 +955,10 @@ inherited FrameSettings: TFrameSettings
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         object ClearEditButton8: TClearEditButton
+          Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
+          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -982,8 +998,10 @@ inherited FrameSettings: TFrameSettings
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         object ClearEditButton9: TClearEditButton
+          Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
+          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -1041,8 +1059,10 @@ inherited FrameSettings: TFrameSettings
         Size.Height = 33.000000000000000000
         Size.PlatformDefault = False
         object ClearEditButton10: TClearEditButton
+          Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
+          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -1367,7 +1387,6 @@ inherited FrameSettings: TFrameSettings
         TabStop = False
         object ButtonLoadedFunctions: TButton
           Align = Left
-          Images = FormMain.SVGIconImageList
           Size.Width = 161.000000000000000000
           Size.Height = 46.000000000000000000
           Size.PlatformDefault = False
@@ -1375,6 +1394,7 @@ inherited FrameSettings: TFrameSettings
           TabOrder = 0
           Text = 'View loaded functions'
           TextSettings.HorzAlign = Leading
+          TextSettings.Trimming = None
           ParentShowHint = False
           ShowHint = True
           OnClick = ButtonLoadedFunctionsClick
@@ -1461,8 +1481,10 @@ inherited FrameSettings: TFrameSettings
         Size.PlatformDefault = False
         TextPrompt = '120000ms'
         object ClearEditButton1: TClearEditButton
+          Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
+          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -1618,6 +1640,7 @@ inherited FrameSettings: TFrameSettings
       TabOrder = 3
       object ButtonCancel: TButton
         Align = Right
+        Cancel = True
         Position.X = 340.000000000000000000
         Size.Width = 80.000000000000000000
         Size.Height = 46.000000000000000000
@@ -1625,6 +1648,7 @@ inherited FrameSettings: TFrameSettings
         StyleLookup = 'buttonstyle_menu'
         TabOrder = 2
         Text = 'CANCEL'
+        TextSettings.Trimming = None
         ParentShowHint = False
         ShowHint = True
         OnClick = ButtonCancelClick
@@ -1638,6 +1662,7 @@ inherited FrameSettings: TFrameSettings
         StyleLookup = 'buttonstyle_menu'
         TabOrder = 3
         Text = 'OK'
+        TextSettings.Trimming = None
         OnClick = ButtonOkClick
       end
     end

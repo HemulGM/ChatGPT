@@ -2,7 +2,7 @@
 
 interface
 
-{$IFDEF ANDROID OR IOS OR IOS64}
+{$IF DEFINED(ANDROID) OR DEFINED(IOS) OR DEFINED(IOS64)}
   {$DEFINE MOBILE}
 {$ENDIF}
 
@@ -14,7 +14,7 @@ uses
   FMX.Edit.Style, ChatGPT.FrameMessage, ChatGPT.Classes, System.Threading,
   FMX.Edit, FMX.ImgList, OpenAI.Chat, System.Generics.Collections, OpenAI.Audio,
   OpenAI.Utils.ChatHistory, OpenAI.Images, ChatGPT.ChatSettings, System.JSON,
-  FMX.Effects, FMX.ListBox, Skia, Skia.FMX, ChatGPT.SoundRecorder,
+  FMX.Effects, FMX.ListBox, System.Skia, FMX.Skia, ChatGPT.SoundRecorder,
   FMX.InertialMovement, System.RTLConsts, OpenAI.Chat.Functions;
 
 type
@@ -196,7 +196,7 @@ type
     procedure ScrollDown(Animate: Boolean = False);
     procedure SetTitle(const Value: string);
     procedure SetMode(const Value: TWindowMode);
-    procedure AppendAudio(Response: TAudioText);
+    procedure AppendAudio(Response: TAudioTranscriptionObject);
     procedure SetIsImageMode(const Value: Boolean);
     procedure SendRequestImage;
     procedure SendRequestPrompt;
@@ -230,6 +230,7 @@ type
     procedure SetUseFunctions(const Value: Boolean);
     procedure SetAutoExecFuncs(const Value: Boolean);
     procedure SetOnTitleChanged(const Value: TNotifyEvent);
+    procedure SendText;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -266,7 +267,7 @@ const
 implementation
 
 uses
-  FMX.Ani, System.Math, OpenAI.API, System.IOUtils, ChatGPT.Main,
+  FMX.Ani, System.Math, OpenAI.API, System.IOUtils, ChatGPT.Manager,
   ChatGPT.Overlay, FMX.BehaviorManager, HGM.FMX.Ani, System.Net.HttpClient,
   {$IFDEF ANDROID}
   ChatGPT.Android, FMX.Platform.UI.Android,
@@ -426,7 +427,7 @@ begin
   end;
 end;
 
-procedure TFrameChat.AppendAudio(Response: TAudioText);
+procedure TFrameChat.AppendAudio(Response: TAudioTranscriptionObject);
 begin
   try
     NewMessage(Response.Text, TMessageKind.Assistant, True, True);
@@ -493,13 +494,13 @@ end;
 
 function TFrameChat.GenerateAudioFileName: string;
 begin
-  Result := TPath.Combine(FAudioCacheFolder, 'audio_record' + FormatDateTime('DDMMYYYY_HHNNSS', Now) + '.wav');
+  Result := TPath.Combine(Manager.AudioCacheFolder, 'audio_record' + FormatDateTime('DDMMYYYY_HHNNSS', Now) + '.wav');
 end;
 
 procedure TFrameChat.Init;
 begin
-  Opacity := 0;
-  TAnimator.AnimateFloat(Self, 'Opacity', 1);
+  //Opacity := 0;
+  //TAnimator.AnimateFloat(Self, 'Opacity', 1);
   {$IFNDEF MOBILE}
   MemoQuery.SetFocus;
   {$ENDIF}
@@ -757,7 +758,8 @@ end;
 
 procedure TFrameChat.ButtonExample1Click(Sender: TObject);
 begin
-  MemoQuery.Text := 'Explain quantum computing in simple terms';
+  if MemoQuery.Text.IsEmpty then
+    MemoQuery.Text := 'Explain quantum computing in simple terms';
 end;
 
 procedure TFrameChat.ButtonExample1Tap(Sender: TObject; const Point: TPointF);
@@ -767,7 +769,8 @@ end;
 
 procedure TFrameChat.ButtonExample2Click(Sender: TObject);
 begin
-  MemoQuery.Text := 'Got any creative ideas for a 10 year old’s birthday?';
+  if MemoQuery.Text.IsEmpty then
+    MemoQuery.Text := 'Got any creative ideas for a 10 year old’s birthday?';
 end;
 
 procedure TFrameChat.ButtonExample2Tap(Sender: TObject; const Point: TPointF);
@@ -777,7 +780,8 @@ end;
 
 procedure TFrameChat.ButtonExample3Click(Sender: TObject);
 begin
-  MemoQuery.Text := 'How do I make an HTTP request in Javascript?';
+  if MemoQuery.Text.IsEmpty then
+    MemoQuery.Text := 'How do I make an HTTP request in Javascript?';
 end;
 
 procedure TFrameChat.ButtonExample3Tap(Sender: TObject; const Point: TPointF);
@@ -876,7 +880,8 @@ begin
             Params.Prompt(Prompt);
             Params.ResponseFormat(TImageResponseFormat.Url);
             Params.N(4);
-            Params.Size(TImageSize.x512);
+            Params.Model('');
+            Params.Size(TImageSize.s1024x1024);
             Params.User(FChatId);
           end);
         TThread.Queue(nil,
@@ -1083,15 +1088,18 @@ begin
       Exit;
     end;
   end;
+  if MemoQuery.Text.IsEmpty and FAudioRecord.IsAvailableDevice then
+    StartRecording
+  else
+    SendText;
+end;
+
+procedure TFrameChat.SendText;
+begin
   if IsImageMode then
     SendRequestImage
   else
-  begin
-    if MemoQuery.Text.IsEmpty and FAudioRecord.IsAvailableDevice then
-      StartRecording
-    else
-      SendRequestPrompt;
-  end;
+    SendRequestPrompt;
 end;
 
 procedure TFrameChat.ClearChat;
@@ -1133,6 +1141,9 @@ begin
   VertScrollBoxChat.AniCalculations.Animation := True;
   VertScrollBoxChat.AniCalculations.Interval := 1;
   VertScrollBoxChat.AniCalculations.Averaging := True;
+  {$IFDEF MOBILE}
+  VertScrollBoxChat.AniCalculations.BoundsAnimation := True;
+  {$ENDIF}
 
   MemoQuery.ScrollAnimation := TBehaviorBoolean.True;
   PathStopRecord.Visible := False;
@@ -1263,29 +1274,34 @@ procedure TFrameChat.UpdateSendControls;
 begin
   PathAudio.Visible := FAudioRecord.IsAvailableDevice and LabelSendTip.Visible;
   PathSend.Visible := not PathAudio.Visible;
+  ButtonAudio.Visible := MemoQuery.Text.IsEmpty;
+  ButtonAudio.Position.X := 0;
+  var i := 0;
+  for var Control in LayoutSendCommons.Controls do
+    if Control.IsVisible then
+      Inc(i);
+  LayoutSendControls.Width := LayoutSendCommons.Height * i;
+  LayoutSendCommons.RecalcSize;
 end;
 
 procedure TFrameChat.MemoQueryKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char; Shift: TShiftState);
 begin
-  if not MemoQuery.Text.IsEmpty then
+  if Manager.SendByEnter then
   begin
-    if FormMain.SendByEnter then
+    if (Key = vkReturn) and not ((ssCtrl in Shift) or (ssShift in Shift)) then
     begin
-      if (Key = vkReturn) and not ((ssCtrl in Shift) or (ssShift in Shift)) then
-      begin
-        Key := 0;
-        KeyChar := #0;
-        ButtonSendClick(nil);
-      end;
-    end
-    else
+      Key := 0;
+      KeyChar := #0;
+      SendText;
+    end;
+  end
+  else
+  begin
+    if (Key = vkReturn) and (ssCtrl in Shift) then
     begin
-      if (Key = vkReturn) and (ssCtrl in Shift) then
-      begin
-        Key := 0;
-        KeyChar := #0;
-        ButtonSendClick(nil);
-      end;
+      Key := 0;
+      KeyChar := #0;
+      SendText;
     end;
   end;
   MemoQueryChange(Sender);
@@ -1548,12 +1564,12 @@ begin
   begin
     LayoutTyping.Margins.Top := 40;
     LayoutTyping.Opacity := 0;
-    LayoutTyping.Position.X := LayoutSendControls.Position.X - 20;
     TAnimator.AnimateFloat(LayoutTyping, 'Margins.Top', 0);
     TAnimator.AnimateFloat(LayoutTyping, 'Opacity', 1);
   end;
   LabelTyping.Visible := Value;
-  LabelTyping.Left := LayoutSendControls.Position.X - 5;
+  LabelTyping.Position.X := 0;
+  UpdateSendControls;
 end;
 
 procedure TFrameChat.SetUseFunctions(const Value: Boolean);

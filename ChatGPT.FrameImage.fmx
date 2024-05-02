@@ -24,9 +24,6 @@ object FrameImage: TFrameImage
       Size.Width = 30.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
-      object FillRGBEffect1: TFillRGBEffect
-        Color = xFFACACBE
-      end
     end
     object LabelError: TLabel
       Align = Client

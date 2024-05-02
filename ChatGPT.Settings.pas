@@ -9,9 +9,16 @@ uses
   FMX.ComboEdit, FMX.ListBox, FMX.Controls.Presentation, FMX.ComboEdit.Style,
   FMX.Memo.Types, FMX.ScrollBox, FMX.Memo;
 
+
+{$IF DEFINED(ANDROID) OR DEFINED(IOS) OR DEFINED(IOS64)}
+  {$DEFINE MOBILE}
+{$ENDIF}
+
 type
   TStyledComboEdit = class(FMX.ComboEdit.Style.TStyledComboEdit)
     procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean); override;
+  protected
+    function CreateListBox: TComboEditListBox; override;
   end;
 
   TFrameSettings = class(TFrameOveraly)
@@ -132,6 +139,8 @@ type
     procedure TrackBarFPTracking(Sender: TObject);
     procedure TrackBarTopPTracking(Sender: TObject);
     procedure ButtonLoadedFunctionsClick(Sender: TObject);
+    procedure ComboEditModelMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; var Handled: Boolean);
   private
     FProcCallback: TProc<TFrameSettings, Boolean>;
     FLayoutClientWidth, FLayoutClientHeight: Single;
@@ -139,6 +148,7 @@ type
     procedure SetMode(const Value: TWindowMode); override;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure Cancel; override;
     class procedure Execute(AParent: TControl; ProcSet: TProc<TFrameSettings>; ProcExecuted: TProc<TFrameSettings, Boolean>);
   end;
 
@@ -148,8 +158,8 @@ var
 implementation
 
 uses
-  ChatGPT.Main, System.Math, FMX.Ani, FMX.Presentation.Style,
-  FMX.Presentation.Factory, HGM.FMX.Ani, ChatGPT.LoadedFunctions;
+  System.Math, FMX.Ani, FMX.Presentation.Style, FMX.Presentation.Factory,
+  HGM.FMX.Ani, ChatGPT.LoadedFunctions, ChatGPT.Manager;
 
 {$R *.fmx}
 
@@ -157,9 +167,7 @@ uses
 
 procedure TFrameSettings.ButtonCancelClick(Sender: TObject);
 begin
-  if Assigned(FProcCallback) then
-    FProcCallback(Self, False);
-  Release;
+  Cancel;
 end;
 
 procedure TFrameSettings.ButtonGetTokenClick(Sender: TObject);
@@ -179,21 +187,55 @@ begin
   Release;
 end;
 
+procedure TFrameSettings.Cancel;
+begin
+  if Assigned(FProcCallback) then
+    FProcCallback(Self, False);
+  Release;
+end;
+
+procedure TFrameSettings.ComboEditModelMouseWheel(Sender: TObject;
+  Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
+begin
+  Handled := True;
+  VertScrollBoxContent.AniCalculations.MouseWheel(0, -WheelDelta);
+end;
+
 constructor TFrameSettings.Create(AOwner: TComponent);
 begin
   inherited;
-  {$IFDEF ANDROID OR IOS OR IOS64}
+  {$IFDEF MOBILE}
   LabelAppearance.Visible := False;
   LayoutOnTop.Visible := False;
   {$ENDIF}
   Name := '';
   MemoCustomHeaders.Text := '';
   MemoCustomHeaders.Lines.NameValueSeparator := ':';
+
+  ComboEditModel.Items.Clear;
+  var ActualModels: TArray<string> := [];
+  SetLength(ActualModels, Length(Manager.ActualModels));
+  for var i := 0 to High(Manager.ActualModels) do
+    ActualModels[i] := Manager.ActualModels[i].Name;
+  ComboEditModel.Items.AddStrings(ActualModels);
+
+  if ComboEditModel.Presentation is TStyledComboEdit then
+  begin
+    var Style := TStyledComboEdit(ComboEditModel.Presentation);
+    for var i := 0 to Style.ListBox.Count - 1 do
+    begin
+      Style.ListBox.ListItems[i].StyleLookup := 'listboxitemstyle_model';
+      Style.ListBox.ListItems[i].StylesData['context'] := Manager.ActualModels[i].Context.ToString;
+      Style.ListBox.ListItems[i].StylesData['tokens'] := Manager.ActualModels[i].Tokens.ToString;
+      Style.ListBox.ListItems[i].StylesData['datadate'] := Manager.ActualModels[i].DataDate;
+      Style.ListBox.ListItems[i].StylesData['legacy.Visible'] := Manager.ActualModels[i].Legacy;
+    end;
+  end;
+
   FLayoutClientWidth := LayoutClient.Width;
   FLayoutClientHeight := LayoutClient.Height;
   VertScrollBoxContent.AniCalculations.Animation := True;
   VertScrollBoxContent.AniCalculations.Interval := 1;
-  VertScrollBoxContent.AniCalculations.Averaging := True;
   VertScrollBoxContent.ViewportPosition := TPoint.Zero;
 end;
 
@@ -221,12 +263,7 @@ end;
 
 procedure TFrameSettings.RectangleBGClick(Sender: TObject);
 begin
-  TAnimator.AnimateFloatWithFinish(LayoutClient, 'RotationAngle', 2,
-    procedure
-    begin
-      TAnimator.AnimateFloat(LayoutClient, 'RotationAngle', 0, 0.2, TAnimationType.out, TInterpolationType.Back);
-    end,
-    0.2, TAnimationType.out, TInterpolationType.Elastic);
+  Cancel;
 end;
 
 procedure TFrameSettings.SetMode(const Value: TWindowMode);
@@ -267,17 +304,25 @@ end;
 
 { TStyledComboEdit }
 
+function TStyledComboEdit.CreateListBox: TComboEditListBox;
+begin
+  Result := inherited;
+  Result.DefaultItemStyles.ItemStyle := 'listboxitemstyle_model';
+  Result.AniCalculations.Animation := True;
+  Result.AniCalculations.Interval := 1;
+end;
+
 procedure TStyledComboEdit.MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
 begin
   Handled := False;
 end;
 
 initialization
-  TPresentationProxyFactory.Current.Unregister(TComboEdit, TControlType.Styled, TStyledPresentationProxy<FMX.ComboEdit.Style.TStyledComboEdit>);
-  TPresentationProxyFactory.Current.Register(TComboEdit, TControlType.Styled, TStyledPresentationProxy<TStyledComboEdit>);
+  //TPresentationProxyFactory.Current.Unregister(TComboEdit, TControlType.Styled, TStyledPresentationProxy<FMX.ComboEdit.Style.TStyledComboEdit>);
+  //TPresentationProxyFactory.Current.Register(TComboEdit, TControlType.Styled, TStyledPresentationProxy<TStyledComboEdit>);
 
 finalization
-  TPresentationProxyFactory.Current.Unregister(TComboEdit, TControlType.Styled, TStyledPresentationProxy<TStyledComboEdit>);
+  //TPresentationProxyFactory.Current.Unregister(TComboEdit, TControlType.Styled, TStyledPresentationProxy<TStyledComboEdit>);
 
 end.
 

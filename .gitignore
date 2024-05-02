@@ -78,3 +78,5 @@ MY_TOKEN.txt
 /Linux64/Debug/ChatGPT
 /MacOS/ChatGPT_MacOSarm64.zip
 /MacOS/ChatGPT_MacOSi64.zip
+/iOSDevice64/*
+/Keys/*

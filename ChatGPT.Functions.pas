@@ -13,6 +13,8 @@ const
   LibExtMask = {$IFDEF MSWINDOWS} '*.dll'; {$ENDIF}
                 {$IFDEF LINUX}  '*.so';  {$ENDIF}
                 {$IFDEF MACOS}  '*.o';  {$ENDIF}
+                {$IFDEF IOS}  '*.o';  {$ENDIF}
+                {$IFDEF IOS64}  '*.o';  {$ENDIF}
                 {$IFDEF ANDROID}  '*.so';  {$ENDIF}
 
 type

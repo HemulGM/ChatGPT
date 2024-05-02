@@ -72,7 +72,6 @@ object FramePreview: TFramePreview
         object ButtonDownload: TButton
           Align = Right
           Hint = 'Save as ...'
-          Images = FormMain.SVGIconImageList
           ImageIndex = 15
           Margins.Top = 20.000000000000000000
           Margins.Right = 20.000000000000000000
@@ -89,7 +88,6 @@ object FramePreview: TFramePreview
         object ButtonShare: TButton
           Align = Right
           Hint = 'Share'
-          Images = FormMain.SVGIconImageList
           ImageIndex = 14
           Margins.Top = 20.000000000000000000
           Margins.Right = 20.000000000000000000

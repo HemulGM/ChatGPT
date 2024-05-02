@@ -228,8 +228,8 @@ inherited FrameAbout: TFrameAbout
         TabOrder = 6
         TabStop = False
         object ButtonGitHub: TButton
+          OnTap = ButtonGitHubTap
           Align = Left
-          Images = FormMain.SVGIconImageList
           ImageIndex = 9
           Size.Width = 289.000000000000000000
           Size.Height = 46.000000000000000000
@@ -253,8 +253,8 @@ inherited FrameAbout: TFrameAbout
         TabOrder = 5
         TabStop = False
         object ButtonReport: TButton
+          OnTap = ButtonReportTap
           Align = Left
-          Images = FormMain.SVGIconImageList
           ImageIndex = 9
           Size.Width = 289.000000000000000000
           Size.Height = 46.000000000000000000
@@ -279,6 +279,7 @@ inherited FrameAbout: TFrameAbout
       TabOrder = 3
       object ButtonOk: TButton
         Align = Right
+        Cancel = True
         Position.X = 515.000000000000000000
         Size.Width = 80.000000000000000000
         Size.Height = 46.000000000000000000

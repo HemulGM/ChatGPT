@@ -38,12 +38,14 @@ type
     Label2: TLabel;
     SaveDialogExport: TSaveDialog;
     OpenDialogImport: TOpenDialog;
+    Label3: TLabel;
     procedure FrameResize(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);
     procedure RadioButtonExportChange(Sender: TObject);
     procedure EditButtonExportFileClick(Sender: TObject);
     procedure EditButtonImportFileClick(Sender: TObject);
+    procedure RectangleBGClick(Sender: TObject);
   private
     FLayoutClientWidth, FLayoutClientHeight: Single;
     FProcCallback: TProc<TFrameImportExport, Boolean>;
@@ -51,6 +53,7 @@ type
     procedure SetMode(const Value: TWindowMode); override;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure Cancel; override;
     class procedure Execute(AParent: TControl; ProcSet: TProc<TFrameImportExport>; ProcExecuted: TProc<TFrameImportExport, Boolean>);
   end;
 
@@ -68,15 +71,20 @@ uses
 
 procedure TFrameImportExport.ButtonCancelClick(Sender: TObject);
 begin
-  if Assigned(FProcCallback) then
-    FProcCallback(Self, False);
-  Release;
+  Cancel;
 end;
 
 procedure TFrameImportExport.ButtonOkClick(Sender: TObject);
 begin
   if Assigned(FProcCallback) then
     FProcCallback(Self, True);
+  Release;
+end;
+
+procedure TFrameImportExport.Cancel;
+begin
+  if Assigned(FProcCallback) then
+    FProcCallback(Self, False);
   Release;
 end;
 
@@ -129,6 +137,11 @@ procedure TFrameImportExport.RadioButtonExportChange(Sender: TObject);
 begin
   LayoutExport.Enabled := RadioButtonExport.IsChecked;
   LayoutImport.Enabled := RadioButtonImport.IsChecked;
+end;
+
+procedure TFrameImportExport.RectangleBGClick(Sender: TObject);
+begin
+  Cancel;
 end;
 
 procedure TFrameImportExport.SetMode(const Value: TWindowMode);

@@ -66,7 +66,7 @@ type
 implementation
 
 uses
-  System.Rtti, FMX.Utils;
+  System.Rtti, FMX.Utils, System.TypInfo;
 
 { TAnimatorHelper }
 

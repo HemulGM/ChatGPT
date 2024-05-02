@@ -67,6 +67,8 @@ type
     procedure TrackBarPPTracking(Sender: TObject);
     procedure TrackBarFPTracking(Sender: TObject);
     procedure TrackBarTopPTracking(Sender: TObject);
+    procedure ComboEditModelMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; var Handled: Boolean);
   private
     FProcCallback: TProc<TFrameChatSettings, Boolean>;
     FLayoutClientWidth: Single;
@@ -75,6 +77,7 @@ type
     procedure SetMode(const Value: TWindowMode); override;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure Cancel; override;
     class procedure Execute(AParent: TControl; ProcSet: TProc<TFrameChatSettings>; ProcExecuted: TProc<TFrameChatSettings, Boolean>);
   end;
 
@@ -84,17 +87,29 @@ var
 implementation
 
 uses
-  System.Math, FMX.Ani, HGM.FMX.Ani;
+  System.Math, FMX.Ani, HGM.FMX.Ani, ChatGPT.Manager;
 
 {$R *.fmx}
 
 { TFrameChatSettings }
 
-procedure TFrameChatSettings.ButtonCancelClick(Sender: TObject);
+procedure TFrameChatSettings.Cancel;
 begin
   if Assigned(FProcCallback) then
     FProcCallback(Self, False);
   Release;
+end;
+
+procedure TFrameChatSettings.ComboEditModelMouseWheel(Sender: TObject;
+  Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
+begin
+  Handled := True;
+  VertScrollBox.AniCalculations.MouseWheel(0, -WheelDelta);
+end;
+
+procedure TFrameChatSettings.ButtonCancelClick(Sender: TObject);
+begin
+  Cancel;
 end;
 
 procedure TFrameChatSettings.ButtonOkClick(Sender: TObject);
@@ -113,6 +128,8 @@ begin
   VertScrollBox.AniCalculations.Interval := 1;
   VertScrollBox.AniCalculations.Averaging := True;
   VertScrollBox.ViewportPosition := TPoint.Zero;
+  ComboEditModel.Items.Clear;
+  ComboEditModel.Items.AddStrings(ActualModels);
   Name := '';
 end;
 
@@ -140,12 +157,7 @@ end;
 
 procedure TFrameChatSettings.RectangleBGClick(Sender: TObject);
 begin
-  TAnimator.AnimateFloatWithFinish(LayoutClient, 'RotationAngle', 2,
-    procedure
-    begin
-      TAnimator.AnimateFloat(LayoutClient, 'RotationAngle', 0, 0.2, TAnimationType.out, TInterpolationType.Back);
-    end,
-    0.2, TAnimationType.out, TInterpolationType.Elastic);
+  Cancel;
 end;
 
 procedure TFrameChatSettings.SetMode(const Value: TWindowMode);

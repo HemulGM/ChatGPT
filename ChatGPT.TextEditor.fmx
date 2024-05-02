@@ -49,6 +49,7 @@ inherited FrameTextEditor: TFrameTextEditor
       end
       object ButtonCancel: TButton
         Align = Right
+        Cancel = True
         Position.X = 340.000000000000000000
         Size.Width = 80.000000000000000000
         Size.Height = 46.000000000000000000

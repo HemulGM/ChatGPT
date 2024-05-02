@@ -18,19 +18,11 @@ object FrameMessage: TFrameMessage
       Align = Contents
       Fill.Color = xFF343541
       Locked = True
+      Sides = [Bottom]
       Size.Width = 735.000000000000000000
       Size.Height = 521.000000000000000000
       Size.PlatformDefault = False
-      Stroke.Kind = None
-    end
-    object Line1: TLine
-      Align = Contents
-      HitTest = False
-      LineType = Bottom
-      Size.Width = 735.000000000000000000
-      Size.Height = 521.000000000000000000
-      Size.PlatformDefault = False
-      Stroke.Color = x7F232120
+      Stroke.Color = xFF282B34
     end
     object LayoutContent: TLayout
       Align = HorzCenter
@@ -72,6 +64,7 @@ object FrameMessage: TFrameMessage
             TabOrder = 0
             Text = 'Execute'
             TextSettings.HorzAlign = Leading
+            TextSettings.Trimming = None
             OnClick = ButtonExecuteFuncClick
           end
           object LabelGPTFunc: TLabel
@@ -607,6 +600,7 @@ object FrameMessage: TFrameMessage
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini_left'
           TabOrder = 0
+          TextSettings.Trimming = None
           OnClick = ButtonCopyClick
           object PathCopy: TPath
             Align = Center
@@ -684,6 +678,7 @@ object FrameMessage: TFrameMessage
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_clearmini_right'
             TabOrder = 0
+            TextSettings.Trimming = None
             OnClick = ButtonActionsClick
             object Path4: TPath
               Align = Center
@@ -729,6 +724,7 @@ object FrameMessage: TFrameMessage
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 3
+          TextSettings.Trimming = None
           OnClick = ButtonCopyClick
           object Path5: TPath
             Align = Center
@@ -839,6 +835,7 @@ object FrameMessage: TFrameMessage
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 1
+          TextSettings.Trimming = None
           OnClick = ButtonDeleteClick
           object Path8: TPath
             Align = Center
@@ -903,6 +900,7 @@ object FrameMessage: TFrameMessage
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 2
+          TextSettings.Trimming = None
           OnClick = MenuItemEditClick
           object Path11: TPath
             Align = Center

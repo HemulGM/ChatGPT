@@ -12,7 +12,6 @@ type
   TFrameImage = class(TFrame)
     RectangleImage: TRectangle;
     AniIndicator: TAniIndicator;
-    FillRGBEffect1: TFillRGBEffect;
     PopupMenuCopy: TPopupMenu;
     MenuItemCopy: TMenuItem;
     LabelError: TLabel;

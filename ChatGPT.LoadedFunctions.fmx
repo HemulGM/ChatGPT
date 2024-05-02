@@ -6,6 +6,7 @@ inherited FrameLoadedFunctions: TFrameLoadedFunctions
   inherited RectangleBG: TRectangle
     Size.Width = 1035.000000000000000000
     Size.Height = 811.000000000000000000
+    OnClick = RectangleBGClick
   end
   object LayoutClient: TLayout
     Align = Center
@@ -38,6 +39,7 @@ inherited FrameLoadedFunctions: TFrameLoadedFunctions
       TabOrder = 2
       object ButtonOk: TButton
         Align = Right
+        Cancel = True
         Position.X = 340.000000000000000000
         Size.Width = 80.000000000000000000
         Size.Height = 46.000000000000000000
@@ -45,6 +47,7 @@ inherited FrameLoadedFunctions: TFrameLoadedFunctions
         StyleLookup = 'buttonstyle_menu'
         TabOrder = 2
         Text = 'OK'
+        TextSettings.Trimming = None
         OnClick = ButtonOkClick
       end
     end
@@ -63,7 +66,7 @@ inherited FrameLoadedFunctions: TFrameLoadedFunctions
       TextSettings.FontColor = xFFE9E9E9
       TextSettings.WordWrap = False
       Text = 'Loaded functions'
-      TabOrder = 49
+      TabOrder = 41
     end
     object Label20: TLabel
       Align = Top
@@ -83,7 +86,7 @@ inherited FrameLoadedFunctions: TFrameLoadedFunctions
       Text = 
         'To load third-party functions, you must place the dynamic librar' +
         'y in the "funcs" folder next to the program'#39's executable file'
-      TabOrder = 9
+      TabOrder = 5
       TabStop = False
     end
     object Rectangle1: TRectangle

@@ -29,7 +29,6 @@ type
     LayoutActions: TLayout;
     ButtonCopy: TButton;
     PathCopy: TPath;
-    Line1: TLine;
     LayoutCompact: TLayout;
     ButtonCopyCompact: TButton;
     Path5: TPath;
@@ -132,7 +131,7 @@ implementation
 uses
   System.Math, FMX.Platform, FMX.Memo.Style, FMX.Ani, ChatGPT.FrameCode,
   ChatGPT.FrameSVG, ChatGPT.FramePlainText, ChatGPT.FrameUIMessage,
-  ChatGPT.TextEditor, ChatGPT.Main;
+  ChatGPT.TextEditor, ChatGPT.Manager;
 
 {$R *.fmx}
 
@@ -312,8 +311,8 @@ end;
 
 procedure TFrameMessage.MenuItemEditClick(Sender: TObject);
 begin
-  FormMain.LayoutOverlay.BringToFront;
-  TFrameTextEditor.Execute(FormMain.LayoutOverlay,
+  Manager.OverlayContainer.BringToFront;
+  TFrameTextEditor.Execute(Manager.OverlayContainer,
     procedure(Frame: TFrameTextEditor)
     begin
       Frame.LabelCaption.Text := 'Message edit';

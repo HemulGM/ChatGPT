@@ -2,12 +2,16 @@
 
 interface
 
+{$IF DEFINED(ANDROID) OR DEFINED(IOS) OR DEFINED(IOS64)}
+  {$DEFINE MOBILE}
+{$ENDIF}
+
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Graphics, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.StdCtrls,
   FMX.Objects, FMX.Memo.Types, FMX.Controls.Presentation, FMX.ScrollBox,
   FMX.Memo, FMX.Layouts, FMX.Memo.Style, ChatGPT.Classes, FMX.TextLayout,
-  ChatGPT.Code;
+  ChatGPT.Code, FMX.RichEdit.Style;
 
 type
   TFrameText = class(TFrame)
@@ -19,10 +23,12 @@ type
     procedure MemoTextMouseLeave(Sender: TObject);
     procedure MemoTextClick(Sender: TObject);
     procedure TimerMouseOverTimer(Sender: TObject);
+    procedure MemoTextPresentationNameChoosing(Sender: TObject;
+      var PresenterName: string);
   private
     FOnWheel: TMouseWheelEvent;
     FCodeSyntax: TCodeSyntax;
-    FStyledMemo: TStyledMemo;
+    FStyledMemo: TRichEditStyled;
     FMouseMemo: TPointF;
     FUnderMouse: TUnderMouse;
     FUnderMouseAttr: TTextAttribute;
@@ -42,7 +48,7 @@ type
 implementation
 
 uses
-  System.Math, System.Net.URLClient, ChatGPT.Main;
+  System.Math, System.Net.URLClient;
 
 {$R *.fmx}
 
@@ -58,15 +64,15 @@ begin
   FUnderMouseAttr.Font := TFont.Create;
   FUnderMouseAttr.Font.Assign(MemoText.TextSettings.Font);
   FUnderMouseAttr.Font.Style := [TFontStyle.fsUnderline];
-  FStyledMemo := (MemoText.Presentation as TStyledMemo);
-  {$IFDEF ANDROID OR IOS OR IOS64}
+  FStyledMemo := (MemoText.Presentation as TRichEditStyled);
+  {$IFDEF MOBILE}
   MemoText.HitTest := False;
   {$ENDIF}
   MemoText.TextSettings.VertAlign := TTextAlign.Center;
   {$IFDEF NEW_MEMO}
-  FStyledMemo.OnUpdateLayoutParams := UpdateLayout;
-  {$IFDEF ANDROID OR IOS OR IOS64}
-  FStyledMemo.NeedSelectorPoints := True;
+  //FStyledMemo.OnUpdateLayoutParams := UpdateLayout;
+  {$IFDEF MOBILE}
+  //FStyledMemo.NeedSelectorPoints := True;
   {$ENDIF}
   {$ENDIF}
 end;
@@ -86,7 +92,8 @@ begin
     FCodeSyntax.Free;
     FCodeSyntax := nil;
   end;
-  FCodeSyntax := TCodeSyntax.FindSyntax('md', MemoText.Font, MemoText.FontColor);
+  //FCodeSyntax := TCodeSyntax.FindSyntax('md', MemoText.Font, MemoText.FontColor);
+  FStyledMemo.SetCodeSyntaxName('md', MemoText.Font, MemoText.FontColor);
   {$ENDIF}
   MemoText.Text := Data.Content;
   MemoText.TextSettings.WordWrap := True;
@@ -129,6 +136,12 @@ begin
   end;
 end;
 
+procedure TFrameText.MemoTextPresentationNameChoosing(Sender: TObject;
+  var PresenterName: string);
+begin
+  PresenterName := 'RichEditStyled';
+end;
+
 procedure TFrameText.SetOnWheel(const Value: TMouseWheelEvent);
 begin
   FOnWheel := Value;
@@ -156,7 +169,7 @@ end;
 procedure TFrameText.TimerMouseOverTimer(Sender: TObject);
 begin
   TimerMouseOver.Enabled := False;
-  {$IFDEF NEW_MEMO}
+  {$IFDEF NEW_MEMO}    {
   var BeginWord: Int64;
   var Line: Int64;
   var Str := FStyledMemo.GetWordAtPos(FMouseMemo.X, FMouseMemo.Y, BeginWord, Line);
@@ -178,7 +191,7 @@ begin
   FUnderMouse.WordLine := Line;
   FUnderMouse.Text := Str;
   FStyledMemo.UpdateVisibleLayoutParams;
-  MemoText.Repaint;
+  MemoText.Repaint;   }
   {$ENDIF}
 end;
 

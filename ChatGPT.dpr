@@ -1,9 +1,14 @@
 ﻿program ChatGPT;
 
+{$IF DEFINED(ANDROID) OR DEFINED(IOS) OR DEFINED(IOS64)}
+  {$DEFINE MOBILE}
+{$ENDIF}
+
 uses
   System.StartUpCopy,
   FMX.Forms,
-  Skia.FMX,
+  FMX.Types,
+  FMX.Skia,
   ChatGPT.Main in 'ChatGPT.Main.pas' {FormMain},
   OpenAI.API.Params in 'DelphiOpenAI\OpenAI.API.Params.pas',
   OpenAI.API in 'DelphiOpenAI\OpenAI.API.pas',
@@ -56,13 +61,24 @@ uses
   ChatGPT.LoadedFunctions in 'ChatGPT.LoadedFunctions.pas' {FrameLoadedFunctions: TFrame},
   ChatGPT.TextEditor in 'ChatGPT.TextEditor.pas' {FrameTextEditor},
   ChatGPT.ImportExport in 'ChatGPT.ImportExport.pas' {FrameImportExport: TFrame},
-  OpenAI.FineTuning in 'DelphiOpenAI\OpenAI.FineTuning.pas';
+  OpenAI.FineTuning in 'DelphiOpenAI\OpenAI.FineTuning.pas',
+  ChatGPT.Manager in 'ChatGPT.Manager.pas' {Manager: TDataModule},
+  OpenAI.Types in 'DelphiOpenAI\OpenAI.Types.pas',
+  OpenAI.Utils.Base64 in 'DelphiOpenAI\OpenAI.Utils.Base64.pas',
+  OpenAI.Utils.ObjectHolder in 'DelphiOpenAI\OpenAI.Utils.ObjectHolder.pas',
+  OpenAI.Assistants in 'DelphiOpenAI\OpenAI.Assistants.pas';
 
 {$R *.res}
 
 begin
+  //{$IFDEF MOBILE}
   GlobalUseSkia := True;
+  GlobalUseSkiaRasterWhenAvailable := False;
+  GlobalPreferredFramesPerSecond := 120;
+  //GlobalDisableSkiaCodecsReplacement := True;
+  //{$ENDIF}
   Application.Initialize;
+  Application.CreateForm(TManager, Manager);
   Application.CreateForm(TFormMain, FormMain);
   Application.Run;
 end.

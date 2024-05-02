@@ -21,10 +21,12 @@ type
     Rectangle1: TRectangle;
     procedure FrameResize(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);
+    procedure RectangleBGClick(Sender: TObject);
   private
     FLayoutClientWidth, FLayoutClientHeight: Single;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure Cancel; override;
     class procedure Execute(AParent: TControl);
   end;
 
@@ -34,11 +36,16 @@ var
 implementation
 
 uses
-  System.Math, ChatGPT.Main;
+  System.Math, ChatGPT.Manager;
 
 {$R *.fmx}
 
 procedure TFrameLoadedFunctions.ButtonOkClick(Sender: TObject);
+begin
+  Cancel;
+end;
+
+procedure TFrameLoadedFunctions.Cancel;
 begin
   Release;
 end;
@@ -49,7 +56,7 @@ begin
   Name := '';
   FLayoutClientWidth := LayoutClient.Width;
   FLayoutClientHeight := LayoutClient.Height;
-  for var Item in FormMain.GPTFuncList do
+  for var Item in Manager.GPTFuncList do
   begin
     var ListItem := TListBoxItem.Create(ListBoxItems);
     ListItem.Text := Item.GetDescription;
@@ -71,6 +78,11 @@ procedure TFrameLoadedFunctions.FrameResize(Sender: TObject);
 begin
   LayoutClient.Width := Min(FLayoutClientWidth, Width);
   LayoutClient.Height := Min(FLayoutClientHeight, Height);
+end;
+
+procedure TFrameLoadedFunctions.RectangleBGClick(Sender: TObject);
+begin
+  Cancel;
 end;
 
 end.
