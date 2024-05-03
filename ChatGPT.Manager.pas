@@ -84,7 +84,13 @@ constructor TManager.Create(AOwner: TComponent);
 begin
   inherited;
   FCanShare := GetCanShare;
+
+  {$IFDEF IOS}
+  FAppFolder := TPath.Combine(TPath.GetDocumentsPath, 'ChatGPT');
+  {$ELSE}
   FAppFolder := TPath.Combine(TPath.GetHomePath, 'ChatGPT');
+  {$ENDIF}
+
   FImagesCacheFolder := TPath.Combine(FAppFolder, 'images');
   FAudioCacheFolder := TPath.Combine(FAppFolder, 'audios');
   TBitmap.CachePath := FImagesCacheFolder;
