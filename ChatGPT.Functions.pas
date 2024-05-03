@@ -10,12 +10,12 @@ uses
   ChatGPT.Functions.external, ChatGPT.Functions.external.Intf;
 
 const
-  LibExtMask = {$IFDEF MSWINDOWS} '*.dll'; {$ENDIF}
-                {$IFDEF LINUX}  '*.so';  {$ENDIF}
-                {$IFDEF MACOS}  '*.o';  {$ENDIF}
-                {$IFDEF IOS}  '*.o';  {$ENDIF}
-                {$IFDEF IOS64}  '*.o';  {$ENDIF}
-                {$IFDEF ANDROID}  '*.so';  {$ENDIF}
+  LibExtMask = {$IFDEF MSWINDOWS}     '*.dll'; {$ENDIF}
+               {$IFDEF LINUX}         '*.so';  {$ENDIF}
+               {$IF DEFINED(MACOS) OR
+                    DEFINED(IOS) OR
+                    DEFINED(IOS64)}   '*.o';   {$ENDIF}
+               {$IFDEF ANDROID}       '*.so';  {$ENDIF}
 
 type
   TGPTFunctionsFunc = function: TArray<IChatFunctionExternal>;
