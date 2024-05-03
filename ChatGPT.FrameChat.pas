@@ -1161,7 +1161,7 @@ begin
   ButtonExample1.OnClick := nil;
   ButtonExample2.OnClick := nil;
   ButtonExample3.OnClick := nil;
-  (MemoQuery.Presentation as TStyledMemo).NeedSelectorPoints := True;
+  //(MemoQuery.Presentation as TStyledMemo).NeedSelectorPoints := True;
   ButtonExportImport.Visible := False;
   {$ENDIF}
 
