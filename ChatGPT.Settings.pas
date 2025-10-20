@@ -235,7 +235,7 @@ begin
   FLayoutClientWidth := LayoutClient.Width;
   FLayoutClientHeight := LayoutClient.Height;
   VertScrollBoxContent.AniCalculations.Animation := True;
-  VertScrollBoxContent.AniCalculations.Interval := 1;
+  //VertScrollBoxContent.AniCalculations.Interval := 1;
   VertScrollBoxContent.ViewportPosition := TPoint.Zero;
 end;
 
@@ -309,7 +309,7 @@ begin
   Result := inherited;
   Result.DefaultItemStyles.ItemStyle := 'listboxitemstyle_model';
   Result.AniCalculations.Animation := True;
-  Result.AniCalculations.Interval := 1;
+  //Result.AniCalculations.Interval := 1;
 end;
 
 procedure TStyledComboEdit.MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);

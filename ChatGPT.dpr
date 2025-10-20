@@ -66,17 +66,18 @@ uses
   OpenAI.Types in 'DelphiOpenAI\OpenAI.Types.pas',
   OpenAI.Utils.Base64 in 'DelphiOpenAI\OpenAI.Utils.Base64.pas',
   OpenAI.Utils.ObjectHolder in 'DelphiOpenAI\OpenAI.Utils.ObjectHolder.pas',
-  OpenAI.Assistants in 'DelphiOpenAI\OpenAI.Assistants.pas';
+  OpenAI.Assistants in 'DelphiOpenAI\OpenAI.Assistants.pas',
+  OpenAI.Utils.JSON.Cleaner in 'DelphiOpenAI\OpenAI.Utils.JSON.Cleaner.pas';
 
 {$R *.res}
 
 begin
-  //{$IFDEF MOBILE}
+  {$IFDEF MOBILE}
   GlobalUseSkia := True;
-  GlobalUseSkiaRasterWhenAvailable := False;
-  GlobalPreferredFramesPerSecond := 120;
+  //GlobalUseSkiaRasterWhenAvailable := False;
+  //GlobalPreferredFramesPerSecond := 120;
   //GlobalDisableSkiaCodecsReplacement := True;
-  //{$ENDIF}
+  {$ENDIF}
   Application.Initialize;
   Application.CreateForm(TManager, Manager);
   Application.CreateForm(TFormMain, FormMain);

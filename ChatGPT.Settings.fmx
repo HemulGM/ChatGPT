@@ -55,7 +55,6 @@ inherited FrameSettings: TFrameSettings
           Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
-          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -235,7 +234,6 @@ inherited FrameSettings: TFrameSettings
           TabOrder = 0
           Text = 'Obtain API token from your Open AI'
           TextSettings.HorzAlign = Leading
-          TextSettings.Trimming = None
           ParentShowHint = False
           ShowHint = True
           OnClick = ButtonGetTokenClick
@@ -315,7 +313,6 @@ inherited FrameSettings: TFrameSettings
           Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
-          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -536,7 +533,6 @@ inherited FrameSettings: TFrameSettings
           Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
-          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -674,7 +670,6 @@ inherited FrameSettings: TFrameSettings
           Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
-          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -742,7 +737,6 @@ inherited FrameSettings: TFrameSettings
           Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
-          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -896,7 +890,6 @@ inherited FrameSettings: TFrameSettings
           Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
-          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -959,7 +952,6 @@ inherited FrameSettings: TFrameSettings
           Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
-          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -1002,7 +994,6 @@ inherited FrameSettings: TFrameSettings
           Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
-          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -1063,7 +1054,6 @@ inherited FrameSettings: TFrameSettings
           Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
-          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -1275,8 +1265,8 @@ inherited FrameSettings: TFrameSettings
         Size.PlatformDefault = False
         StyleLookup = 'memostyle_normal'
         TabOrder = 60
-        Viewport.Width = 388.000000000000000000
-        Viewport.Height = 66.000000000000000000
+        Viewport.Width = 404.000000000000000000
+        Viewport.Height = 82.000000000000000000
       end
       object Label33: TLabel
         Align = Top
@@ -1395,7 +1385,6 @@ inherited FrameSettings: TFrameSettings
           TabOrder = 0
           Text = 'View loaded functions'
           TextSettings.HorzAlign = Leading
-          TextSettings.Trimming = None
           ParentShowHint = False
           ShowHint = True
           OnClick = ButtonLoadedFunctionsClick
@@ -1485,7 +1474,6 @@ inherited FrameSettings: TFrameSettings
           Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
-          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -1649,7 +1637,6 @@ inherited FrameSettings: TFrameSettings
         StyleLookup = 'buttonstyle_menu'
         TabOrder = 2
         Text = 'CANCEL'
-        TextSettings.Trimming = None
         ParentShowHint = False
         ShowHint = True
         OnClick = ButtonCancelClick
@@ -1663,7 +1650,6 @@ inherited FrameSettings: TFrameSettings
         StyleLookup = 'buttonstyle_menu'
         TabOrder = 3
         Text = 'OK'
-        TextSettings.Trimming = None
         OnClick = ButtonOkClick
       end
     end

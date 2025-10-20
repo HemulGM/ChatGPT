@@ -125,7 +125,7 @@ begin
   FLayoutClientWidth := LayoutClient.Width;
   FLayoutClientHeight := LayoutClient.Height;
   VertScrollBox.AniCalculations.Animation := True;
-  VertScrollBox.AniCalculations.Interval := 1;
+  //VertScrollBox.AniCalculations.Interval := 1;
   VertScrollBox.AniCalculations.Averaging := True;
   VertScrollBox.ViewportPosition := TPoint.Zero;
   ComboEditModel.Items.Clear;

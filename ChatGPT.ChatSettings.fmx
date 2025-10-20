@@ -48,7 +48,6 @@ inherited FrameChatSettings: TFrameChatSettings
         StyleLookup = 'buttonstyle_menu'
         TabOrder = 0
         Text = 'CANCEL'
-        TextSettings.Trimming = None
         ParentShowHint = False
         ShowHint = True
         OnClick = ButtonCancelClick
@@ -62,7 +61,6 @@ inherited FrameChatSettings: TFrameChatSettings
         StyleLookup = 'buttonstyle_menu'
         TabOrder = 1
         Text = 'OK'
-        TextSettings.Trimming = None
         OnClick = ButtonOkClick
       end
     end
@@ -116,7 +114,6 @@ inherited FrameChatSettings: TFrameChatSettings
           Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
-          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000
@@ -162,7 +159,6 @@ inherited FrameChatSettings: TFrameChatSettings
           Touch.InteractiveGestures = [LongTap]
           CanFocus = False
           Cursor = crArrow
-          TextSettings.Trimming = None
           Hint = 'Clear'
           Size.Width = 28.000000000000000000
           Size.Height = 29.000000000000000000

@@ -798,9 +798,9 @@ constructor TFormMain.Create(AOwner: TComponent);
 begin
   inherited;
   FMode := TWindowMode.Full;
-  TAnimation.AniFrameRate := 300;
+  //TAnimation.AniFrameRate := 300;
   ListBoxChatList.AniCalculations.Animation := True;
-  ListBoxChatList.AniCalculations.Interval := 1;
+  //ListBoxChatList.AniCalculations.Interval := 1;
   ListBoxChatList.AniCalculations.Averaging := True;
   ListBoxChatList.DisableDisappear := True;
   {$IFDEF NEW_MEMO}
@@ -829,6 +829,7 @@ begin
   ListBoxChatList.AniCalculations.Animation := True;
   FGPTFuncList := TList<IChatFunction>.Create;
   FOpenAI := TOpenAIComponent.Create(Self);
+  //FOpenAI.DisableBearerPrefix := True;
   FOpenAI.API.ConnectionTimeout := 30000;
 
   Manager.OverlayContainer := LayoutOverlay;

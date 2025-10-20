@@ -6,16 +6,10 @@
         <Projects Include="ChatGPT.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="ChatGPT_Console.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="FunctionsLib\gpt_function_owm.dproj">
             <Dependencies/>
         </Projects>
         <Projects Include="FunctionsLib\gpt_function_cmd.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="TProcessDelphi\demo-simple\demo.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -35,15 +29,6 @@
     <Target Name="ChatGPT:Make">
         <MSBuild Projects="ChatGPT.dproj" Targets="Make"/>
     </Target>
-    <Target Name="ChatGPT_Console">
-        <MSBuild Projects="ChatGPT_Console.dproj"/>
-    </Target>
-    <Target Name="ChatGPT_Console:Clean">
-        <MSBuild Projects="ChatGPT_Console.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="ChatGPT_Console:Make">
-        <MSBuild Projects="ChatGPT_Console.dproj" Targets="Make"/>
-    </Target>
     <Target Name="gpt_function_owm">
         <MSBuild Projects="FunctionsLib\gpt_function_owm.dproj"/>
     </Target>
@@ -62,23 +47,14 @@
     <Target Name="gpt_function_cmd:Make">
         <MSBuild Projects="FunctionsLib\gpt_function_cmd.dproj" Targets="Make"/>
     </Target>
-    <Target Name="demo">
-        <MSBuild Projects="TProcessDelphi\demo-simple\demo.dproj"/>
-    </Target>
-    <Target Name="demo:Clean">
-        <MSBuild Projects="TProcessDelphi\demo-simple\demo.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="demo:Make">
-        <MSBuild Projects="TProcessDelphi\demo-simple\demo.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="ChatGPT;ChatGPT_Console;gpt_function_owm;gpt_function_cmd;demo"/>
+        <CallTarget Targets="ChatGPT;gpt_function_owm;gpt_function_cmd"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="ChatGPT:Clean;ChatGPT_Console:Clean;gpt_function_owm:Clean;gpt_function_cmd:Clean;demo:Clean"/>
+        <CallTarget Targets="ChatGPT:Clean;gpt_function_owm:Clean;gpt_function_cmd:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="ChatGPT:Make;ChatGPT_Console:Make;gpt_function_owm:Make;gpt_function_cmd:Make;demo:Make"/>
+        <CallTarget Targets="ChatGPT:Make;gpt_function_owm:Make;gpt_function_cmd:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

@@ -1029,7 +1029,8 @@ begin
             Params.Messages(FBuffer.ToArray);
             if FBuffer.MaxTokensForQuery <> 0 then
               Params.MaxTokens(FBuffer.MaxTokensForQuery);
-            Params.Temperature(Temperature);
+            if Temperature <> 1 then
+              Params.Temperature(Temperature);
             if Length(Funcs) > 0 then
             begin
               Params.Tools(CreateTools(Funcs));
@@ -1145,7 +1146,7 @@ begin
   Temperature := 0.2;
   Name := '';
   VertScrollBoxChat.AniCalculations.Animation := True;
-  VertScrollBoxChat.AniCalculations.Interval := 1;
+  //VertScrollBoxChat.AniCalculations.Interval := 1;
   VertScrollBoxChat.AniCalculations.Averaging := True;
   {$IFDEF MOBILE}
   VertScrollBoxChat.AniCalculations.BoundsAnimation := True;

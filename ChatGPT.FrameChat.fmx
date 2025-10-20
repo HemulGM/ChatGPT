@@ -347,7 +347,6 @@ object FrameChat: TFrameChat
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.FontColor = xFFECECF1
             TextSettings.WordWrap = True
-            TextSettings.Trimming = None
             OnClick = ButtonExample3Click
           end
           object ButtonExample2: TButton
@@ -370,7 +369,6 @@ object FrameChat: TFrameChat
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.FontColor = xFFECECF1
             TextSettings.WordWrap = True
-            TextSettings.Trimming = None
             OnClick = ButtonExample2Click
           end
           object ButtonExample1: TButton
@@ -393,7 +391,6 @@ object FrameChat: TFrameChat
             TextSettings.Font.Size = 14.000000000000000000
             TextSettings.FontColor = xFFECECF1
             TextSettings.WordWrap = True
-            TextSettings.Trimming = None
             OnClick = ButtonExample1Click
           end
           object Layout5: TLayout
@@ -953,8 +950,8 @@ object FrameChat: TFrameChat
           StyledSettings = [Family, Style]
           Opacity = 0.800000011920929000
           Margins.Top = -8.000000000000000000
-          Size.Width = 50.000000000000000000
-          Size.Height = 58.000000000000000000
+          Size.Width = 1.000000000000000000
+          Size.Height = 29.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Size = 16.000000000000000000
           TextSettings.FontColor = xFFACACBE
@@ -990,7 +987,6 @@ object FrameChat: TFrameChat
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_clearmini'
             TabOrder = 3
-            TextSettings.Trimming = None
             ParentShowHint = False
             ShowHint = True
             OnClick = ButtonAudioClick
@@ -1028,7 +1024,6 @@ object FrameChat: TFrameChat
             StyleLookup = 'buttonstyle_clearmini'
             TabOrder = 5
             Text = 'ButtonSend'
-            TextSettings.Trimming = None
             OnClick = ButtonSendClick
             object PathSend: TPath
               Align = Center
@@ -1136,7 +1131,6 @@ object FrameChat: TFrameChat
             StyleLookup = 'buttonstyle_clearmini'
             TabOrder = 4
             Text = 'ButtonSend'
-            TextSettings.Trimming = None
             OnClick = ButtonImageClick
             object RectangleImageMode: TRectangle
               Align = Client
@@ -1232,7 +1226,6 @@ object FrameChat: TFrameChat
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 0
           Text = 'ButtonTranslate'
-          TextSettings.Trimming = None
           OnClick = ButtonSettingsClick
           object Path9: TPath
             Align = Center
@@ -1644,7 +1637,6 @@ object FrameChat: TFrameChat
         TabOrder = 2
         Text = 'Continue'
         TextSettings.HorzAlign = Leading
-        TextSettings.Trimming = None
         OnClick = ButtonContinueClick
         object ShadowEffect2: TShadowEffect
           Distance = 0.001000000047497451
@@ -1663,7 +1655,6 @@ object FrameChat: TFrameChat
         StyleLookup = 'buttonstyle_import_export'
         TabOrder = 1
         Text = 'Import && Export'
-        TextSettings.Trimming = None
         OnClick = ButtonExportImportClick
         object ShadowEffect3: TShadowEffect
           Distance = 0.001000000047497451
@@ -1711,7 +1702,6 @@ object FrameChat: TFrameChat
         TabOrder = 0
         Text = '  Retry'
         TextSettings.HorzAlign = Leading
-        TextSettings.Trimming = None
         OnClick = ButtonRetryClick
         object ShadowEffect1: TShadowEffect
           Distance = 0.001000000047497451
@@ -1743,7 +1733,6 @@ object FrameChat: TFrameChat
         StyleLookup = 'button_scrolldown'
         TabOrder = 0
         Text = 'button_scrolldown'
-        TextSettings.Trimming = None
         OnClick = ButtonScrollDownClick
       end
     end
