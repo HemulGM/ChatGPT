@@ -21,6 +21,10 @@ type
     function CreateListBox: TComboEditListBox; override;
   end;
 
+  TTrackBar = class(FMX.StdCtrls.TTrackBar)
+    procedure MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean); override;
+  end;
+
   TFrameSettings = class(TFrameOveraly)
     LayoutClient: TLayout;
     RectangleFrame: TRectangle;
@@ -139,8 +143,7 @@ type
     procedure TrackBarFPTracking(Sender: TObject);
     procedure TrackBarTopPTracking(Sender: TObject);
     procedure ButtonLoadedFunctionsClick(Sender: TObject);
-    procedure ComboEditModelMouseWheel(Sender: TObject; Shift: TShiftState;
-      WheelDelta: Integer; var Handled: Boolean);
+    procedure ComboEditModelMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
   private
     FProcCallback: TProc<TFrameSettings, Boolean>;
     FLayoutClientWidth, FLayoutClientHeight: Single;
@@ -194,8 +197,7 @@ begin
   Release;
 end;
 
-procedure TFrameSettings.ComboEditModelMouseWheel(Sender: TObject;
-  Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
+procedure TFrameSettings.ComboEditModelMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
 begin
   Handled := True;
   VertScrollBoxContent.AniCalculations.MouseWheel(0, -WheelDelta);
@@ -317,9 +319,18 @@ begin
   Handled := False;
 end;
 
+{ TTrackBar }
+
+procedure TTrackBar.MouseWheel(Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
+begin
+  Handled := False;
+end;
+
 initialization
   //TPresentationProxyFactory.Current.Unregister(TComboEdit, TControlType.Styled, TStyledPresentationProxy<FMX.ComboEdit.Style.TStyledComboEdit>);
   //TPresentationProxyFactory.Current.Register(TComboEdit, TControlType.Styled, TStyledPresentationProxy<TStyledComboEdit>);
+
+
 
 finalization
   //TPresentationProxyFactory.Current.Unregister(TComboEdit, TControlType.Styled, TStyledPresentationProxy<TStyledComboEdit>);

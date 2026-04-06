@@ -30,19 +30,10 @@ object FrameText: TFrameText
     Size.PlatformDefault = False
     StyleLookup = 'memostyle_clear'
     TabOrder = 0
-    OnClick = MemoTextClick
-    OnMouseMove = MemoTextMouseMove
+    OnApplyStyleLookup = MemoTextApplyStyleLookup
     OnMouseWheel = MemoTextMouseWheel
-    OnMouseLeave = MemoTextMouseLeave
     OnPresentationNameChoosing = MemoTextPresentationNameChoosing
-    Viewport.Width = 575.000000000000000000
+    Viewport.Width = 565.000000000000000000
     Viewport.Height = 387.000000000000000000
-  end
-  object TimerMouseOver: TTimer
-    Enabled = False
-    Interval = 50
-    OnTimer = TimerMouseOverTimer
-    Left = 256
-    Top = 144
   end
 end

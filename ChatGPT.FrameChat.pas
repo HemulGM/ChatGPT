@@ -132,6 +132,7 @@ type
     LabelTest: TLabel;
     Rectangle2: TRectangle;
     Label3: TLabel;
+    LayoutAttachments: TLayout;
     procedure LayoutSendResize(Sender: TObject);
     procedure MemoQueryChange(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
@@ -879,8 +880,9 @@ begin
           begin
             Params.Prompt(Prompt);
             Params.ResponseFormat(TImageResponseFormat.Url);
-            Params.N(4);
-            Params.Model('');
+            Params.Quality(TImageQuality.Standard);
+            //Params.N(4);
+            Params.Model('dall-e-3');
             Params.Size(TImageSize.s1024x1024);
             Params.User(FChatId);
           end);
@@ -890,15 +892,6 @@ begin
             AppendMessages(Images);
           end);
       except
-        on E: OpenAIException do
-        begin
-          ShowError(E.Message);
-          LastRequest :=
-            procedure
-            begin
-              RequestImage(Prompt);
-            end;
-        end;
         on E: Exception do
         begin
           ShowError(E.Message);
@@ -1246,7 +1239,9 @@ begin
   LabelSendTip.Visible := MemoQuery.Text.IsEmpty;
   var H: Single := 0;
   if not LabelSendTip.Visible then
-    H := H + MemoQuery.ContentBounds.Height;
+    H := H + Round(MemoQuery.ContentBounds.Height)
+  else
+    H := H + 21;
   //LayoutAudioRecording
   //LayoutSend.Height := Max(LayoutSend.TagFloat, Min(H, 400));
 
@@ -1254,6 +1249,8 @@ begin
   MemoQuery.Height := Max(26, MaxMemoH);
   H := H + LayoutSend.Padding.Top + LayoutSend.Padding.Bottom + LayoutQuery.Padding.Top + LayoutQuery.Padding.Bottom;
   TAnimator.DetachPropertyAnimation(LayoutSend, 'Height');
+  if LayoutAttachments.Visible then
+    H := H + LayoutAttachments.Height;
   TAnimator.AnimateFloat(LayoutSend, 'Height', Max(LayoutSend.TagFloat, Min(H, 400)), 0.1);
   MemoQuery.ShowScrollBars := H > 400;
 

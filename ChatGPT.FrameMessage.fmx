@@ -64,7 +64,6 @@ object FrameMessage: TFrameMessage
             TabOrder = 0
             Text = 'Execute'
             TextSettings.HorzAlign = Leading
-            TextSettings.Trimming = None
             OnClick = ButtonExecuteFuncClick
           end
           object LabelGPTFunc: TLabel
@@ -600,7 +599,6 @@ object FrameMessage: TFrameMessage
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini_left'
           TabOrder = 0
-          TextSettings.Trimming = None
           OnClick = ButtonCopyClick
           object PathCopy: TPath
             Align = Center
@@ -678,7 +676,6 @@ object FrameMessage: TFrameMessage
             Size.PlatformDefault = False
             StyleLookup = 'buttonstyle_clearmini_right'
             TabOrder = 0
-            TextSettings.Trimming = None
             OnClick = ButtonActionsClick
             object Path4: TPath
               Align = Center
@@ -717,14 +714,13 @@ object FrameMessage: TFrameMessage
         TabOrder = 4
         object ButtonCopyCompact: TButton
           Align = Right
-          Hint = 'Copy text'
+          Hint = 'Copy text/image urls'
           Position.X = 491.000000000000000000
           Size.Width = 30.000000000000000000
           Size.Height = 30.000000000000000000
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 3
-          TextSettings.Trimming = None
           OnClick = ButtonCopyClick
           object Path5: TPath
             Align = Center
@@ -835,7 +831,6 @@ object FrameMessage: TFrameMessage
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 1
-          TextSettings.Trimming = None
           OnClick = ButtonDeleteClick
           object Path8: TPath
             Align = Center
@@ -900,7 +895,6 @@ object FrameMessage: TFrameMessage
           Size.PlatformDefault = False
           StyleLookup = 'buttonstyle_clearmini'
           TabOrder = 2
-          TextSettings.Trimming = None
           OnClick = MenuItemEditClick
           object Path11: TPath
             Align = Center

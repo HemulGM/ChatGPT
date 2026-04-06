@@ -10,3 +10,6 @@
 [submodule "TProcessDelphi"]
 	path = TProcessDelphi
 	url = https://github.com/HemulGM/TProcessDelphi
+[submodule "FMXRichMemo"]
+	path = FMXRichMemo
+	url = https://github.com/HemulGM/FMXRichMemo

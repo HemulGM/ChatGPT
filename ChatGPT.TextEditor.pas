@@ -21,6 +21,8 @@ type
     procedure FrameResize(Sender: TObject);
     procedure ButtonOkClick(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
+    procedure MemoTextPresentationNameChoosing(Sender: TObject;
+      var PresenterName: string);
   private
     FProcCallback: TProc<TFrameTextEditor, Boolean>;
     FLayoutClientWidth, FLayoutClientHeight: Single;
@@ -83,6 +85,13 @@ procedure TFrameTextEditor.FrameResize(Sender: TObject);
 begin
   LayoutClient.Width := Min(FLayoutClientWidth, Width);
   LayoutClient.Height := Min(FLayoutClientHeight, Height);
+end;
+
+procedure TFrameTextEditor.MemoTextPresentationNameChoosing(Sender: TObject;
+  var PresenterName: string);
+begin
+  inherited;
+  PresenterName := 'RichEditStyled';
 end;
 
 end.

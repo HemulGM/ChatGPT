@@ -191,7 +191,7 @@ inherited FrameSettings: TFrameSettings
           Max = 20.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 20.000000000000000000
+          Size.Height = 19.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           Value = 10.000000000000000000
@@ -357,7 +357,7 @@ inherited FrameSettings: TFrameSettings
           Min = -20.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 20.000000000000000000
+          Size.Height = 19.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           OnTracking = TrackBarPPTracking
@@ -458,7 +458,7 @@ inherited FrameSettings: TFrameSettings
           Min = -20.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 20.000000000000000000
+          Size.Height = 19.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           OnTracking = TrackBarFPTracking
@@ -1139,7 +1139,7 @@ inherited FrameSettings: TFrameSettings
           Max = 10.000000000000000000
           Orientation = Horizontal
           Size.Width = 370.000000000000000000
-          Size.Height = 20.000000000000000000
+          Size.Height = 19.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
           Value = 10.000000000000000000
@@ -1265,8 +1265,8 @@ inherited FrameSettings: TFrameSettings
         Size.PlatformDefault = False
         StyleLookup = 'memostyle_normal'
         TabOrder = 60
-        Viewport.Width = 404.000000000000000000
-        Viewport.Height = 82.000000000000000000
+        Viewport.Width = 388.000000000000000000
+        Viewport.Height = 66.000000000000000000
       end
       object Label33: TLabel
         Align = Top

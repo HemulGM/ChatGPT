@@ -548,23 +548,16 @@ begin
       TBitmap.Client.ProxySettings := OpenAI.API.ProxySettings;
 
       var Headers: TNetHeaders;
-      try
-        var JHeaders: TJSONArray;
-        if JSON.TryGetValue<TJSONArray>('custom_headers', JHeaders) then
-          for var JHead in JHeaders do
-            if JHead is TJSONObject then
-            begin
-              var HName: string;
-              var HValue: string;
-              if JHead.TryGetValue('name', HName) and JHead.TryGetValue('value', HValue) then
-              begin
-                SetLength(Headers, Length(Headers) + 1);
-                Headers[High(Headers)] := TNetHeader.Create(HName, HValue);
-              end;
-            end;
-      except
-        //
-      end;
+      var JHeaders: TJSONArray;
+      if JSON.TryGetValue<TJSONArray>('custom_headers', JHeaders) then
+        for var JHead in JHeaders do
+          if JHead is TJSONObject then
+          begin
+            var HName: string;
+            var HValue: string;
+            if JHead.TryGetValue('name', HName) and JHead.TryGetValue('value', HValue) then
+              Headers := Headers + [TNetHeader.Create(HName, HValue)];
+          end;
 
       Width := Max(Trunc(Constraints.MinWidth), JSON.GetValue<Integer>('width', Width));
       Height := Max(Trunc(Constraints.MinHeight), JSON.GetValue<Integer>('height', Height));

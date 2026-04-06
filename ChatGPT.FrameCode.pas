@@ -27,26 +27,18 @@ type
     LayoutCopyCode: TLayout;
     PathCopy: TPath;
     LabelCopy: TLabel;
-    TimerMouseOver: TTimer;
     procedure FrameResize(Sender: TObject);
     procedure LayoutCopyCodeClick(Sender: TObject);
     procedure MemoCodeMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
     procedure LabelCopyResize(Sender: TObject);
-    procedure MemoCodeMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
-    procedure MemoCodeMouseLeave(Sender: TObject);
-    procedure MemoCodeClick(Sender: TObject);
     procedure RectangleClientMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure RectangleClientMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
     procedure RectangleClientMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure TimerMouseOverTimer(Sender: TObject);
-    procedure MemoCodePresentationNameChoosing(Sender: TObject;
-      var PresenterName: string);
+    procedure MemoCodePresentationNameChoosing(Sender: TObject; var PresenterName: string);
   private
     FOnWheel: TMouseWheelEvent;
     FStyledMemo: TRichEditStyled;
-    FUnderMouse: TUnderMouse;
-    FMouseMemo: TPointF;
-    FUnderMouseAttr: TTextAttribute;
     FMouseDown: TPointF;
     procedure FOnStyleLookup(Sender: TObject);
     procedure SetOnWheel(const Value: TMouseWheelEvent);
@@ -73,13 +65,8 @@ constructor TFrameCode.Create(AOwner: TComponent);
 begin
   inherited;
   Name := '';
-
   MemoCode.DisableDisappear := True;
   FStyledMemo := (MemoCode.Presentation as TRichEditStyled);
-  FUnderMouseAttr.Color := MemoCode.TextSettings.FontColor; // $FF006CE8;
-  FUnderMouseAttr.Font := TFont.Create;
-  FUnderMouseAttr.Font.Assign(MemoCode.TextSettings.Font);
-  FUnderMouseAttr.Font.Style := [TFontStyle.fsUnderline];
   {$IFDEF MOBILE}
   MemoCode.HitTest := False;
   {$ENDIF}
@@ -88,7 +75,6 @@ end;
 
 destructor TFrameCode.Destroy;
 begin
-  FUnderMouseAttr.Font.Free;
   inherited;
 end;
 
@@ -128,6 +114,11 @@ end;
 
 procedure TFrameCode.FOnStyleLookup(Sender: TObject);
 begin
+  (MemoCode.Presentation as TRichEditStyled).RoundedSelection := True;
+  (MemoCode.Presentation as TRichEditStyled).ShowGutter := True;
+  (MemoCode.Presentation as TRichEditStyled).GutterRightMargin := 4;
+  (MemoCode.Presentation as TRichEditStyled).UseSelectedTextColor := True;
+  (MemoCode.Presentation as TRichEditStyled).SelectedTextColor := TAlphaColorRec.White;
   FrameResize(nil);
 end;
 
@@ -138,13 +129,6 @@ end;
 
 function TFrameCode.GetContentHeight: Single;
 begin
-  {$IFDEF NEW_MEMO}
-  //(MemoCode.Presentation as TFixedStyledMemo).InvalidateContentSize;
-  //(MemoCode.Presentation as TFixedStyledMemo).PrepareForPaint;
-  {$ELSE}
-  FStyledMemo.InvalidateContentSize;
-  FStyledMemo.PrepareForPaint;
-  {$ENDIF}
   Result := Max(MemoCode.ContentBounds.Height + 20, 30) +
     MemoCode.Margins.Top +
     MemoCode.Margins.Bottom +
@@ -168,50 +152,17 @@ begin
     ShowUIMessage('Clipboard error');
 end;
 
-procedure TFrameCode.MemoCodeClick(Sender: TObject);
-begin
-  if (FUnderMouse.WordLine <> -1) and (not FUnderMouse.Text.IsEmpty) and (MemoCode.SelLength = 0) then
-    OpenUrl(FUnderMouse.Text);
-end;
-
-procedure TFrameCode.MemoCodeMouseLeave(Sender: TObject);
-begin
-  {$IFDEF NEW_MEMO}
-  TimerMouseOver.Enabled := False;
-  FUnderMouse.WordLine := -1;
-  FStyledMemo.UpdateVisibleLayoutParams;
-  FStyledMemo.Repaint;
-  {$ENDIF}
-end;
-
-procedure TFrameCode.MemoCodeMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
-begin
-  {$IFDEF NEW_MEMO}
-  TimerMouseOver.Enabled := False;
-  TimerMouseOver.Enabled := True;
-  FMouseMemo := TPointF.Create(X, Y);
-  {$ENDIF}
-end;
-
 procedure TFrameCode.MemoCodeMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; var Handled: Boolean);
-begin    {
-  if ssShift in Shift then
-  begin
-    //MemoCode.DisableMouseWheel := False;
-    //MemoCode.Model
-    //Exit;
-  end;
-
+begin
   if (MemoCode.SelLength > 0) and (Root.Captured = IControl(FStyledMemo)) then
   begin
     Handled := True;
     if Assigned(FOnWheel) then
       FOnWheel(Sender, Shift, WheelDelta, Handled);
-  end;    }
+  end;
 end;
 
-procedure TFrameCode.MemoCodePresentationNameChoosing(Sender: TObject;
-  var PresenterName: string);
+procedure TFrameCode.MemoCodePresentationNameChoosing(Sender: TObject; var PresenterName: string);
 begin
   PresenterName := 'RichEditStyled';
 end;
@@ -243,31 +194,7 @@ end;
 
 procedure TFrameCode.TimerMouseOverTimer(Sender: TObject);
 begin
-  TimerMouseOver.Enabled := False;
-  {$IFDEF NEW_MEMO}    {
-  var BeginWord: Int64;
-  var Line: Int64;
-  var Str := FStyledMemo.GetWordAtPos(FMouseMemo.X, FMouseMemo.Y, BeginWord, Line);
-  if (not Str.IsEmpty) and (Str.ToLower.StartsWith('http')) then
-  try
-    TURI.Create(Str);
-    MemoCode.Cursor := crHandPoint;
-  except
-    MemoCode.Cursor := crDefault;
-    Line := -1;
-  end
-  else
-  begin
-    MemoCode.Cursor := crDefault;
-    Line := -1;
-  end;
-  FUnderMouse.WordStart := BeginWord;
-  FUnderMouse.WordLength := Str.Length;
-  FUnderMouse.WordLine := Line;
-  FUnderMouse.Text := Str;
-  FStyledMemo.UpdateVisibleLayoutParams;
-  FStyledMemo.Repaint;      }
-  {$ENDIF}
+
 end;
 
 { TMemo }

@@ -251,6 +251,7 @@ begin
   IsAudio := False;
   FlowLayoutImages.Visible := False;
   MenuItemEdit.Enabled := False;
+  ButtonEditCompact.Enabled := False;
   LayoutFunc.Visible := False;
 end;
 
@@ -618,6 +619,7 @@ procedure TFrameMessage.SetText(const Value: string);
 begin
   FText := Value.Trim([' ', #13, #10]);
   MenuItemEdit.Enabled := not FText.IsEmpty;
+  ButtonEditCompact.Enabled := not FText.IsEmpty;
   UpdateMode;
   ParseText(FText);
 end;

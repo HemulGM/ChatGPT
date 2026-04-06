@@ -943,18 +943,19 @@ object FrameChat: TFrameChat
         OnKeyUp = MemoQueryKeyUp
         OnKeyDown = MemoQueryKeyDown
         OnViewportPositionChange = MemoQueryViewportPositionChange
-        Viewport.Width = 618.000000000000000000
+        Viewport.Width = 608.000000000000000000
         Viewport.Height = 26.000000000000000000
         object LabelSendTip: TLabel
-          Align = Client
+          Align = Contents
           StyledSettings = [Family, Style]
           Opacity = 0.800000011920929000
-          Margins.Top = -8.000000000000000000
-          Size.Width = 1.000000000000000000
-          Size.Height = 29.000000000000000000
+          Margins.Right = -200.000000000000000000
+          Size.Width = 201.000000000000000000
+          Size.Height = 21.000000000000000000
           Size.PlatformDefault = False
           TextSettings.Font.Size = 16.000000000000000000
           TextSettings.FontColor = xFFACACBE
+          TextSettings.WordWrap = False
           TextSettings.Trimming = None
           Text = 'Send a message.'
           TabOrder = 0
@@ -1585,6 +1586,16 @@ object FrameChat: TFrameChat
           Text = '0:00'
           TabOrder = 1
         end
+      end
+      object LayoutAttachments: TLayout
+        Align = MostTop
+        Position.X = 26.000000000000000000
+        Position.Y = 12.000000000000000000
+        Size.Width = 618.000000000000000000
+        Size.Height = 50.000000000000000000
+        Size.PlatformDefault = False
+        Visible = False
+        TabOrder = 4
       end
     end
   end

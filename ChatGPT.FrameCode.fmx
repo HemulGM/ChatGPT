@@ -149,20 +149,10 @@ object FrameCode: TFrameCode
       Size.PlatformDefault = False
       StyleLookup = 'memostyle_code'
       TabOrder = 0
-      OnClick = MemoCodeClick
-      OnMouseMove = MemoCodeMouseMove
       OnMouseWheel = MemoCodeMouseWheel
-      OnMouseLeave = MemoCodeMouseLeave
       OnPresentationNameChoosing = MemoCodePresentationNameChoosing
-      Viewport.Width = 565.000000000000000000
-      Viewport.Height = 345.000000000000000000
+      Viewport.Width = 555.000000000000000000
+      Viewport.Height = 335.000000000000000000
     end
-  end
-  object TimerMouseOver: TTimer
-    Enabled = False
-    Interval = 50
-    OnTimer = TimerMouseOverTimer
-    Left = 136
-    Top = 160
   end
 end
